@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aktien Masterclass - Minimal Elegant Cover</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #e5e5e5;
+            padding: 20px;
+        }
+        
+        .cover {
+            width: 800px;
+            height: 1000px;
+            background: #2a2a2a;
+            border-radius: 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            padding: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Very subtle texture */
+        .texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(255,255,255,0.008) 3px,
+                    rgba(255,255,255,0.008) 6px
+                );
+        }
+        
+        /* Subtle accent line */
+        .accent-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #a0927d;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid #707070;
+            color: #a09c94;
+            padding: 10px 24px;
+            border-radius: 0;
+            font-family: 'Arial', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+        }
+        
+        h1 {
+            color: #f5f5f0;
+            font-size: 68px;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+            font-family: 'Georgia', serif;
+        }
+        
+        .subtitle {
+            color: #b0b0a8;
+            font-size: 18px;
+            font-weight: 300;
+            margin-bottom: 70px;
+            line-height: 1.6;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+        }
+        
+        .agenda {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid #707070;
+            padding: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .agenda-title {
+            color: #a09c94;
+            font-size: 12px;
+            font-family: 'Arial', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 32px;
+        }
+        
+        .chapter {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 22px;
+            color: #d0d0c8;
+        }
+        
+        .chapter:last-child {
+            margin-bottom: 0;
+        }
+        
+        .chapter-number {
+            color: #a0927d;
+            width: 28px;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            font-weight: 300;
+            flex-shrink: 0;
+            text-align: right;
+        }
+        
+        .chapter-title {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.7;
+            font-family: 'Georgia', serif;
+        }
+        
+        .footer {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 30px;
+            border-top: 1px solid #404040;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 50px;
+        }
+        
+        .stat {
+            text-align: left;
+        }
+        
+        .stat-number {
+            color: #f5f5f0;
+            font-size: 44px;
+            font-weight: 300;
+            line-height: 1;
+            margin-bottom: 8px;
+            font-family: 'Georgia', serif;
+        }
+        
+        .stat-label {
+            color: #808080;
+            font-size: 10px;
+            font-family: 'Arial', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .price {
+            color: #f5f5f0;
+            font-size: 32px;
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div class="cover">
+        <div class="texture"></div>
+        <div class="accent-line"></div>
+        
+        <div class="content">
+            <div class="badge">Premium Guide 2026</div>
+            
+            <h1>AKTIEN<br/>MASTERCLASS</h1>
+            
+            <div class="subtitle">
+                Der komplette Guide für erfolgreiches<br/>Investieren an der Börse
+            </div>
+            
+            <div class="agenda">
+                <div class="agenda-title">Inhaltsverzeichnis</div>
+                
+                <div class="chapter">
+                    <div class="chapter-number">I</div>
+                    <div class="chapter-title">Börse verstehen – Grundlagen & Funktionsweise</div>
+                </div>
+                
+                <div class="chapter">
+                    <div class="chapter-number">II</div>
+                    <div class="chapter-title">Fundamentalanalyse – KGV, KBV & Kennzahlen</div>
+                </div>
+                
+                <div class="chapter">
+                    <div class="chapter-number">III</div>
+                    <div class="chapter-title">Technische Analyse – Charts & Indikatoren</div>
+                </div>
+                
+                <div class="chapter">
+                    <div class="chapter-number">IV</div>
+                    <div class="chapter-title">Trading-Strategien – Momentum & Value</div>
+                </div>
+                
+                <div class="chapter">
+                    <div class="chapter-number">V</div>
+                    <div class="chapter-title">Steuern & Freibeträge in Deutschland</div>
+                </div>
+                
+                <div class="chapter">
+                    <div class="chapter-number">VI</div>
+                    <div class="chapter-title">Portfolio-Management & Diversifikation</div>
+                </div>
+                
+                <div class="chapter">
+                    <div class="chapter-number">VII</div>
+                    <div class="chapter-title">Trading-Psychologie & häufige Fehler</div>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+</body>
+</html>

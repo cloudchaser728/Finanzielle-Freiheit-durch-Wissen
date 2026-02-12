@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krypto Guide 2026 - Kapitel 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Georgia', 'Times New Roman', serif; background: #2a2a2a; color: #f5f5f0; line-height: 1.8; padding: 60px 80px; max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 48px; font-weight: 400; color: #f5f5f0; margin-bottom: 15px; }
+        .chapter-label { font-size: 14px; color: #7d8fa0; text-transform: uppercase; letter-spacing: 3px; font-family: 'Arial', sans-serif; margin-bottom: 30px; }
+        h2 { font-size: 32px; font-weight: 400; color: #f5f5f0; margin-top: 50px; margin-bottom: 25px; }
+        h3 { font-size: 24px; font-weight: 400; color: #d0d0c8; margin-top: 40px; margin-bottom: 20px; }
+        h4 { font-size: 20px; font-weight: 400; color: #d0d0c8; margin-top: 30px; margin-bottom: 15px; }
+        p { margin-bottom: 20px; color: #d0d0c8; font-size: 16px; }
+        strong { color: #f5f5f0; font-weight: 600; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin-bottom: 12px; color: #d0d0c8; }
+        .critical-box { background: rgba(231, 76, 60, 0.15); border: 3px solid #e74c3c; padding: 30px; margin: 40px 0; }
+        .critical-box h3 { color: #e74c3c; margin-top: 0; }
+        .example-box { background: rgba(255, 255, 255, 0.03); border-left: 3px solid #7d8fa0; padding: 25px; margin: 30px 0; }
+        .important-box { background: rgba(125, 143, 160, 0.1); border: 2px solid #7d8fa0; padding: 25px; margin: 30px 0; }
+        .warning-box { background: rgba(231, 76, 60, 0.1); border: 2px solid #e74c3c; padding: 25px; margin: 30px 0; }
+        .success-box { background: rgba(39, 174, 96, 0.1); border: 2px solid #27ae60; padding: 25px; margin: 30px 0; }
+        .fail-box { background: rgba(231, 76, 60, 0.08); border-left: 4px solid #e74c3c; padding: 25px; margin: 30px 0; }
+        .fail-box h4 { color: #e74c3c; margin-top: 0; }
+        .backup-box { background: rgba(125, 143, 160, 0.15); border: 3px solid #7d8fa0; padding: 30px; margin: 40px 0; text-align: center; }
+        .summary-box { background: rgba(255, 255, 255, 0.03); padding: 30px; margin: 50px 0; border-top: 2px solid #707070; border-bottom: 2px solid #707070; }
+        .summary-box h3 { margin-top: 0; color: #7d8fa0; }
+        table { width: 100%; border-collapse: collapse; margin: 30px 0; background: rgba(255, 255, 255, 0.02); }
+        th { background: rgba(125, 143, 160, 0.2); color: #f5f5f0; padding: 15px; text-align: left; font-weight: 600; border: 1px solid #404040; }
+        td { padding: 15px; border: 1px solid #404040; color: #d0d0c8; }
+        .rating { color: #f5c842; }
+        .checkmark { color: #27ae60; font-size: 18px; }
+        .xmark { color: #e74c3c; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div class="chapter-label">Kapitel 3</div>
+    <h1>Wallet-Sicherheit MASTERCLASS</h1>
+    
+    <div class="critical-box">
+        <h3>⚠️ DAS wichtigste Kapitel überhaupt!</h3>
+        <p>99% aller Krypto-Verluste passieren durch schlechte Sicherheit, nicht durch Markt-Crashes. Lies ALLES hier, zweimal!</p>
+    </div>
+    
+    <h2>3.1 Hot Wallet vs. Cold Wallet</h2>
+    
+    <h3>Was ist ein Wallet?</h3>
+    
+    <div class="important-box">
+        <p><strong>Ein Wallet ist KEIN USB-Stick für deine Coins!</strong></p>
+        <p>Deine Coins sind IMMER auf der Blockchain. Das Wallet speichert nur die <strong>Private Keys</strong> (= Passwörter zum Zugriff).</p>
+        <p><strong style="color: #e74c3c;">Private Key = Wer den Key hat, hat das Geld. NIEMAND kann dir helfen wenn du ihn verlierst!</strong></p>
+    </div>
+    
+    <h3>Hot Wallet (Internet-verbunden)</h3>
+    
+    <p><strong>Beispiele:</strong></p>
+    <ul>
+        <li>MetaMask (Browser Extension)</li>
+        <li>Trust Wallet (Mobile App)</li>
+        <li>Phantom (Solana Wallet)</li>
+        <li>Exchange Wallet (Binance, Coinbase)</li>
+    </ul>
+    
+    <table>
+        <tr>
+            <th>Vorteile</th>
+            <th>Nachteile</th>
+        </tr>
+        <tr>
+            <td>
+                <span class="checkmark">✓</span> Schnell & bequem<br>
+                <span class="checkmark">✓</span> Kostenlos<br>
+                <span class="checkmark">✓</span> Gut für DeFi & NFTs
+            </td>
+            <td>
+                <span class="xmark">✗</span> Hackbar (Malware, Phishing)<br>
+                <span class="xmark">✗</span> Nicht für große Beträge!
+            </td>
+        </tr>
+    </table>
+    
+    <h3>Cold Wallet (Offline)</h3>
+    
+    <p><strong>Beispiele:</strong></p>
+    <ul>
+        <li>Hardware Wallets (Ledger, Trezor)</li>
+        <li>Paper Wallet (Seed auf Papier)</li>
+    </ul>
+    
+    <table>
+        <tr>
+            <th>Vorteile</th>
+            <th>Nachteile</th>
+        </tr>
+        <tr>
+            <td>
+                <span class="checkmark">✓</span> Maximale Sicherheit<br>
+                <span class="checkmark">✓</span> Offline = nicht hackbar<br>
+                <span class="checkmark">✓</span> Für große Beträge PFLICHT
+            </td>
+            <td>
+                <span class="xmark">✗</span> Kostet Geld (60-200€)<br>
+                <span class="xmark">✗</span> Umständlicher für Trading
+            </td>
+        </tr>
+    </table>
+    
+    <h3>Die Regel für dich</h3>
+    
+    <table>
+        <tr>
+            <th>Betrag</th>
+            <th>Wallet-Typ</th>
+            <th>Beispiel</th>
+        </tr>
+        <tr>
+            <td><500€</td>
+            <td>Exchange/Hot Wallet</td>
+            <td>Binance, MetaMask</td>
+        </tr>
+        <tr>
+            <td>500-2.000€</td>
+            <td>Hot Wallet (sicher)</td>
+            <td>Trust Wallet</td>
+        </tr>
+        <tr style="background: rgba(39, 174, 96, 0.1);">
+            <td><strong>>2.000€</strong></td>
+            <td><strong>COLD WALLET!</strong></td>
+            <td><strong>Ledger, Trezor</strong></td>
+        </tr>
+    </table>
+    
+    <h2>3.2 Hardware Wallets – Dein digitaler Tresor</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Ab 2.000€ = Hardware Wallet Pflicht!</strong></p>
+    </div>
+    
+    <h3>Die Top 3 Hardware Wallets</h3>
+    
+    <table>
+        <tr>
+            <th>Wallet</th>
+            <th>Preis</th>
+            <th>Coins</th>
+            <th>Empfehlung</th>
+        </tr>
+        <tr>
+            <td><strong>Ledger Nano X</strong></td>
+            <td>149€</td>
+            <td>5.500+</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Trezor Model T</strong></td>
+            <td>219€</td>
+            <td>1.800+</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Ledger Nano S Plus</strong></td>
+            <td>79€</td>
+            <td>5.500+</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+    
+    <div class="success-box">
+        <p><strong>Meine Empfehlung:</strong> Ledger Nano X. Bluetooth, viele Coins, bewährt.</p>
+        <p><strong style="color: #e74c3c;">WICHTIG: Kaufe NIEMALS gebraucht! Nur direkt vom Hersteller!</strong></p>
+    </div>
+    
+    <h3>Hardware Wallet einrichten (Ledger)</h3>
+    
+    <ol>
+        <li><strong>Auspacken & anschließen:</strong> USB an PC/Laptop</li>
+        <li><strong>Ledger Live installieren:</strong> Software von ledger.com</li>
+        <li><strong>Gerät initialisieren:</strong> 'Als neues Gerät einrichten'</li>
+        <li><strong>PIN setzen:</strong> 4-8 Ziffern, NIE vergessen!</li>
+        <li><strong>Seed Phrase aufschreiben:</strong> 24 Wörter, DAS WICHTIGSTE!</li>
+        <li><strong>Seed Phrase bestätigen:</strong> Gerät prüft ob du richtig aufgeschrieben hast</li>
+        <li><strong>Fertig!</strong> Jetzt Apps installieren (ETH, BTC, SOL etc.)</li>
+    </ol>
+    
+    <h2>3.3 Die 3-2-1 Backup-Regel</h2>
+    
+    <div class="critical-box">
+        <h3>DAS rettet dein Geld!</h3>
+    </div>
+    
+    <h3>Was ist die Seed Phrase?</h3>
+    
+    <div class="important-box">
+        <p><strong>24 Wörter = dein MASTER-Passwort für ALLES.</strong></p>
+        
+        <p><strong>Beispiel:</strong><br>
+        <em>apple banana ocean mountain forest river cloud eagle snow fire turtle bridge wisdom gentle happy robot jungle crystal piano window forest arrow queen</em></p>
+        
+        <p><strong style="color: #e74c3c; font-size: 18px;">Wer diese 24 Wörter hat = hat ALL deine Coins!</strong></p>
+    </div>
+    
+    <h3>Die 3-2-1 Regel</h3>
+    
+    <div class="backup-box">
+        <p style="font-size: 28px; margin-bottom: 20px;"><strong>3 Kopien - 2 Medien - 1 Offsite</strong></p>
+    </div>
+    
+    <p><strong>3 Kopien:</strong></p>
+    <ul>
+        <li>Original (im Hardware Wallet)</li>
+        <li>Kopie 1 (Papier)</li>
+        <li>Kopie 2 (Metall-Platte)</li>
+    </ul>
+    
+    <p><strong>2 verschiedene Medien:</strong></p>
+    <ul>
+        <li>Papier (billig, aber brennbar)</li>
+        <li>Metall (teurer, aber unzerstörbar)</li>
+    </ul>
+    
+    <p><strong>1 Offsite:</strong></p>
+    <ul>
+        <li>Eine Kopie NICHT zuhause (Eltern, Bankschließfach, zweite Wohnung)</li>
+    </ul>
+    
+    <h3>Konkrete Umsetzung</h3>
+    
+    <div class="example-box">
+        <p><strong>Setup #1 (Basic):</strong></p>
+        <ul>
+            <li>Kopie 1: Papier in Safe zuhause</li>
+            <li>Kopie 2: Papier bei Eltern</li>
+            <li>Kopie 3: Metall-Platte in Bankschließfach</li>
+        </ul>
+        
+        <p><strong>Setup #2 (Paranoid):</strong></p>
+        <ul>
+            <li>Kopie 1: Metall-Platte zuhause (versteckt)</li>
+            <li>Kopie 2: Metall-Platte bei Eltern</li>
+            <li>Kopie 3: Papier + Metall in 2 verschiedenen Bankschließfächern</li>
+        </ul>
+    </div>
+    
+    <div class="important-box">
+        <p><strong>Metall-Platten kaufen:</strong></p>
+        <ul>
+            <li>CryptoSteel</li>
+            <li>Billfodl</li>
+            <li>HODL Steel</li>
+        </ul>
+        <p><strong>Preis:</strong> 50-100€ (lohnt sich ab 5.000€!)</p>
+    </div>
+    
+    <h2>3.4 Die 8 häufigsten Security Fails</h2>
+    
+    <p><strong>Diese Fehler kosten Millionen! Nicht mit dir! 💪</strong></p>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #1: Seed digital speichern</h4>
+        <p><strong>Das Problem:</strong> Screenshot, Textdatei, Cloud, E-Mail → ALLES HACKBAR!</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> NUR auf Papier/Metall. NIEMALS digital!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #2: Seed-Foto auf Handy</h4>
+        <p><strong>Das Problem:</strong> Handy-Backup in iCloud/Google → Seed in der Cloud!</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> KEINE Fotos vom Seed. Punkt.</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #3: Seed jemandem zeigen</h4>
+        <p><strong>Das Problem:</strong> 'Schau mal meine Seed!' → Er merkt sich 24 Wörter → Geld weg</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> NIEMAND darf deine Seed sehen. Auch nicht Familie!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #4: Fake-Wallet-Apps</h4>
+        <p><strong>Das Problem:</strong> Fake MetaMask App im Play Store → du gibst Seed ein → weg</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Nur von offiziellen Websites runterladen. Check Developer!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #5: Dusting Attack ignorieren</h4>
+        <p><strong>Das Problem:</strong> Kleine Random-Coins in deinem Wallet → du klickst drauf → Malware</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> NIEMALS mit unbekannten Coins interagieren. Ignorieren!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #6: Wallet auf kompromittiertem PC</h4>
+        <p><strong>Das Problem:</strong> Keylogger auf PC → recorded deine Seed Phrase</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Hardware Wallet! Seed verlässt niemals das Gerät.</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #7: Phishing-Websites</h4>
+        <p><strong>Das Problem:</strong> metamask.com → metanask.com (vertauscht) → Seed eingegeben → weg</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> IMMER URL prüfen! Bookmarks nutzen.</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #8: Nur 1 Seed-Kopie</h4>
+        <p><strong>Das Problem:</strong> Haus brennt ab → Seed verbrennt → Geld weg, für immer</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> 3-2-1 Regel! Mindestens 3 Kopien, 1 offsite.</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 3</h3>
+        <p><strong>Security ist ALLES! ✅</strong></p>
+        <ul>
+            <li>Hot Wallet = <500€, Cold Wallet = >2.000€</li>
+            <li>Hardware Wallet: Ledger Nano X (149€)</li>
+            <li>3-2-1 Backup-Regel: 3 Kopien, 2 Medien, 1 Offsite</li>
+            <li>Seed NIEMALS digital speichern!</li>
+            <li>Metall-Platten ab 5.000€ Investment</li>
+            <li>8 Security Fails kennen & vermeiden</li>
+            <li>Not your keys, not your coins!</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Trading vs. HODL – Welche Strategie passt zu dir?</p>
+</body>
+</html>
