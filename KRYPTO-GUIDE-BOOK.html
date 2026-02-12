@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krypto Guide 2026 - Digital Book</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #f5f5f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .book-container {
+            position: relative;
+            width: 900px;
+            max-width: 95vw;
+            height: 80vh;
+            max-height: 1100px;
+            perspective: 2000px;
+        }
+        
+        .book {
+            width: 100%;
+            height: 100%;
+            background: #2a2a2a;
+            border-radius: 8px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 80px 100px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        
+        .page.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+        
+        .page.prev {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        
+        .page::-webkit-scrollbar { width: 8px; }
+        .page::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .page::-webkit-scrollbar-thumb { background: #7d8fa0; border-radius: 4px; }
+        
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background: rgba(125, 143, 160, 0.2);
+            border: 1px solid #7d8fa0;
+            color: #f5f5f0;
+            padding: 12px 30px;
+            font-family: 'Arial', sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: #7d8fa0;
+            color: #2a2a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(125, 143, 160, 0.3);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .page-indicator {
+            background: rgba(42, 42, 42, 0.8);
+            border: 1px solid #707070;
+            color: #7d8fa0;
+            padding: 10px 25px;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .chapter-label {
+            font-size: 12px;
+            color: #7d8fa0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 20px;
+        }
+        
+        h1 { font-size: 42px; font-weight: 400; color: #f5f5f0; margin-bottom: 15px; line-height: 1.2; }
+        h2 { font-size: 28px; font-weight: 400; color: #f5f5f0; margin-top: 40px; margin-bottom: 20px; }
+        h3 { font-size: 22px; font-weight: 400; color: #d0d0c8; margin-top: 35px; margin-bottom: 18px; }
+        h4 { font-size: 18px; font-weight: 400; color: #d0d0c8; margin-top: 28px; margin-bottom: 14px; }
+        p { margin-bottom: 18px; color: #d0d0c8; font-size: 15px; line-height: 1.7; }
+        strong { color: #f5f5f0; font-weight: 600; }
+        ul, ol { margin: 18px 0; padding-left: 28px; }
+        li { margin-bottom: 10px; color: #d0d0c8; line-height: 1.6; }
+        
+        .cover-badge {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid #707070;
+            color: #a09c94;
+            padding: 8px 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+        }
+        
+        .cover-title {
+            font-size: 64px;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+        
+        .cover-subtitle {
+            font-size: 18px;
+            color: #b0b0a8;
+            font-weight: 300;
+            margin-bottom: 50px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid #707070;
+            padding: 35px;
+            margin-top: 35px;
+        }
+        
+        .toc-title {
+            color: #a09c94;
+            font-size: 11px;
+            font-family: 'Arial', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 22px;
+        }
+        
+        .toc-item {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 13px;
+            color: #d0d0c8;
+        }
+        
+        .toc-number {
+            color: #7d8fa0;
+            width: 22px;
+            font-size: 13px;
+        }
+        
+        .toc-text {
+            font-size: 13px;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+        
+        .example-box { background: rgba(255, 255, 255, 0.03); border-left: 3px solid #7d8fa0; padding: 22px; margin: 25px 0; }
+        .important-box { background: rgba(125, 143, 160, 0.1); border: 2px solid #7d8fa0; padding: 22px; margin: 25px 0; }
+        .warning-box { background: rgba(231, 76, 60, 0.1); border: 2px solid #e74c3c; padding: 22px; margin: 25px 0; }
+        .success-box { background: rgba(39, 174, 96, 0.1); border: 2px solid #27ae60; padding: 22px; margin: 25px 0; }
+        .summary-box { background: rgba(255, 255, 255, 0.03); padding: 25px; margin: 35px 0; border-top: 2px solid #707070; border-bottom: 2px solid #707070; }
+        .checklist { background: rgba(255, 255, 255, 0.03); border-left: 3px solid #7d8fa0; padding: 22px; margin: 25px 0; }
+        .checklist li { list-style: none; padding-left: 28px; position: relative; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; color: #7d8fa0; font-size: 18px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; background: rgba(255, 255, 255, 0.02); font-size: 14px; }
+        th { background: rgba(125, 143, 160, 0.2); color: #f5f5f0; padding: 12px; text-align: left; font-weight: 600; border: 1px solid #404040; }
+        td { padding: 12px; border: 1px solid #404040; color: #d0d0c8; }
+        
+        .keyboard-hint {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #808080;
+            font-size: 11px;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book">
+            <div class="page active" data-page="0">
+
+            <div class="cover-badge">Crypto Guide 2026</div>
+            <h1 class="cover-title">KRYPTO<br/>GUIDE</h1>
+            <div class="cover-subtitle">
+                Sicher investieren in Kryptowährungen –<br/>Von Basics bis Steueroptimierung
+            </div>
+            <div class="toc">
+                <div class="toc-title">Inhaltsverzeichnis</div>
+                <div class="toc-item">
+                    <div class="toc-number">I</div>
+                    <div class="toc-text">Die moderne Krypto-Welt – DeFi & Staking</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">II</div>
+                    <div class="toc-text">Sicher einsteigen – Exchanges & erste Käufe</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">III</div>
+                    <div class="toc-text">Wallet-Sicherheit – Hardware & 3-2-1 Backup</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">IV</div>
+                    <div class="toc-text">Trading vs. HODL – Die Gewinner-Strategie</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">V</div>
+                    <div class="toc-text">Top Kryptowährungen & Portfolio</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">VI</div>
+                    <div class="toc-text">Steuern – 1-Jahr-Regel & Optimierung</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">VII</div>
+                    <div class="toc-text">Tools, Checklisten & Resources</div>
+                </div>
+            </div>
+
+            </div>
+            <div class="page" data-page="1">
+<div class="chapter-label">Kapitel 1</div>
+    <h1>Blockchain & Krypto Basics</h1>
+    
+    <p>Willkommen in der Welt der Kryptowährungen! In diesem Kapitel lernst du die fundamentalen Konzepte, die du brauchst, um Bitcoin, Ethereum und Co. wirklich zu verstehen – ohne technischen Jargon, aber mit allem was wichtig ist.</p>
+    
+    <h2>1.1 Was ist Blockchain?</h2>
+    
+    <p>Stell dir ein Notizbuch vor, in das jeder reinschreiben kann, aber niemand etwas löschen oder ändern kann. Und dieses Notizbuch haben tausende Menschen gleichzeitig – alle mit der exakt gleichen Kopie. Das ist im Kern die Blockchain.</p>
+    
+    <h3>Einfach erklärt (ohne Technik-Jargon)</h3>
+    
+    <div class="example-box">
+        <p><strong>Klassisches Banking:</strong></p>
+        <p>Du überweist 100€ an einen Freund → Die Bank prüft ob du 100€ hast → Die Bank bucht ab → Die Bank bucht dem Freund gut</p>
+        <p><strong>Problem:</strong> Du musst der Bank vertrauen. Was wenn die Bank gehackt wird? Oder pleite geht?</p>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>Mit Blockchain:</strong></p>
+        <p>Du überweist 100€ in Bitcoin → Tausende Computer prüfen gleichzeitig ob du 100€ hast → Alle Computer bestätigen die Transaktion → Alle Computer aktualisieren ihre Kopie des Notizbuchs</p>
+        <p><strong>Vorteil:</strong> Du brauchst keine Bank. Das Netzwerk ist die Bank.</p>
+    </div>
+    
+    <h3>Dezentralisierung verstehen</h3>
+    
+    <p><strong>Zentral</strong> (wie eine Bank):</p>
+    <ul>
+        <li>Eine Institution kontrolliert alles</li>
+        <li>Wenn die Zentrale gehackt wird → alle Daten weg</li>
+        <li>Du musst dieser einen Institution vertrauen</li>
+    </ul>
+    
+    <p><strong>Dezentral</strong> (wie Bitcoin):</p>
+    <ul>
+        <li>Tausende Computer speichern die gleichen Daten</li>
+        <li>Wenn ein Computer gehackt wird → die anderen 9.999 haben noch die richtigen Daten</li>
+        <li>Du musst niemandem vertrauen, nur der Mathematik</li>
+    </ul>
+    
+    <div class="key-concept">
+        <p><strong>💡 Kernkonzept:</strong> Blockchain ist wie ein öffentliches Kassenbuch, das jeder sehen kann, aber niemand fälschen kann.</p>
+    </div>
+    
+    <h3>Warum ist das revolutionär?</h3>
+    
+    <p><strong>1. Keine Mittelsmänner mehr</strong><br>
+    Keine Bank verdient an deinen Überweisungen. Keine PayPal-Gebühren. Direkt von Mensch zu Mensch.</p>
+    
+    <p><strong>2. 24/7 verfügbar</strong><br>
+    Banken haben Öffnungszeiten. Bitcoin nie. Du kannst sonntags um 3 Uhr morgens Geld um die Welt schicken.</p>
+    
+    <p><strong>3. Grenzenlos</strong><br>
+    Geld an jemanden in Japan schicken? Mit Bitcoin dauert es 10 Minuten. Mit einer Bank: 3-5 Tage und hohe Gebühren.</p>
+    
+    <p><strong>4. Transparent & fälschungssicher</strong><br>
+    Jede Transaktion ist öffentlich einsehbar. Niemand kann Geld "drucken" oder Transaktionen fälschen.</p>
+    
+    <h2>1.2 Bitcoin - Das digitale Gold</h2>
+    
+    <h3>Geschichte von Bitcoin</h3>
+    
+    <div class="example-box">
+        <p><strong>2008:</strong> Finanzkrise. Banken kollabieren. Regierungen drucken Billionen.</p>
+        <p><strong>31. Oktober 2008:</strong> Eine mysteriöse Person namens "Satoshi Nakamoto" veröffentlicht das Bitcoin-Whitepaper</p>
+        <p><strong>3. Januar 2009:</strong> Der erste Bitcoin-Block wird gemined (erstellt)</p>
+        <p><strong>2010:</strong> Erste Bitcoin-Transaktion: 10.000 BTC für 2 Pizzen (heute: ~$600 Millionen wert!)</p>
+        <p><strong>2024:</strong> Bitcoin wird von Ländern wie El Salvador als offizielles Zahlungsmittel anerkannt</p>
+    </div>
+    
+    <div class="important-box">
+        <p><strong>Bis heute weiß niemand, wer Satoshi Nakamoto wirklich ist.</strong> Er/sie verschwand 2011 spurlos und hat seine ~1 Million Bitcoin nie bewegt.</p>
+    </div>
+    
+    <h3>Wie funktioniert Bitcoin?</h3>
+    
+    <p><strong>Mining (Schürfen):</strong></p>
+    <p>Computer lösen komplexe mathematische Aufgaben. Wer die Aufgabe als erstes löst, darf den nächsten "Block" (Seite im Notizbuch) hinzufügen und bekommt als Belohnung neue Bitcoins.</p>
+    
+    <p><strong>Transaktionen:</strong></p>
+    <p>Wenn du Bitcoin sendest, wird die Transaktion in einen Block gepackt. Nach etwa 10 Minuten ist der Block "gemined" und die Transaktion bestätigt.</p>
+    
+    <p><strong>Sicherheit:</strong></p>
+    <p>Um eine Bitcoin-Transaktion zu fälschen, müsstest du 51% aller Computer im Netzwerk kontrollieren. Das kostet Milliarden und ist praktisch unmöglich.</p>
+    
+    <h3>Warum ist Bitcoin wertvoll?</h3>
+    
+    <div class="highlight-box">
+        <p><strong>1. Knappheit</strong><br>
+        Es wird nur 21 Millionen Bitcoin geben. Nie mehr. Aktuell sind ~19,5 Millionen im Umlauf.</p>
+        
+        <p><strong>2. Dezentralisierung</strong><br>
+        Keine Regierung, keine Bank, keine Person kann Bitcoin kontrollieren oder "abschalten".</p>
+        
+        <p><strong>3. Teilbarkeit</strong><br>
+        1 Bitcoin = 100 Millionen Satoshis. Du kannst also 0,0001 BTC besitzen (aktuell ~$4).</p>
+        
+        <p><strong>4. Unveränderlichkeit</strong><br>
+        Einmal in der Blockchain, kann eine Transaktion nie wieder gelöscht werden.</p>
+        
+        <p><strong>5. Globale Akzeptanz</strong><br>
+        Millionen Händler weltweit akzeptieren Bitcoin. Von Tesla bis Pizza-Läden.</p>
+    </div>
+    
+    <h3>Das 21-Millionen-Limit</h3>
+    
+    <p>Bitcoin ist das erste Geld in der Geschichte, das wirklich <strong>knapp</strong> ist.</p>
+    
+    <table>
+        <tr>
+            <th>Währung</th>
+            <th>Maximale Menge</th>
+            <th>Wer entscheidet?</th>
+        </tr>
+        <tr>
+            <td><strong>Euro</strong></td>
+            <td>Unbegrenzt</td>
+            <td>EZB druckt nach Belieben</td>
+        </tr>
+        <tr>
+            <td><strong>Dollar</strong></td>
+            <td>Unbegrenzt</td>
+            <td>Federal Reserve druckt nach Belieben</td>
+        </tr>
+        <tr>
+            <td><strong>Bitcoin</strong></td>
+            <td>21 Millionen</td>
+            <td>Niemand. Mathematisch festgelegt.</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p><strong>Halving:</strong> Alle 4 Jahre halbiert sich die Bitcoin-Belohnung für Miner. Aktuell (2024): 3,125 BTC pro Block. Nächstes Halving (2028): 1,5625 BTC. Das macht Bitcoin immer knapper.</p>
+    </div>
+    
+    <h2>1.3 Altcoins & Ethereum</h2>
+    
+    <h3>Was sind Altcoins?</h3>
+    
+    <p><strong>Altcoin</strong> = "Alternative Coin" = Alle Kryptowährungen außer Bitcoin.</p>
+    
+    <p>Bitcoin war die erste. Aber seitdem wurden tausende neue Kryptowährungen erschaffen. Jede mit einem anderen Zweck:</p>
+    
+    <ul>
+        <li><strong>Ethereum:</strong> Programmierbare Blockchain (Smart Contracts)</li>
+        <li><strong>Solana:</strong> Sehr schnelle Transaktionen</li>
+        <li><strong>Cardano:</strong> Wissenschaftlicher Ansatz, umweltfreundlich</li>
+        <li><strong>Ripple (XRP):</strong> Für Banküberweisungen</li>
+        <li><strong>Chainlink:</strong> Verbindet Blockchain mit der realen Welt</li>
+    </ul>
+    
+    <h3>Ethereum & Smart Contracts</h3>
+    
+    <p><strong>Bitcoin</strong> = Digitales Geld<br>
+    <strong>Ethereum</strong> = Digitaler Computer für alle</p>
+    
+    <div class="example-box">
+        <p><strong>Smart Contract Beispiel:</strong></p>
+        <p>Stell dir vor, du wettest 100€ mit einem Freund auf das Fußballspiel heute Abend.</p>
+        <p><strong>Normal:</strong> Ihr müsst euch vertrauen. Was wenn einer nicht zahlt?</p>
+        <p><strong>Mit Smart Contract:</strong> Ihr legt beide 100€ in ETH in den Contract. Der Contract schaut automatisch das Ergebnis nach und zahlt dem Gewinner 200€ aus. Niemand kann betrügen.</p>
+    </div>
+    
+    <p><strong>Anwendungen von Smart Contracts:</strong></p>
+    <ul>
+        <li><strong>DeFi (Decentralized Finance):</strong> Kredite, Zinsen, Trading – alles ohne Bank</li>
+        <li><strong>NFTs:</strong> Digitale Kunst, Sammlerstücke</li>
+        <li><strong>DAOs:</strong> Organisationen ohne Chef, nur Code</li>
+        <li><strong>Gaming:</strong> Spiele wo du deine Items wirklich besitzt</li>
+    </ul>
+    
+    <h3>Top 10 Kryptowährungen 2026</h3>
+    
+    <table>
+        <tr>
+            <th>Rang</th>
+            <th>Coin</th>
+            <th>Marktkapitalisierung</th>
+            <th>Use Case</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td><strong>Bitcoin (BTC)</strong></td>
+            <td>~$1,2 Trillion</td>
+            <td>Digitales Gold, Wertspeicher</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Ethereum (ETH)</strong></td>
+            <td>~$400 Billion</td>
+            <td>Smart Contracts, DeFi, NFTs</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Binance Coin (BNB)</strong></td>
+            <td>~$80 Billion</td>
+            <td>Exchange Token, Gebühren</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>Solana (SOL)</strong></td>
+            <td>~$60 Billion</td>
+            <td>Schnelle Blockchain</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><strong>Ripple (XRP)</strong></td>
+            <td>~$50 Billion</td>
+            <td>Banküberweisungen</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><strong>Cardano (ADA)</strong></td>
+            <td>~$40 Billion</td>
+            <td>Smart Contracts, wissenschaftlich</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td><strong>Polkadot (DOT)</strong></td>
+            <td>~$30 Billion</td>
+            <td>Blockchain-Verbindungen</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td><strong>Chainlink (LINK)</strong></td>
+            <td>~$25 Billion</td>
+            <td>Daten für Smart Contracts</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td><strong>Avalanche (AVAX)</strong></td>
+            <td>~$20 Billion</td>
+            <td>DeFi-Plattform</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td><strong>Polygon (MATIC)</strong></td>
+            <td>~$18 Billion</td>
+            <td>Ethereum Skalierung</td>
+        </tr>
+    </table>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 1</h3>
+        <ul>
+            <li><strong>Blockchain</strong> = Öffentliches, unveränderliches Kassenbuch</li>
+            <li><strong>Dezentralisierung</strong> = Keine Bank nötig, das Netzwerk ist die Bank</li>
+            <li><strong>Bitcoin</strong> = Digitales Gold mit 21 Millionen Limit</li>
+            <li><strong>Mining</strong> = Computer sichern das Netzwerk und werden mit Bitcoin belohnt</li>
+            <li><strong>Ethereum</strong> = Programmierbare Blockchain für Smart Contracts</li>
+            <li><strong>Altcoins</strong> = Tausende verschiedene Kryptos, jede mit eigenem Zweck</li>
+            <li><strong>Top 10</strong> = Bitcoin & Ethereum dominieren, aber viele spannende Projekte</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel lernst du, wie du sicher einsteigst und deinen ersten Krypto-Kauf tätigst!</p>
+            </div>
+            <div class="page" data-page="2">
+<div class="chapter-label">Kapitel 2</div>
+    <h1>Sicher einsteigen</h1>
+    
+    <p>Jetzt wird's praktisch! In diesem Kapitel kaufst du deine ersten Coins. Ich zeige dir die besten Exchanges, wie du dich verifizierst und deinen ersten Kauf machst – Step by Step.</p>
+    
+    <h2>2.1 Die besten Krypto-Börsen 2026</h2>
+    
+    <p>Es gibt hunderte Exchanges. Hier sind die BESTEN:</p>
+    
+    <table>
+        <tr>
+            <th>Exchange</th>
+            <th>Gebühren</th>
+            <th>Coins</th>
+            <th>Besonders</th>
+            <th>Rating</th>
+        </tr>
+        <tr>
+            <td><strong>Binance</strong></td>
+            <td>0,1%</td>
+            <td>600+</td>
+            <td>Alles verfügbar</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Coinbase</strong></td>
+            <td>0,6%</td>
+            <td>250+</td>
+            <td>Anfängerfreundlich</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Kraken</strong></td>
+            <td>0,16%</td>
+            <td>200+</td>
+            <td>Sehr sicher</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Bitpanda</strong></td>
+            <td>1,49%</td>
+            <td>400+</td>
+            <td>Deutsch, SEPA</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Bybit</strong></td>
+            <td>0,1%</td>
+            <td>500+</td>
+            <td>Trading-Tools</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p><strong>Meine Empfehlung:</strong></p>
+        <p><strong>Anfänger:</strong> Coinbase oder Bitpanda (einfach, deutsch)<br>
+        <strong>Fortgeschrittene:</strong> Binance oder Kraken (günstiger, mehr Coins)</p>
+    </div>
+    
+    <h2>2.2 Account erstellen & KYC</h2>
+    
+    <p><strong>KYC = Know Your Customer</strong><br>
+    Du musst dich ausweisen. Nervt, ist aber Gesetz. 🤷‍♂️</p>
+    
+    <h3>Schritt für Schritt (Beispiel: Binance)</h3>
+    
+    <div class="steps-box">
+        <ol>
+            <li><strong>Website aufrufen:</strong> binance.com → 'Registrieren'</li>
+            <li><strong>E-Mail & Passwort:</strong> Starkes Passwort wählen (20+ Zeichen, Sonderzeichen)</li>
+            <li><strong>E-Mail bestätigen:</strong> Code aus E-Mail eingeben</li>
+            <li><strong>2FA aktivieren:</strong> Google Authenticator (PFLICHT für Sicherheit!)</li>
+            <li><strong>Persönliche Daten:</strong> Name, Adresse, Geburtsdatum</li>
+            <li><strong>Ausweis hochladen:</strong> Personalausweis oder Reisepass (Vorder- & Rückseite)</li>
+            <li><strong>Selfie mit Ausweis:</strong> Foto von dir mit dem Ausweis machen</li>
+            <li><strong>Warten auf Verifizierung:</strong> Dauert 10 Minuten bis 24 Stunden</li>
+        </ol>
+    </div>
+    
+    <div class="warning-box">
+        <p><strong>WICHTIG:</strong> Ohne KYC kannst du nichts kaufen! Mach es sofort.</p>
+    </div>
+    
+    <h3>2FA - Zwei-Faktor-Authentifizierung</h3>
+    
+    <p><strong>Warum?</strong> Weil Hacker sonst dein Konto übernehmen!</p>
+    
+    <div class="example-box">
+        <p><strong>So geht's:</strong></p>
+        <ol>
+            <li>Google Authenticator App installieren (iOS/Android)</li>
+            <li>QR-Code von Binance scannen</li>
+            <li>Backup-Codes speichern (WICHTIG!)</li>
+            <li>Bei jedem Login: 6-stelligen Code aus App eingeben</li>
+        </ol>
+    </div>
+    
+    <h2>2.3 Geld einzahlen</h2>
+    
+    <p>Account verifiziert? Perfekt! Jetzt Geld rein.</p>
+    
+    <h3>Methoden zum Einzahlen</h3>
+    
+    <table>
+        <tr>
+            <th>Methode</th>
+            <th>Dauer</th>
+            <th>Gebühren</th>
+            <th>Empfehlung</th>
+        </tr>
+        <tr>
+            <td><strong>SEPA-Überweisung</strong></td>
+            <td>1-2 Tage</td>
+            <td>Kostenlos</td>
+            <td>✅ Beste Option</td>
+        </tr>
+        <tr>
+            <td><strong>Kreditkarte</strong></td>
+            <td>Sofort</td>
+            <td>1,5-3%</td>
+            <td>⚠️ Teuer</td>
+        </tr>
+        <tr>
+            <td><strong>Sofortüberweisung</strong></td>
+            <td>Minuten</td>
+            <td>0,5-1%</td>
+            <td>✅ OK</td>
+        </tr>
+        <tr>
+            <td><strong>P2P</strong></td>
+            <td>Variabel</td>
+            <td>Variabel</td>
+            <td>⚠️ Für Fortgeschrittene</td>
+        </tr>
+    </table>
+    
+    <div class="success-box">
+        <p><strong>Empfehlung: SEPA!</strong> Kostenlos und sicher. Plane 2 Tage Wartezeit ein.</p>
+    </div>
+    
+    <h3>SEPA Einzahlung Step-by-Step</h3>
+    
+    <div class="steps-box">
+        <ol>
+            <li><strong>Zu 'Einzahlung':</strong> In der App/Website → 'Guthaben' → 'Einzahlen'</li>
+            <li><strong>EUR auswählen:</strong> Wähle Euro (nicht USD!)</li>
+            <li><strong>SEPA wählen:</strong> Bank Transfer / SEPA</li>
+            <li><strong>Bankdaten kopieren:</strong> Binance zeigt dir IBAN & Verwendungszweck</li>
+            <li><strong>Überweisung machen:</strong> Von deinem Girokonto → an Binance IBAN</li>
+            <li><strong>WICHTIG - Verwendungszweck:</strong> Exakt kopieren! Sonst geht Geld verloren!</li>
+            <li><strong>Warten:</strong> 1-2 Werktage, dann ist Geld da</li>
+        </ol>
+    </div>
+    
+    <h2>2.4 Dein erster Krypto-Kauf</h2>
+    
+    <p>Let's go! Geld ist drauf, jetzt kaufen wir! 🚀</p>
+    
+    <h3>Beispiel: Ethereum kaufen</h3>
+    
+    <div class="steps-box">
+        <ol>
+            <li><strong>Zu 'Trade':</strong> 'Märkte' oder 'Trade' → 'Spot Trading'</li>
+            <li><strong>ETH suchen:</strong> Suchfeld → 'ETH' eingeben → 'ETH/EUR' auswählen</li>
+            <li><strong>Order-Typ wählen:</strong> 'Market' (sofort kaufen) oder 'Limit' (Preis festlegen)</li>
+            <li><strong>Betrag eingeben:</strong> Z.B. 500€ (oder Anzahl ETH)</li>
+            <li><strong>Prüfen:</strong> Übersicht checken: Preis, Gebühren, Gesamt</li>
+            <li><strong>Kaufen!</strong> Button drücken → DONE! 🎉</li>
+        </ol>
+    </div>
+    
+    <h3>Market Order vs. Limit Order</h3>
+    
+    <div class="example-box">
+        <p><strong>Market:</strong> Kauft sofort zum aktuellen Preis. Schnell, aber du weißt nicht genau welchen Preis du zahlst.</p>
+        
+        <p><strong>Limit:</strong> Du legst einen Maximalpreis fest. Order wird nur ausgeführt wenn Preis erreicht wird.</p>
+        
+        <p><strong>Für Anfänger: Market Order!</strong> Einfacher.</p>
+    </div>
+    
+    <h3>Häufige Anfängerfehler</h3>
+    
+    <div class="warning-box">
+        <ul>
+            <li><strong>❌ Falsches Paar wählen:</strong> ETH/USDT statt ETH/EUR → zahlt in Dollar!</li>
+            <li><strong>❌ Zu große Order auf einmal:</strong> Lieber 3x 500€ als 1x 1.500€ (Dollar-Cost-Averaging)</li>
+            <li><strong>❌ FOMO-Kauf:</strong> Coin steigt +50%, du kaufst Höchststand → fällt danach</li>
+            <li><strong>❌ Gebühren ignorieren:</strong> Kleine Käufe = hohe prozentuale Gebühren</li>
+        </ul>
+    </div>
+    
+    <h2>2.5 Coins auf Exchange lassen oder nicht?</h2>
+    
+    <p><strong>Die 10.000€ Frage!</strong></p>
+    
+    <h3>Not your keys, not your coins</h3>
+    
+    <div class="warning-box">
+        <p><strong>Wenn deine Coins auf Binance/Coinbase liegen:</strong></p>
+        <ul>
+            <li>→ Die Exchange hat die Private Keys</li>
+            <li>→ Du hast nur ein 'IOU' (I Owe You)</li>
+            <li>→ Wenn Exchange gehackt wird oder pleite geht: Geld weg! 💸</li>
+        </ul>
+        
+        <p><strong>Beispiele:</strong></p>
+        <ul>
+            <li>Mt. Gox (2014): 850.000 BTC verloren</li>
+            <li>FTX (2022): Milliarden verschwunden</li>
+            <li>Viele andere...</li>
+        </ul>
+    </div>
+    
+    <h3>Die Regel</h3>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;">
+        <strong>Bis 1.000€: OK auf Exchange</strong><br>
+        <strong style="color: #27ae60;">Über 1.000€: IN EIGENES WALLET!</strong>
+        </p>
+        
+        <p><strong>Warum?</strong><br>
+        Bis 1.000€: Risiko vs. Bequemlichkeit akzeptabel<br>
+        Ab 1.000€: Hardware Wallet Pflicht (wird in Kapitel 3 erklärt)</p>
+    </div>
+    
+    <h3>Wann auf Exchange lassen?</h3>
+    
+    <ul>
+        <li>Du tradest aktiv (täglich rein/raus)</li>
+        <li>Du stakest auf der Exchange</li>
+        <li>Kleiner Betrag (<1.000€)</li>
+    </ul>
+    
+    <h3>Wann raus in eigenes Wallet?</h3>
+    
+    <ul>
+        <li>HODL-Strategie (langfristig halten)</li>
+        <li>Größere Beträge (>1.000€)</li>
+        <li>Maximale Sicherheit gewünscht</li>
+    </ul>
+    
+    <p><strong>Mehr zu Wallets in Kapitel 3!</strong></p>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 2</h3>
+        <p><strong>Du bist jetzt im Krypto-Game! 🎮</strong></p>
+        <ul>
+            <li>Beste Exchanges: Binance, Kraken, Coinbase</li>
+            <li>KYC nervt, ist aber Pflicht</li>
+            <li>2FA aktivieren = Pflicht für Sicherheit</li>
+            <li>SEPA Einzahlung = kostenlos, dauert 1-2 Tage</li>
+            <li>Market Order = einfach für Anfänger</li>
+            <li>Bis 1.000€ OK auf Exchange</li>
+            <li>Über 1.000€ = eigenes Wallet (Kapitel 3!)</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: WALLET-SICHERHEIT MASTERCLASS!</p>
+            </div>
+            <div class="page" data-page="3">
+<div class="chapter-label">Kapitel 3</div>
+    <h1>Wallet-Sicherheit MASTERCLASS</h1>
+    
+    <div class="critical-box">
+        <h3>⚠️ DAS wichtigste Kapitel überhaupt!</h3>
+        <p>99% aller Krypto-Verluste passieren durch schlechte Sicherheit, nicht durch Markt-Crashes. Lies ALLES hier, zweimal!</p>
+    </div>
+    
+    <h2>3.1 Hot Wallet vs. Cold Wallet</h2>
+    
+    <h3>Was ist ein Wallet?</h3>
+    
+    <div class="important-box">
+        <p><strong>Ein Wallet ist KEIN USB-Stick für deine Coins!</strong></p>
+        <p>Deine Coins sind IMMER auf der Blockchain. Das Wallet speichert nur die <strong>Private Keys</strong> (= Passwörter zum Zugriff).</p>
+        <p><strong style="color: #e74c3c;">Private Key = Wer den Key hat, hat das Geld. NIEMAND kann dir helfen wenn du ihn verlierst!</strong></p>
+    </div>
+    
+    <h3>Hot Wallet (Internet-verbunden)</h3>
+    
+    <p><strong>Beispiele:</strong></p>
+    <ul>
+        <li>MetaMask (Browser Extension)</li>
+        <li>Trust Wallet (Mobile App)</li>
+        <li>Phantom (Solana Wallet)</li>
+        <li>Exchange Wallet (Binance, Coinbase)</li>
+    </ul>
+    
+    <table>
+        <tr>
+            <th>Vorteile</th>
+            <th>Nachteile</th>
+        </tr>
+        <tr>
+            <td>
+                <span class="checkmark">✓</span> Schnell & bequem<br>
+                <span class="checkmark">✓</span> Kostenlos<br>
+                <span class="checkmark">✓</span> Gut für DeFi & NFTs
+            </td>
+            <td>
+                <span class="xmark">✗</span> Hackbar (Malware, Phishing)<br>
+                <span class="xmark">✗</span> Nicht für große Beträge!
+            </td>
+        </tr>
+    </table>
+    
+    <h3>Cold Wallet (Offline)</h3>
+    
+    <p><strong>Beispiele:</strong></p>
+    <ul>
+        <li>Hardware Wallets (Ledger, Trezor)</li>
+        <li>Paper Wallet (Seed auf Papier)</li>
+    </ul>
+    
+    <table>
+        <tr>
+            <th>Vorteile</th>
+            <th>Nachteile</th>
+        </tr>
+        <tr>
+            <td>
+                <span class="checkmark">✓</span> Maximale Sicherheit<br>
+                <span class="checkmark">✓</span> Offline = nicht hackbar<br>
+                <span class="checkmark">✓</span> Für große Beträge PFLICHT
+            </td>
+            <td>
+                <span class="xmark">✗</span> Kostet Geld (60-200€)<br>
+                <span class="xmark">✗</span> Umständlicher für Trading
+            </td>
+        </tr>
+    </table>
+    
+    <h3>Die Regel für dich</h3>
+    
+    <table>
+        <tr>
+            <th>Betrag</th>
+            <th>Wallet-Typ</th>
+            <th>Beispiel</th>
+        </tr>
+        <tr>
+            <td><500€</td>
+            <td>Exchange/Hot Wallet</td>
+            <td>Binance, MetaMask</td>
+        </tr>
+        <tr>
+            <td>500-2.000€</td>
+            <td>Hot Wallet (sicher)</td>
+            <td>Trust Wallet</td>
+        </tr>
+        <tr style="background: rgba(39, 174, 96, 0.1);">
+            <td><strong>>2.000€</strong></td>
+            <td><strong>COLD WALLET!</strong></td>
+            <td><strong>Ledger, Trezor</strong></td>
+        </tr>
+    </table>
+    
+    <h2>3.2 Hardware Wallets – Dein digitaler Tresor</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Ab 2.000€ = Hardware Wallet Pflicht!</strong></p>
+    </div>
+    
+    <h3>Die Top 3 Hardware Wallets</h3>
+    
+    <table>
+        <tr>
+            <th>Wallet</th>
+            <th>Preis</th>
+            <th>Coins</th>
+            <th>Empfehlung</th>
+        </tr>
+        <tr>
+            <td><strong>Ledger Nano X</strong></td>
+            <td>149€</td>
+            <td>5.500+</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Trezor Model T</strong></td>
+            <td>219€</td>
+            <td>1.800+</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Ledger Nano S Plus</strong></td>
+            <td>79€</td>
+            <td>5.500+</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+    
+    <div class="success-box">
+        <p><strong>Meine Empfehlung:</strong> Ledger Nano X. Bluetooth, viele Coins, bewährt.</p>
+        <p><strong style="color: #e74c3c;">WICHTIG: Kaufe NIEMALS gebraucht! Nur direkt vom Hersteller!</strong></p>
+    </div>
+    
+    <h3>Hardware Wallet einrichten (Ledger)</h3>
+    
+    <ol>
+        <li><strong>Auspacken & anschließen:</strong> USB an PC/Laptop</li>
+        <li><strong>Ledger Live installieren:</strong> Software von ledger.com</li>
+        <li><strong>Gerät initialisieren:</strong> 'Als neues Gerät einrichten'</li>
+        <li><strong>PIN setzen:</strong> 4-8 Ziffern, NIE vergessen!</li>
+        <li><strong>Seed Phrase aufschreiben:</strong> 24 Wörter, DAS WICHTIGSTE!</li>
+        <li><strong>Seed Phrase bestätigen:</strong> Gerät prüft ob du richtig aufgeschrieben hast</li>
+        <li><strong>Fertig!</strong> Jetzt Apps installieren (ETH, BTC, SOL etc.)</li>
+    </ol>
+    
+    <h2>3.3 Die 3-2-1 Backup-Regel</h2>
+    
+    <div class="critical-box">
+        <h3>DAS rettet dein Geld!</h3>
+    </div>
+    
+    <h3>Was ist die Seed Phrase?</h3>
+    
+    <div class="important-box">
+        <p><strong>24 Wörter = dein MASTER-Passwort für ALLES.</strong></p>
+        
+        <p><strong>Beispiel:</strong><br>
+        <em>apple banana ocean mountain forest river cloud eagle snow fire turtle bridge wisdom gentle happy robot jungle crystal piano window forest arrow queen</em></p>
+        
+        <p><strong style="color: #e74c3c; font-size: 18px;">Wer diese 24 Wörter hat = hat ALL deine Coins!</strong></p>
+    </div>
+    
+    <h3>Die 3-2-1 Regel</h3>
+    
+    <div class="backup-box">
+        <p style="font-size: 28px; margin-bottom: 20px;"><strong>3 Kopien - 2 Medien - 1 Offsite</strong></p>
+    </div>
+    
+    <p><strong>3 Kopien:</strong></p>
+    <ul>
+        <li>Original (im Hardware Wallet)</li>
+        <li>Kopie 1 (Papier)</li>
+        <li>Kopie 2 (Metall-Platte)</li>
+    </ul>
+    
+    <p><strong>2 verschiedene Medien:</strong></p>
+    <ul>
+        <li>Papier (billig, aber brennbar)</li>
+        <li>Metall (teurer, aber unzerstörbar)</li>
+    </ul>
+    
+    <p><strong>1 Offsite:</strong></p>
+    <ul>
+        <li>Eine Kopie NICHT zuhause (Eltern, Bankschließfach, zweite Wohnung)</li>
+    </ul>
+    
+    <h3>Konkrete Umsetzung</h3>
+    
+    <div class="example-box">
+        <p><strong>Setup #1 (Basic):</strong></p>
+        <ul>
+            <li>Kopie 1: Papier in Safe zuhause</li>
+            <li>Kopie 2: Papier bei Eltern</li>
+            <li>Kopie 3: Metall-Platte in Bankschließfach</li>
+        </ul>
+        
+        <p><strong>Setup #2 (Paranoid):</strong></p>
+        <ul>
+            <li>Kopie 1: Metall-Platte zuhause (versteckt)</li>
+            <li>Kopie 2: Metall-Platte bei Eltern</li>
+            <li>Kopie 3: Papier + Metall in 2 verschiedenen Bankschließfächern</li>
+        </ul>
+    </div>
+    
+    <div class="important-box">
+        <p><strong>Metall-Platten kaufen:</strong></p>
+        <ul>
+            <li>CryptoSteel</li>
+            <li>Billfodl</li>
+            <li>HODL Steel</li>
+        </ul>
+        <p><strong>Preis:</strong> 50-100€ (lohnt sich ab 5.000€!)</p>
+    </div>
+    
+    <h2>3.4 Die 8 häufigsten Security Fails</h2>
+    
+    <p><strong>Diese Fehler kosten Millionen! Nicht mit dir! 💪</strong></p>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #1: Seed digital speichern</h4>
+        <p><strong>Das Problem:</strong> Screenshot, Textdatei, Cloud, E-Mail → ALLES HACKBAR!</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> NUR auf Papier/Metall. NIEMALS digital!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #2: Seed-Foto auf Handy</h4>
+        <p><strong>Das Problem:</strong> Handy-Backup in iCloud/Google → Seed in der Cloud!</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> KEINE Fotos vom Seed. Punkt.</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #3: Seed jemandem zeigen</h4>
+        <p><strong>Das Problem:</strong> 'Schau mal meine Seed!' → Er merkt sich 24 Wörter → Geld weg</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> NIEMAND darf deine Seed sehen. Auch nicht Familie!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #4: Fake-Wallet-Apps</h4>
+        <p><strong>Das Problem:</strong> Fake MetaMask App im Play Store → du gibst Seed ein → weg</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Nur von offiziellen Websites runterladen. Check Developer!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #5: Dusting Attack ignorieren</h4>
+        <p><strong>Das Problem:</strong> Kleine Random-Coins in deinem Wallet → du klickst drauf → Malware</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> NIEMALS mit unbekannten Coins interagieren. Ignorieren!</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #6: Wallet auf kompromittiertem PC</h4>
+        <p><strong>Das Problem:</strong> Keylogger auf PC → recorded deine Seed Phrase</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Hardware Wallet! Seed verlässt niemals das Gerät.</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #7: Phishing-Websites</h4>
+        <p><strong>Das Problem:</strong> metamask.com → metanask.com (vertauscht) → Seed eingegeben → weg</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> IMMER URL prüfen! Bookmarks nutzen.</p>
+    </div>
+    
+    <div class="fail-box">
+        <h4>❌ Fail #8: Nur 1 Seed-Kopie</h4>
+        <p><strong>Das Problem:</strong> Haus brennt ab → Seed verbrennt → Geld weg, für immer</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> 3-2-1 Regel! Mindestens 3 Kopien, 1 offsite.</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 3</h3>
+        <p><strong>Security ist ALLES! ✅</strong></p>
+        <ul>
+            <li>Hot Wallet = <500€, Cold Wallet = >2.000€</li>
+            <li>Hardware Wallet: Ledger Nano X (149€)</li>
+            <li>3-2-1 Backup-Regel: 3 Kopien, 2 Medien, 1 Offsite</li>
+            <li>Seed NIEMALS digital speichern!</li>
+            <li>Metall-Platten ab 5.000€ Investment</li>
+            <li>8 Security Fails kennen & vermeiden</li>
+            <li>Not your keys, not your coins!</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Trading vs. HODL – Welche Strategie passt zu dir?</p>
+            </div>
+            <div class="page" data-page="4">
+<div class="chapter-label">Kapitel 4</div>
+    <h1>Trading vs. HODL</h1>
+    
+    <p>Die ewige Frage: Aktiv traden oder einfach halten? Ich zeige dir die Wahrheit – mit echten Zahlen! 📊</p>
+    
+    <h2>4.1 Die brutale Wahrheit über Trading</h2>
+    
+    <div class="truth-box">
+        <h3>Fakt: 95% aller Trader verlieren Geld.</h3>
+    </div>
+    
+    <p><strong>Warum?</strong></p>
+    <ul>
+        <li><strong>Gebühren fressen Gewinne:</strong> Jeder Trade = 0,1-0,6% Gebühren</li>
+        <li><strong>Emotionen:</strong> FOMO, Panik, Gier</li>
+        <li><strong>Timing:</strong> Du kannst den Markt NICHT timen</li>
+        <li><strong>Bots & Algos:</strong> Du tradest gegen Maschinen</li>
+    </ul>
+    
+    <h3>Trading vs. HODL – Die Zahlen</h3>
+    
+    <p><strong>Beispiel: 10.000€ in Ethereum (2020-2025)</strong></p>
+    
+    <div class="comparison-box">
+        <p><strong style="color: #27ae60;">Szenario A: HODL</strong></p>
+        <ul>
+            <li>Kaufst 2020 für 10.000€</li>
+            <li>Hältst 5 Jahre</li>
+            <li>2025: ~45.000€ (4,5x)</li>
+            <li>Gebühren: 10€</li>
+        </ul>
+        <p style="font-size: 20px; margin-top: 20px;"><strong style="color: #27ae60;">Gewinn: 35.000€</strong></p>
+    </div>
+    
+    <div class="comparison-box">
+        <p><strong style="color: #e74c3c;">Szenario B: Aktiv Trading</strong></p>
+        <ul>
+            <li>Kaufst/verkaufst 50x in 5 Jahren</li>
+            <li>Manchmal richtig, oft falsch</li>
+            <li>Gebühren: 100x Trades × 0,2% = 2.000€</li>
+            <li>Emotional verkauft bei -30%, verpasst +200%</li>
+            <li>2025: ~18.000€ (1,8x)</li>
+        </ul>
+        <p style="font-size: 20px; margin-top: 20px;"><strong style="color: #e74c3c;">Gewinn: 8.000€</strong></p>
+    </div>
+    
+    <div class="hodl-box">
+        <p style="font-size: 24px; text-align: center;"><strong>HODL gewinnt: 35k vs 8k!</strong></p>
+    </div>
+    
+    <h2>4.2 HODL – Die Gewinner-Strategie</h2>
+    
+    <p><strong>HODL = Hold On for Dear Life</strong><br>
+    Einfach kaufen und halten. Langfristig. Jahre.</p>
+    
+    <h3>Warum HODL funktioniert</h3>
+    
+    <ul>
+        <li><strong>Zeit im Markt > Timing des Marktes</strong></li>
+        <li>Minimale Gebühren (1x kaufen, fertig)</li>
+        <li>Keine emotionalen Entscheidungen</li>
+        <li>Du verpasst keine Pumps</li>
+        <li><strong>Steuervorteil (nach 1 Jahr steuerfrei in DE!)</strong></li>
+    </ul>
+    
+    <h3>HODL Rules</h3>
+    
+    <div class="important-box">
+        <ul>
+            <li><strong>Kaufe & vergiss es:</strong> Nicht täglich checken!</li>
+            <li><strong>Mindestens 1 Jahr halten:</strong> Steuerfrei!</li>
+            <li><strong>DCA nutzen:</strong> Monatlich nachkaufen</li>
+            <li><strong>Crashes ignorieren:</strong> -50%? Egal. Langfristig geht's hoch.</li>
+            <li><strong>Cold Wallet nutzen:</strong> Raus von der Exchange = weniger Versuchung zu verkaufen</li>
+        </ul>
+    </div>
+    
+    <h2>4.3 DCA – Dollar-Cost-Averaging</h2>
+    
+    <p><strong>Die beste Einstiegsstrategie!</strong></p>
+    
+    <h3>Was ist DCA?</h3>
+    
+    <p>Statt 10.000€ auf einmal → 10x 1.000€ monatlich</p>
+    
+    <p><strong>Vorteil:</strong> Du kaufst bei verschiedenen Preisen → Durchschnittspreis</p>
+    
+    <h3>Beispiel-Rechnung</h3>
+    
+    <table>
+        <tr>
+            <th>Monat</th>
+            <th>ETH Preis</th>
+            <th>Kauf (500€)</th>
+            <th>ETH erhalten</th>
+        </tr>
+        <tr>
+            <td>Jan</td>
+            <td>2.500€</td>
+            <td>500€</td>
+            <td>0,20 ETH</td>
+        </tr>
+        <tr>
+            <td>Feb</td>
+            <td>3.000€</td>
+            <td>500€</td>
+            <td>0,17 ETH</td>
+        </tr>
+        <tr>
+            <td>Mär</td>
+            <td>2.000€</td>
+            <td>500€</td>
+            <td>0,25 ETH</td>
+        </tr>
+        <tr>
+            <td>Apr</td>
+            <td>2.800€</td>
+            <td>500€</td>
+            <td>0,18 ETH</td>
+        </tr>
+        <tr class="winner">
+            <td><strong>TOTAL</strong></td>
+            <td><strong>Ø 2.575€</strong></td>
+            <td><strong>2.000€</strong></td>
+            <td><strong>0,80 ETH</strong></td>
+        </tr>
+    </table>
+    
+    <div class="example-box">
+        <p><strong>Ergebnis: Durchschnittspreis: 2.575€ pro ETH</strong></p>
+        <p>Wenn du ALLES im Januar gekauft hättest: 2.500€/ETH<br>
+        Wenn du ALLES im März gekauft hättest: 2.000€/ETH</p>
+        <p><strong style="color: #27ae60;">DCA = sicherer Durchschnitt!</strong></p>
+    </div>
+    
+    <h3>DCA einrichten</h3>
+    
+    <ul>
+        <li><strong>Binance:</strong> Sparplan → Auto-Invest → ETH → 500€ monatlich</li>
+        <li><strong>Kraken:</strong> Recurring Buy → wöchentlich/monatlich</li>
+        <li><strong>Coinbase:</strong> Recurring Purchase → automatisch</li>
+    </ul>
+    
+    <h2>4.4 Wann solltest du verkaufen?</h2>
+    
+    <p><strong>Die schwierigste Frage!</strong></p>
+    
+    <h3>HODL für immer?</h3>
+    
+    <p>Nein. Du MUSST irgendwann verkaufen.</p>
+    <p><strong>Aber nicht emotional! Nach Plan!</strong></p>
+    
+    <h3>Verkaufs-Strategien</h3>
+    
+    <div class="strategy-box">
+        <p><strong>Strategie #1: Gewinnmitnahme bei Targets</strong></p>
+        <ul>
+            <li>ETH +100%: Verkaufe 25%</li>
+            <li>ETH +200%: Verkaufe weitere 25%</li>
+            <li>ETH +400%: Verkaufe weitere 25%</li>
+            <li>Rest HODLen für immer</li>
+        </ul>
+    </div>
+    
+    <div class="strategy-box">
+        <p><strong>Strategie #2: Time-Based Exit</strong></p>
+        <ul>
+            <li>Nach 4 Jahren: 50% verkaufen</li>
+            <li>Nach 8 Jahren: weitere 25% verkaufen</li>
+            <li>Rest für Rente behalten</li>
+        </ul>
+    </div>
+    
+    <div class="strategy-box">
+        <p><strong>Strategie #3: Goal-Based</strong></p>
+        <ul>
+            <li>Ziel: 50.000€ für Anzahlung Haus</li>
+            <li>Wenn Portfolio = 50k → verkaufe alles</li>
+            <li>Ziel erreicht? Fertig!</li>
+        </ul>
+    </div>
+    
+    <h3>Wann NICHT verkaufen</h3>
+    
+    <div class="warning-box">
+        <ul>
+            <li><strong class="xmark">❌</strong> <strong>Bei -20% Crash:</strong> Panikverkauf = Verlust realisiert</li>
+            <li><strong class="xmark">❌</strong> <strong>Nach FUD in den News:</strong> 'China bannt Bitcoin!' Schon 100x gehört</li>
+            <li><strong class="xmark">❌</strong> <strong>Weil Freund sagt:</strong> 'Verkauf jetzt!' ist kein Grund</li>
+            <li><strong class="xmark">❌</strong> <strong>Vor 1 Jahr Haltefrist:</strong> Sonst Steuern zahlen!</li>
+        </ul>
+    </div>
+    
+    <h2>4.5 Die 7 tödlichen Trading-Fehler</h2>
+    
+    <p><strong>Falls du DOCH traden willst – vermeide diese!</strong></p>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #1: Leverage nutzen</h4>
+        <p><strong>Das Problem:</strong> 10x Leverage = 10% Move → 100% Gewinn ODER -100% Verlust<br>
+        Liquidation = alles weg</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> KEIN Leverage als Anfänger!</p>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #2: Revenge Trading</h4>
+        <p><strong>Das Problem:</strong> Verlust gemacht → 'Ich hole mir das zurück!' → nochmal verloren</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Pause nach Verlust. Nicht nachkaufen aus Emotion.</p>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #3: FOMO-Kauf</h4>
+        <p><strong>Das Problem:</strong> Coin steigt +50% → du kaufst → fällt -30%</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Niemals auf ATH kaufen. DCA nutzen.</p>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #4: Kein Stop-Loss</h4>
+        <p><strong>Das Problem:</strong> Coin fällt -50%, du hältst aus 'Hoffnung'</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Stop-Loss bei -15% setzen (wenn du tradest)</p>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #5: Zu viele Coins</h4>
+        <p><strong>Das Problem:</strong> 50 verschiedene Coins → kannst nicht alle tracken</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Max 5-7 Coins. Fokus!</p>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #6: Chart-Analysen glauben</h4>
+        <p><strong>Das Problem:</strong> 'Head & Shoulders Pattern!' → bedeutet nichts in Krypto</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Fundamentals > Technicals</p>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #7: Täglich Charts checken</h4>
+        <p><strong>Das Problem:</strong> Obsession → emotionale Entscheidungen</p>
+        <p><strong style="color: #27ae60;">Die Lösung:</strong> Max 1x pro Woche Portfolio checken</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 4</h3>
+        <p><strong>HODL schlägt Trading – immer! 📈</strong></p>
+        <ul>
+            <li>95% der Trader verlieren Geld</li>
+            <li>HODL = Zeit im Markt > Timing des Marktes</li>
+            <li>DCA = sicherste Einstiegs-Strategie</li>
+            <li>Verkaufe nach Plan, nicht nach Emotion</li>
+            <li>Steuer-Vorteil: 1 Jahr halten = steuerfrei!</li>
+            <li>Kein Leverage als Anfänger</li>
+            <li>Max 1x/Woche Portfolio checken</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Top Kryptowährungen 2026!</p>
+            </div>
+            <div class="page" data-page="5">
+<div class="chapter-label">Kapitel 5</div>
+    <h1>Top Kryptowährungen 2026</h1>
+    
+    <p>Die konkreten Coin-Empfehlungen! Was lohnt sich WIRKLICH? 💎</p>
+    
+    <h2>5.1 Krypto-Kategorien verstehen</h2>
+    
+    <p>Nicht alle Coins sind gleich! Es gibt verschiedene Kategorien:</p>
+    
+    <table>
+        <tr>
+            <th>Kategorie</th>
+            <th>Beschreibung</th>
+            <th>Beispiele</th>
+        </tr>
+        <tr>
+            <td><strong>Layer 1</strong></td>
+            <td>Eigene Blockchain</td>
+            <td>ETH, SOL, AVAX</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 2</strong></td>
+            <td>Skalierung von L1</td>
+            <td>ARB, OP, MATIC</td>
+        </tr>
+        <tr>
+            <td><strong>DeFi</strong></td>
+            <td>Dezentrale Finanz-Protokolle</td>
+            <td>UNI, AAVE, CRV</td>
+        </tr>
+        <tr>
+            <td><strong>AI</strong></td>
+            <td>KI-fokussierte Projekte</td>
+            <td>FET, RNDR, TAO</td>
+        </tr>
+        <tr>
+            <td><strong>Gaming</strong></td>
+            <td>Play-to-Earn & NFT Gaming</td>
+            <td>IMX, BEAM, GALA</td>
+        </tr>
+        <tr>
+            <td><strong>Memecoins</strong></td>
+            <td>Community-driven, spekulativ</td>
+            <td>DOGE, SHIB, PEPE</td>
+        </tr>
+    </table>
+    
+    <h2>5.2 Top Layer 1 Blockchains</h2>
+    
+    <p><strong>Das Fundament! Diese brauchst du im Portfolio.</strong></p>
+    
+    <div class="coin-box">
+        <h3>Ethereum (ETH) – Der Standard</h3>
+        
+        <p><strong>Warum kaufen?</strong></p>
+        <ul>
+            <li>#1 für Smart Contracts</li>
+            <li>Größtes DeFi-Ökosystem</li>
+            <li>ETF-Zulassung (institutionelles Geld!)</li>
+            <li>Staking: 3-5% APY</li>
+        </ul>
+        
+        <p><strong>Risiken:</strong></p>
+        <ul>
+            <li>Hohe Gas Fees</li>
+            <li>Konkurrenz durch Solana & Co.</li>
+        </ul>
+        
+        <p><strong style="color: #7d8fa0;">Portfolio-Anteil: 30-40%</strong></p>
+    </div>
+    
+    <div class="coin-box">
+        <h3>Solana (SOL) – Der Schnelle</h3>
+        
+        <p><strong>Warum kaufen?</strong></p>
+        <ul>
+            <li>Extrem schnell (65.000 TPS)</li>
+            <li>Günstig (0,00025$ pro TX)</li>
+            <li>Riesige Community</li>
+            <li>Memecoin-Hub</li>
+            <li>Staking: 6-8% APY</li>
+        </ul>
+        
+        <p><strong>Risiken:</strong></p>
+        <ul>
+            <li>Netzwerk-Ausfälle (in der Vergangenheit)</li>
+            <li>Zentralisierung (wenige Validatoren)</li>
+        </ul>
+        
+        <p><strong style="color: #7d8fa0;">Portfolio-Anteil: 20-30%</strong></p>
+    </div>
+    
+    <div class="coin-box">
+        <h3>Avalanche (AVAX) – Der Vielseitige</h3>
+        
+        <p><strong>Warum kaufen?</strong></p>
+        <ul>
+            <li>Subnets (custom Blockchains)</li>
+            <li>Schnell (4.500 TPS)</li>
+            <li>Enterprise Adoption</li>
+            <li>Staking: 8-10% APY</li>
+        </ul>
+        
+        <p><strong>Risiken:</strong></p>
+        <ul>
+            <li>Weniger bekannt als ETH/SOL</li>
+        </ul>
+        
+        <p><strong style="color: #7d8fa0;">Portfolio-Anteil: 10-15%</strong></p>
+    </div>
+    
+    <h2>5.3 Layer 2 & DeFi Coins</h2>
+    
+    <div class="coin-box">
+        <h3>Polygon (MATIC) – Ethereum Layer 2</h3>
+        
+        <p><strong>Warum kaufen?</strong></p>
+        <ul>
+            <li>Macht Ethereum 100x schneller</li>
+            <li>Starbucks, Disney, Reddit nutzen es</li>
+            <li>Staking: 4-6% APY</li>
+        </ul>
+        
+        <p><strong style="color: #7d8fa0;">Portfolio-Anteil: 5-10%</strong></p>
+    </div>
+    
+    <div class="coin-box">
+        <h3>Arbitrum (ARB) – Layer 2 Leader</h3>
+        
+        <p><strong>Warum kaufen?</strong></p>
+        <ul>
+            <li>Größte Ethereum L2</li>
+            <li>TVL: $2,5 Mrd+</li>
+            <li>DeFi-Hub</li>
+        </ul>
+        
+        <p><strong style="color: #7d8fa0;">Portfolio-Anteil: 3-5%</strong></p>
+    </div>
+    
+    <div class="coin-box">
+        <h3>Uniswap (UNI) – DEX King</h3>
+        
+        <p><strong>Warum kaufen?</strong></p>
+        <ul>
+            <li>Größter DEX</li>
+            <li>Handelsvolumen: $1+ Mrd täglich</li>
+            <li>Governance Token</li>
+        </ul>
+        
+        <p><strong style="color: #7d8fa0;">Portfolio-Anteil: 3-5%</strong></p>
+    </div>
+    
+    <h2>5.4 AI & Gaming Coins – Die Zukunft</h2>
+    
+    <h3>AI Coins</h3>
+    
+    <table>
+        <tr>
+            <th>Coin</th>
+            <th>Beschreibung</th>
+            <th>Portfolio</th>
+        </tr>
+        <tr>
+            <td><strong>Fetch.ai (FET)</strong></td>
+            <td>AI Agents on Blockchain</td>
+            <td>2-5%</td>
+        </tr>
+        <tr>
+            <td><strong>Render (RNDR)</strong></td>
+            <td>Dezentrales GPU-Rendering</td>
+            <td>2-5%</td>
+        </tr>
+        <tr>
+            <td><strong>Bittensor (TAO)</strong></td>
+            <td>Dezentrales AI-Netzwerk</td>
+            <td>2-5%</td>
+        </tr>
+    </table>
+    
+    <h3>Gaming Coins</h3>
+    
+    <table>
+        <tr>
+            <th>Coin</th>
+            <th>Beschreibung</th>
+            <th>Portfolio</th>
+        </tr>
+        <tr>
+            <td><strong>Immutable X (IMX)</strong></td>
+            <td>NFT Gaming L2</td>
+            <td>2-5%</td>
+        </tr>
+        <tr>
+            <td><strong>Beam (BEAM)</strong></td>
+            <td>Gaming Blockchain</td>
+            <td>2-3%</td>
+        </tr>
+    </table>
+    
+    <h2>5.5 Portfolio-Allokation – Die Strategie</h2>
+    
+    <p><strong>Wie verteilst du dein Geld? Hier sind 3 Strategien:</strong></p>
+    
+    <div class="portfolio-box">
+        <h4>Portfolio #1: Konservativ (Anfänger)</h4>
+        <p><strong>Ziel:</strong> Sicherheit > Rendite</p>
+        <ul>
+            <li>50% Ethereum (ETH)</li>
+            <li>30% Solana (SOL)</li>
+            <li>10% Polygon (MATIC)</li>
+            <li>10% Avalanche (AVAX)</li>
+        </ul>
+        <p><strong>Risiko: <span class="risk-low">Niedrig</span></strong></p>
+    </div>
+    
+    <div class="portfolio-box">
+        <h4>Portfolio #2: Balanced (Mittelweg)</h4>
+        <p><strong>Ziel:</strong> Mix aus Blue Chips + Growth</p>
+        <ul>
+            <li>35% Ethereum (ETH)</li>
+            <li>25% Solana (SOL)</li>
+            <li>15% Avalanche (AVAX)</li>
+            <li>10% Layer 2 (ARB, MATIC)</li>
+            <li>10% DeFi (UNI, AAVE)</li>
+            <li>5% AI/Gaming (FET, IMX)</li>
+        </ul>
+        <p><strong>Risiko: <span class="risk-medium">Mittel</span></strong></p>
+    </div>
+    
+    <div class="portfolio-box">
+        <h4>Portfolio #3: Aggressiv (Erfahren)</h4>
+        <p><strong>Ziel:</strong> Maximale Rendite, hohes Risiko</p>
+        <ul>
+            <li>20% Ethereum (ETH)</li>
+            <li>20% Solana (SOL)</li>
+            <li>15% Avalanche (AVAX)</li>
+            <li>15% Layer 2 (ARB, OP, MATIC)</li>
+            <li>15% AI Coins (FET, RNDR, TAO)</li>
+            <li>10% Gaming (IMX, BEAM)</li>
+            <li>5% Moonshots (neue Low-Cap Gems)</li>
+        </ul>
+        <p><strong>Risiko: <span class="risk-high">Hoch</span></strong></p>
+    </div>
+    
+    <h2>5.6 Coins zu vermeiden – Die Red Flags</h2>
+    
+    <p><strong>Nicht jeder Coin ist Gold! Vermeide diese:</strong></p>
+    
+    <div class="warning-box">
+        <ul>
+            <li><strong class="xmark">❌</strong> <strong>No-Name-Coins:</strong> Unter Top 200? Vorsicht!</li>
+            <li><strong class="xmark">❌</strong> <strong>Keine echte Nutzung:</strong> Nur 'Whitepaper' ohne Produkt</li>
+            <li><strong class="xmark">❌</strong> <strong>Anonymes Team:</strong> Wer steckt dahinter? Rug Pull Gefahr!</li>
+            <li><strong class="xmark">❌</strong> <strong>Pump & Dump Gruppen:</strong> Telegram-Pumps = Scam</li>
+            <li><strong class="xmark">❌</strong> <strong>Unrealistische Versprechen:</strong> '1000x in 1 Monat!' = Scam</li>
+            <li><strong class="xmark">❌</strong> <strong>Memecoins ohne Community:</strong> DOGE/SHIB OK, random Dog Coin #3847 nicht</li>
+        </ul>
+    </div>
+    
+    <h3>Research Checkliste</h3>
+    
+    <p><strong>Vor jedem Kauf prüfen:</strong></p>
+    
+    <div class="checklist-box">
+        <ul>
+            <li><span class="checkmark">✓</span> Top 100 auf CoinMarketCap?</li>
+            <li><span class="checkmark">✓</span> Öffentliches Team?</li>
+            <li><span class="checkmark">✓</span> Echtes Produkt vorhanden?</li>
+            <li><span class="checkmark">✓</span> Aktive Community (Twitter, Discord)?</li>
+            <li><span class="checkmark">✓</span> Börsen-Listings (Binance, Coinbase)?</li>
+            <li><span class="checkmark">✓</span> Audit vorhanden?</li>
+        </ul>
+        <p style="margin-top: 20px;"><strong style="color: #27ae60;">Mindestens 5/6 = OK zum Kaufen</strong></p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 5</h3>
+        <p><strong>Die besten Coins 2026! 💎</strong></p>
+        <ul>
+            <li>Layer 1 Basis: ETH (30-40%), SOL (20-30%), AVAX (10-15%)</li>
+            <li>Layer 2: MATIC, ARB (5-10%)</li>
+            <li>DeFi: UNI, AAVE (3-5%)</li>
+            <li>AI: FET, RNDR, TAO (2-5% je)</li>
+            <li>Gaming: IMX, BEAM (2-5%)</li>
+            <li>3 Portfolio-Strategien: Konservativ, Balanced, Aggressiv</li>
+            <li>Research Checkliste: 5/6 Punkte = OK</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Steuern – Wie du legal Steuern sparst!</p>
+            </div>
+            <div class="page" data-page="6">
+<div class="chapter-label">Kapitel 6</div>
+    <h1>Steuern & Regulierung</h1>
+    
+    <p>Das nervigste, aber wichtigste Kapitel! Krypto-Steuern in Deutschland erklärt. 💰</p>
+    
+    <h2>6.1 Krypto-Steuern – Die Grundlagen</h2>
+    
+    <div class="disclaimer">
+        <strong>Wichtig:</strong> Ich bin kein Steuerberater! Dies ist Info, keine Beratung. Bei >10.000€ Gewinn → Steuerberater aufsuchen!
+    </div>
+    
+    <h3>Wie werden Kryptos versteuert?</h3>
+    
+    <p><strong>Kryptowährungen = Private Veräußerungsgeschäfte (§ 23 EStG)</strong></p>
+    
+    <p><strong>Das bedeutet:</strong></p>
+    <ul>
+        <li>Wie Goldbarren oder Kunstwerke</li>
+        <li>NICHT Kapitalertragsteuer (25%)</li>
+        <li>Sondern: Persönlicher Steuersatz (0-45%)</li>
+    </ul>
+    
+    <div class="success-box">
+        <p style="font-size: 20px; text-align: center;"><strong>ABER: Nach 1 Jahr Haltefrist = STEUERFREI! 🎉</strong></p>
+    </div>
+    
+    <h3>Die goldene 1-Jahr-Regel</h3>
+    
+    <div class="golden-rule">
+        <h3>Über 1 Jahr gehalten = 0% Steuer!</h3>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong></p>
+        
+        <p><strong style="color: #27ae60;">Richtig:</strong><br>
+        Kauf: 01.01.2025 für 5.000€<br>
+        Verkauf: 02.01.2026 für 20.000€<br>
+        Gewinn: 15.000€<br>
+        <strong>Steuer: 0€!</strong></p>
+        
+        <p><strong style="color: #e74c3c;">Falsch:</strong><br>
+        Verkauf: 31.12.2025 für 20.000€ (1 Tag zu früh!)<br>
+        Gewinn: 15.000€<br>
+        <strong>Steuer: ~6.000€</strong> (bei 40% Steuersatz)</p>
+        
+        <p style="font-size: 18px; margin-top: 20px;"><strong style="color: #e74c3c;">→ 1 Tag Unterschied = 6.000€!</strong></p>
+    </div>
+    
+    <h2>6.2 Die 600€ Freigrenze</h2>
+    
+    <div class="warning-box">
+        <p style="font-size: 18px;"><strong>ACHTUNG: Freigrenze ≠ Freibetrag!</strong></p>
+    </div>
+    
+    <h3>Was ist die Freigrenze?</h3>
+    
+    <p><strong>Wenn du unter 1 Jahr hältst:</strong></p>
+    
+    <div class="important-box">
+        <p>Gewinn ≤ 600€: <strong style="color: #27ae60;">Steuerfrei!</strong><br>
+        Gewinn > 600€: <strong style="color: #e74c3c;">ALLES wird versteuert!</strong></p>
+    </div>
+    
+    <h3>Beispiele</h3>
+    
+    <div class="example-box">
+        <p><strong>Beispiel 1:</strong><br>
+        Gewinn: 599€<br>
+        Steuer: 0€</p>
+        
+        <p><strong>Beispiel 2:</strong><br>
+        Gewinn: 601€<br>
+        Steuer: 240€ (bei 40% Steuersatz)<br>
+        <strong style="color: #e74c3c;">→ 2€ mehr Gewinn = 240€ Steuern!</strong></p>
+        
+        <p style="margin-top: 20px;"><strong>Tipp:</strong> Wenn du bei 590€ Gewinn bist → NICHT mehr verkaufen vor 1 Jahr!</p>
+    </div>
+    
+    <h3>Freigrenze gilt PRO JAHR</h3>
+    
+    <p><strong>Alle privaten Veräußerungsgeschäfte zusammen:</strong></p>
+    <ul>
+        <li>Krypto</li>
+        <li>Gold</li>
+        <li>Kunst</li>
+        <li>Etc.</li>
+    </ul>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong><br>
+        Krypto: +400€<br>
+        Gold: +250€<br>
+        Gesamt: 650€<br>
+        → Freigrenze überschritten!<br>
+        → 650€ werden versteuert</p>
+    </div>
+    
+    <h2>6.3 Verluste verrechnen</h2>
+    
+    <p><strong>Auch Verluste haben Vorteile!</strong></p>
+    
+    <h3>Wie funktioniert Verlustverrechnung?</h3>
+    
+    <p>Verluste können mit Gewinnen verrechnet werden:</p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong><br>
+        Coin A: +3.000€ Gewinn<br>
+        Coin B: -1.000€ Verlust</p>
+        
+        <p>Zu versteuern: 3.000€ - 1.000€ = 2.000€<br>
+        <strong style="color: #27ae60;">Steuer gespart: ~400€</strong> (bei 40% Steuersatz)</p>
+    </div>
+    
+    <h3>Verlustvortrag</h3>
+    
+    <p>Verluste können vorgetragen werden:</p>
+    
+    <div class="example-box">
+        <p><strong>2025:</strong> -5.000€ Verlust, 0€ Gewinn<br>
+        → Verlust wird 'gespeichert'</p>
+        
+        <p><strong>2026:</strong> +8.000€ Gewinn<br>
+        → Verrechnung: 8.000€ - 5.000€ = 3.000€<br>
+        → Nur 3.000€ werden versteuert!</p>
+        
+        <p style="margin-top: 20px;"><strong>WICHTIG:</strong> In Steuererklärung eintragen!</p>
+    </div>
+    
+    <h3>Tax Loss Harvesting</h3>
+    
+    <p><strong>Strategie: Verluste realisieren, um Steuern zu sparen</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong></p>
+        <p>Du hast:</p>
+        <ul>
+            <li>ETH: +5.000€ (verkauft, <1 Jahr)</li>
+            <li>SOL: -2.000€ (aktuell unrealisiert)</li>
+        </ul>
+        
+        <p><strong>Taktik:</strong></p>
+        <ol>
+            <li>Verkaufe SOL am 31.12. → Verlust realisiert</li>
+            <li>Kaufe SOL am 02.01. wieder zurück</li>
+            <li>Zu versteuern: 5.000€ - 2.000€ = 3.000€</li>
+            <li><strong style="color: #27ae60;">Steuer gespart: ~800€</strong></li>
+        </ol>
+        
+        <p style="margin-top: 20px;"><strong>ACHTUNG:</strong> Nur wenn du SOL sowieso halten willst!</p>
+    </div>
+    
+    <h2>6.4 Staking, DeFi & Airdrops</h2>
+    
+    <p><strong>Grauzone! Rechtslage nicht 100% klar.</strong></p>
+    
+    <h3>Staking-Rewards</h3>
+    
+    <p><strong>Aktuelle Ansicht (2026):</strong><br>
+    Staking-Rewards = Sonstige Einkünfte (§ 22 EStG)</p>
+    
+    <p><strong>Das bedeutet:</strong></p>
+    <ul>
+        <li>Versteuert zum Zeitpunkt des Erhalts</li>
+        <li>Mit persönlichem Steuersatz</li>
+        <li>Freibetrag: 256€/Jahr</li>
+    </ul>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong><br>
+        Du stakest 10 ETH à 3.000€ = 30.000€<br>
+        Rewards: 5% = 1.500€/Jahr<br>
+        Steuerpflichtig: 1.500€ - 256€ = 1.244€<br>
+        Steuer: ~500€ (bei 40%)</p>
+        
+        <p style="margin-top: 20px;"><strong>WICHTIG:</strong> Beim Verkauf der Rewards: 1-Jahr-Regel gilt ab Erhalt!</p>
+    </div>
+    
+    <h3>DeFi Lending & Yield Farming</h3>
+    
+    <p><strong>Lending-Zinsen:</strong> Wie Staking (Sonstige Einkünfte)<br>
+    <strong>Yield Farming:</strong> Kompliziert, Steuerberater empfohlen</p>
+    
+    <p><strong>Liquidity Pools:</strong></p>
+    <ul>
+        <li>Rewards = Sonstige Einkünfte</li>
+        <li>Impermanent Loss = ?</li>
+    </ul>
+    
+    <div class="warning-box">
+        <p><strong>→ Bei >5.000€ DeFi: Steuerberater!</strong></p>
+    </div>
+    
+    <h3>Airdrops</h3>
+    
+    <p><strong>Kostenlose Coins bekommen?</strong></p>
+    
+    <div class="example-box">
+        <p>Airdrop erhalten: 1.000 Token à 5€ = 5.000€</p>
+        
+        <p><strong>Versteuerung:</strong></p>
+        <ul>
+            <li>Beim Erhalt: Sonstige Einkünfte (5.000€)</li>
+            <li>Beim Verkauf: Private Veräußerung (1-Jahr-Regel!)</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong>Tipp:</strong> Airdrops >1 Jahr halten = nur Erhalt versteuern, Verkauf steuerfrei!</p>
+    </div>
+    
+    <h2>6.5 Dokumentation & Tools</h2>
+    
+    <div class="warning-box">
+        <p style="font-size: 18px;"><strong>Ohne Doku = Albtraum bei Steuerprüfung!</strong></p>
+    </div>
+    
+    <h3>Was dokumentieren?</h3>
+    
+    <p><strong>Für JEDEN Trade:</strong></p>
+    <ul>
+        <li>Datum & Uhrzeit</li>
+        <li>Gekaufter/Verkaufter Coin</li>
+        <li>Menge</li>
+        <li>Preis in EUR</li>
+        <li>Exchange</li>
+        <li>Gebühren</li>
+    </ul>
+    
+    <p><strong>PLUS:</strong></p>
+    <ul>
+        <li>Staking-Rewards (täglich!)</li>
+        <li>Airdrops</li>
+        <li>Wallet-Transfers</li>
+    </ul>
+    
+    <h3>Krypto-Steuer-Tools</h3>
+    
+    <table>
+        <tr>
+            <th>Tool</th>
+            <th>Preis</th>
+            <th>Empfehlung</th>
+        </tr>
+        <tr>
+            <td><strong>CoinTracking</strong></td>
+            <td>0-199€/Jahr</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Accointing</strong></td>
+            <td>0-299€/Jahr</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Blockpit</strong></td>
+            <td>0-399€/Jahr</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Koinly</strong></td>
+            <td>0-279€/Jahr</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+    
+    <div class="success-box">
+        <p><strong>Empfehlung: CoinTracking.</strong> Deutsch, DACH-fokussiert, beste Features.</p>
+    </div>
+    
+    <h2>6.6 Legale Steuer-Optimierung</h2>
+    
+    <p><strong>Legal Steuern sparen:</strong></p>
+    
+    <div class="tip-box">
+        <h4>Tipp #1: HODL >1 Jahr</h4>
+        <p>Das Wichtigste! Einfach 1 Jahr warten = 0% Steuer</p>
+        <p><strong style="color: #27ae60;">Bei 10.000€ Gewinn = 4.000€ gespart!</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #2: Freigrenze ausnutzen</h4>
+        <p>Strategisch verkaufen:</p>
+        <ul>
+            <li>2025: 599€ Gewinn realisieren</li>
+            <li>2026: 599€ Gewinn realisieren</li>
+            <li>= 1.198€ steuerfrei über 2 Jahre</li>
+        </ul>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #3: Tax Loss Harvesting</h4>
+        <p>Verluste vor Jahresende realisieren → Steuern sparen</p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #4: Geschenke</h4>
+        <p>Krypto verschenken:</p>
+        <ul>
+            <li>An Partner: 20.000€ steuerfrei</li>
+            <li>An Kinder: 400.000€ steuerfrei (alle 10 Jahre)</li>
+        </ul>
+        <p><strong>ABER:</strong> Kompliziert! Steuerberater fragen!</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 6</h3>
+        <p><strong>Steuern gecheckt! 💰</strong></p>
+        <ul>
+            <li>1 Jahr halten = STEUERFREI!</li>
+            <li>Freigrenze: 600€ (nicht Freibetrag!)</li>
+            <li>Verluste verrechnen = Steuern sparen</li>
+            <li>Staking/Airdrops = Sonstige Einkünfte</li>
+            <li>Dokumentation mit CoinTracking</li>
+            <li>Tax Loss Harvesting vor Jahresende</li>
+            <li>Bei >10.000€ Gewinn: Steuerberater!</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Bonus – Tools, Checklisten & Resources!</p>
+            </div>
+            <div class="page" data-page="7">
+<div class="chapter-label">Bonus-Kapitel</div>
+    <h1>Tools, Checklisten & Resources</h1>
+    
+    <p>Alles was du brauchst auf einen Blick! Deine Krypto-Toolbox. 🛠️</p>
+    
+    <h2>Checkliste #1: Exchange-Account eröffnen</h2>
+    
+    <p><strong>Schritt für Schritt zum ersten Krypto-Kauf:</strong></p>
+    
+    <div class="checklist">
+        <ul>
+            <li>Exchange auswählen (Binance, Kraken, Coinbase)</li>
+            <li>Account erstellen (E-Mail + starkes Passwort)</li>
+            <li>2FA aktivieren (Google Authenticator)</li>
+            <li>Backup-Codes speichern</li>
+            <li>KYC durchführen (Ausweis hochladen)</li>
+            <li>Verifizierung abwarten (10 Min - 24h)</li>
+            <li>SEPA-Überweisung einrichten</li>
+            <li>Ersten Kauf tätigen → FERTIG! 🎉</li>
+        </ul>
+    </div>
+    
+    <h2>Checkliste #2: Coin Research</h2>
+    
+    <p><strong>Bevor du IRGENDEINEN Coin kaufst:</strong></p>
+    
+    <h3>Basic Research (5 Minuten)</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>CoinMarketCap Ranking checken (Top 100?)</li>
+            <li>Marktkapitalisierung >100 Mio?</li>
+            <li>Handelsvolumen >10 Mio täglich?</li>
+            <li>Auf großen Exchanges gelistet? (Binance, Coinbase)</li>
+        </ul>
+    </div>
+    
+    <h3>Deep Research (20 Minuten)</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Team öffentlich & seriös? (LinkedIn checken)</li>
+            <li>Echtes Produkt vorhanden? (nicht nur Whitepaper)</li>
+            <li>Use Case verständlich & sinnvoll?</li>
+            <li>Community aktiv? (Twitter, Discord, Reddit)</li>
+            <li>Code auf GitHub aktiv entwickelt?</li>
+            <li>Audit durchgeführt? (CertiK, Hacken)</li>
+            <li>Keine Red Flags? (Anonymous Team, Unrealistic Promises)</li>
+        </ul>
+    </div>
+    
+    <div class="success-box">
+        <p style="font-size: 18px; text-align: center;"><strong>Mindestens 8/10 = OK zum Kaufen <span class="checkmark">✅</span></strong></p>
+    </div>
+    
+    <h2>Checkliste #3: Wallet-Sicherheit</h2>
+    
+    <p><strong>Für Cold Wallet Setup:</strong></p>
+    
+    <div class="checklist">
+        <ul>
+            <li>Hardware Wallet bestellt (Ledger/Trezor)</li>
+            <li>DIREKT vom Hersteller gekauft (nicht eBay!)</li>
+            <li>Versiegelung beim Öffnen gecheckt</li>
+            <li>PIN gesetzt (8 Ziffern)</li>
+            <li>Seed Phrase aufgeschrieben (24 Wörter)</li>
+            <li>Seed Phrase ZWEIMAL geprüft</li>
+            <li>3-2-1 Backup gemacht (3 Kopien, 2 Medien, 1 Offsite)</li>
+            <li>Metall-Platte bestellt (bei >5k Investment)</li>
+            <li>Seed NIEMALS digital gespeichert</li>
+            <li>Test-Transaktion gemacht (10€ senden/empfangen)</li>
+        </ul>
+    </div>
+    
+    <h2>Die besten Krypto-Tools 2026</h2>
+    
+    <h3>Portfolio Tracking</h3>
+    
+    <table>
+        <tr>
+            <th>Tool</th>
+            <th>Use Case</th>
+            <th>Link</th>
+        </tr>
+        <tr>
+            <td><strong>CoinMarketCap</strong></td>
+            <td>Preise, Charts, Rankings</td>
+            <td>coinmarketcap.com</td>
+        </tr>
+        <tr>
+            <td><strong>CoinGecko</strong></td>
+            <td>Alternative zu CMC</td>
+            <td>coingecko.com</td>
+        </tr>
+        <tr>
+            <td><strong>Portfolio Performance</strong></td>
+            <td>Kostenlos, Open Source</td>
+            <td>portfolio-performance.info</td>
+        </tr>
+        <tr>
+            <td><strong>Delta</strong></td>
+            <td>Mobile App, schön designed</td>
+            <td>delta.app</td>
+        </tr>
+    </table>
+    
+    <h3>News & Research</h3>
+    
+    <table>
+        <tr>
+            <th>Tool</th>
+            <th>Use Case</th>
+            <th>Link</th>
+        </tr>
+        <tr>
+            <td><strong>CoinDesk</strong></td>
+            <td>Krypto News #1</td>
+            <td>coindesk.com</td>
+        </tr>
+        <tr>
+            <td><strong>CryptoSlate</strong></td>
+            <td>News & Research</td>
+            <td>cryptoslate.com</td>
+        </tr>
+        <tr>
+            <td><strong>Messari</strong></td>
+            <td>Deep Research & Reports</td>
+            <td>messari.io</td>
+        </tr>
+        <tr>
+            <td><strong>Glassnode</strong></td>
+            <td>On-Chain Analytics</td>
+            <td>glassnode.com</td>
+        </tr>
+    </table>
+    
+    <h3>DeFi Tools</h3>
+    
+    <table>
+        <tr>
+            <th>Tool</th>
+            <th>Use Case</th>
+            <th>Link</th>
+        </tr>
+        <tr>
+            <td><strong>DeFiLlama</strong></td>
+            <td>TVL, APY Tracking</td>
+            <td>defillama.com</td>
+        </tr>
+        <tr>
+            <td><strong>DexScreener</strong></td>
+            <td>DEX Charts, neue Coins</td>
+            <td>dexscreener.com</td>
+        </tr>
+        <tr>
+            <td><strong>Zapper</strong></td>
+            <td>DeFi Portfolio Dashboard</td>
+            <td>zapper.xyz</td>
+        </tr>
+    </table>
+    
+    <h2>Die besten Krypto-Communities</h2>
+    
+    <div class="warning-box">
+        <p><strong>Vorsicht: 90% sind Scam! Nur seriöse Communities:</strong></p>
+    </div>
+    
+    <h3>Reddit</h3>
+    
+    <ul>
+        <li><strong>r/CryptoCurrency:</strong> 4M+ Mitglieder, News & Diskussionen</li>
+        <li><strong>r/Bitcoin:</strong> Bitcoin Maximalists</li>
+        <li><strong>r/ethtrader:</strong> Ethereum Community</li>
+    </ul>
+    
+    <h3>Twitter/X</h3>
+    
+    <p><strong>Follow diese Accounts:</strong></p>
+    <ul>
+        <li>@VitalikButerin (Ethereum Gründer)</li>
+        <li>@aantonop (Bitcoin Experte)</li>
+        <li>@CoinDesk (News)</li>
+        <li>@glassnode (Analytics)</li>
+    </ul>
+    
+    <div class="warning-box">
+        <p><strong>ACHTUNG: Fake-Accounts! Immer blauen Haken checken!</strong></p>
+    </div>
+    
+    <h3>YouTube</h3>
+    
+    <ul>
+        <li><strong>Coin Bureau:</strong> Beste Crypto News & Analysis</li>
+        <li><strong>Bankless:</strong> DeFi & Ethereum</li>
+        <li><strong>Whiteboard Crypto:</strong> Anfänger-freundlich</li>
+    </ul>
+    
+    <h2>Best Practices – Die Goldenen Regeln</h2>
+    
+    <div class="golden-rules">
+        <h3>Die 10 Goldenen Regeln</h3>
+        <ul>
+            <li><strong>HODL >1 Jahr</strong> → Steuerfrei!</li>
+            <li><strong>DCA statt Lump Sum</strong> → Risiko verteilen</li>
+            <li><strong>Cold Wallet ab 2.000€</strong> → Sicherheit first!</li>
+            <li><strong>3-2-1 Backup-Regel</strong> → Seed schützen</li>
+            <li><strong>Max 5-7 Coins</strong> → Fokus!</li>
+            <li><strong>Research BEFORE Kauf</strong> → 8/10 Punkte</li>
+            <li><strong>Dokumentation</strong> → CoinTracking nutzen</li>
+            <li><strong>KEIN Leverage</strong> → Für 99% der Menschen</li>
+            <li><strong>Nicht täglich checken</strong> → Max 1x/Woche</li>
+            <li><strong>Nie investieren was du nicht verlieren kannst</strong> → Obvious aber wichtig!</li>
+        </ul>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <h2>Schlusswort</h2>
+    
+    <div class="final-box">
+        <h3 style="color: #7d8fa0; margin-bottom: 20px;">Du hast es geschafft! 🎉</h3>
+    </div>
+    
+    <p><strong>Du kennst jetzt:</strong></p>
+    <ul>
+        <li><span class="checkmark">✓</span> Die moderne Krypto-Welt (DeFi, Staking, AI)</li>
+        <li><span class="checkmark">✓</span> Wie du sicher einsteigst (Exchanges, KYC, erster Kauf)</li>
+        <li><span class="checkmark">✓</span> Wallet-Sicherheit wie ein Pro (Cold Wallet, 3-2-1 Regel)</li>
+        <li><span class="checkmark">✓</span> HODL schlägt Trading (immer!)</li>
+        <li><span class="checkmark">✓</span> Die besten Coins 2026 (ETH, SOL, AVAX & Co.)</li>
+        <li><span class="checkmark">✓</span> Steuern optimieren (1-Jahr-Regel!)</li>
+        <li><span class="checkmark">✓</span> Alle Tools & Communities</li>
+    </ul>
+    
+    <h3>Was jetzt?</h3>
+    
+    <div class="important-box">
+        <ul>
+            <li><strong>HANDELN!</strong> Wissen ohne Action = wertlos</li>
+            <li>Exchange-Account eröffnen (heute!)</li>
+            <li>100€ investieren (zum Lernen)</li>
+            <li>DCA-Sparplan einrichten (500€/Monat in ETH)</li>
+            <li>HODL >1 Jahr → steuerfrei reich werden 😎</li>
+        </ul>
+    </div>
+    
+    <div class="final-box">
+        <p style="font-size: 18px; color: #f5f5f0;"><strong>Wichtig: Krypto ist ein Marathon, kein Sprint.</strong></p>
+        <p style="font-size: 16px; margin-top: 15px;">Die meisten Gewinne kommen in den letzten 10% der Zeit. Durchhalten lohnt sich!</p>
+        <p style="font-size: 22px; margin-top: 25px; color: #7d8fa0;"><strong>Viel Erfolg auf deiner Krypto-Reise! 🚀</strong></p>
+    </div>
+    
+    <h2>Über den Autor</h2>
+    
+    <div class="important-box">
+        <p style="font-style: italic; color: #7d8fa0;">[DEIN INPUT: Hier kommt deine vollständige Bio!]</p>
+        <ul style="text-align: left;">
+            <li>Wer bist du?</li>
+            <li>Seit wann in Krypto?</li>
+            <li>Größte Erfolge?</li>
+            <li>Größte Fails?</li>
+            <li>Warum hast du diesen Guide geschrieben?</li>
+            <li>Kontakt-Links (Twitter, Instagram, Website)?</li>
+        </ul>
+        <p style="font-style: italic; margin-top: 20px;">3-5 Absätze + Foto von dir!</p>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <div class="footer">
+        <p>━━━━━━━━━━━━━━━━━━━━━</p>
+        <p style="margin: 20px 0; font-size: 18px; letter-spacing: 5px;"><strong>KRYPTO GUIDE 2026</strong></p>
+        <p>Version 1.0 - 2026</p>
+        <p>━━━━━━━━━━━━━━━━━━━━━</p>
+        <p style="margin-top: 30px; font-size: 16px; letter-spacing: 2px;">THE END</p>
+    
+            </div>
+        </div>
+        
+        <div class="nav-controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousPage()">◄ ZURÜCK</button>
+            <div class="page-indicator">
+                <span id="currentPage">1</span> / <span id="totalPages">8</span>
+            </div>
+            <button class="nav-btn" id="nextBtn" onclick="nextPage()">WEITER ►</button>
+        </div>
+        
+        <div class="keyboard-hint">Tipp: Nutze ← → Pfeiltasten zum Blättern</div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 8;
+        const pages = document.querySelectorAll('.page');
+
+        function updatePage() {
+            pages.forEach(page => {
+                page.classList.remove('active', 'prev');
+            });
+
+            pages[currentPage].classList.add('active');
+            
+            if (currentPage > 0) {
+                pages[currentPage - 1].classList.add('prev');
+            }
+
+            document.getElementById('currentPage').textContent = currentPage + 1;
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+            pages[currentPage].scrollTop = 0;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updatePage();
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePage();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') previousPage();
+        });
+
+        updatePage();
+    </script>
+</body>
+</html>

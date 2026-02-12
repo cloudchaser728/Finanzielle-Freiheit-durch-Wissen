@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzfundamentals 2026 - Digital Book</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #f5f5f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .book-container {
+            position: relative;
+            width: 900px;
+            max-width: 95vw;
+            height: 80vh;
+            max-height: 1100px;
+            perspective: 2000px;
+        }
+        
+        .book {
+            width: 100%;
+            height: 100%;
+            background: #2a2a2a;
+            border-radius: 8px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 80px 100px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        
+        .page.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+        
+        .page.prev {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        
+        .page::-webkit-scrollbar { width: 8px; }
+        .page::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .page::-webkit-scrollbar-thumb { background: #9c8a76; border-radius: 4px; }
+        
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background: rgba(156, 138, 118, 0.2);
+            border: 1px solid #9c8a76;
+            color: #f5f5f0;
+            padding: 12px 30px;
+            font-family: 'Arial', sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: #9c8a76;
+            color: #2a2a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 138, 118, 0.3);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .page-indicator {
+            background: rgba(42, 42, 42, 0.8);
+            border: 1px solid #707070;
+            color: #9c8a76;
+            padding: 10px 25px;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .chapter-label {
+            font-size: 12px;
+            color: #9c8a76;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 20px;
+        }
+        
+        h1 { font-size: 42px; font-weight: 400; color: #f5f5f0; margin-bottom: 15px; line-height: 1.2; }
+        h2 { font-size: 28px; font-weight: 400; color: #f5f5f0; margin-top: 40px; margin-bottom: 20px; }
+        h3 { font-size: 22px; font-weight: 400; color: #d0d0c8; margin-top: 35px; margin-bottom: 18px; }
+        h4 { font-size: 18px; font-weight: 400; color: #d0d0c8; margin-top: 28px; margin-bottom: 14px; }
+        p { margin-bottom: 18px; color: #d0d0c8; font-size: 15px; line-height: 1.7; }
+        strong { color: #f5f5f0; font-weight: 600; }
+        ul, ol { margin: 18px 0; padding-left: 28px; }
+        li { margin-bottom: 10px; color: #d0d0c8; line-height: 1.6; }
+        
+        .cover-badge {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid #707070;
+            color: #a09c94;
+            padding: 8px 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+        }
+        
+        .cover-title {
+            font-size: 64px;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+        
+        .cover-subtitle {
+            font-size: 18px;
+            color: #b0b0a8;
+            font-weight: 300;
+            margin-bottom: 50px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid #707070;
+            padding: 35px;
+            margin-top: 35px;
+        }
+        
+        .toc-title {
+            color: #a09c94;
+            font-size: 11px;
+            font-family: 'Arial', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 22px;
+        }
+        
+        .toc-item {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 13px;
+            color: #d0d0c8;
+        }
+        
+        .toc-number {
+            color: #9c8a76;
+            width: 22px;
+            font-size: 13px;
+        }
+        
+        .toc-text {
+            font-size: 13px;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+        
+        .example-box { background: rgba(255, 255, 255, 0.03); border-left: 3px solid #9c8a76; padding: 22px; margin: 25px 0; }
+        .important-box { background: rgba(156, 138, 118, 0.1); border: 2px solid #9c8a76; padding: 22px; margin: 25px 0; }
+        .warning-box { background: rgba(231, 76, 60, 0.1); border: 2px solid #e74c3c; padding: 22px; margin: 25px 0; }
+        .success-box { background: rgba(39, 174, 96, 0.1); border: 2px solid #27ae60; padding: 22px; margin: 25px 0; }
+        .summary-box { background: rgba(255, 255, 255, 0.03); padding: 25px; margin: 35px 0; border-top: 2px solid #707070; border-bottom: 2px solid #707070; }
+        .checklist { background: rgba(255, 255, 255, 0.03); border-left: 3px solid #9c8a76; padding: 22px; margin: 25px 0; }
+        .checklist li { list-style: none; padding-left: 28px; position: relative; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; color: #9c8a76; font-size: 18px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; background: rgba(255, 255, 255, 0.02); font-size: 14px; }
+        th { background: rgba(156, 138, 118, 0.2); color: #f5f5f0; padding: 12px; text-align: left; font-weight: 600; border: 1px solid #404040; }
+        td { padding: 12px; border: 1px solid #404040; color: #d0d0c8; }
+        
+        .keyboard-hint {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #808080;
+            font-size: 11px;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book">
+            <div class="page active" data-page="0">
+
+            <div class="cover-badge">Premium Guide 2026</div>
+            <h1 class="cover-title">FINANZ-<br/>FUNDAMENTALS</h1>
+            <div class="cover-subtitle">
+                Der komplette Guide für deine<br/>finanzielle Freiheit
+            </div>
+            <div class="toc">
+                <div class="toc-title">Inhaltsverzeichnis</div>
+                <div class="toc-item">
+                    <div class="toc-number">I</div>
+                    <div class="toc-text">Mindset & Geld-Psychologie</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">II</div>
+                    <div class="toc-text">Budgetierung & Sparen</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">III</div>
+                    <div class="toc-text">Notgroschen & Absicherung</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">IV</div>
+                    <div class="toc-text">Investieren für Anfänger</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">V</div>
+                    <div class="toc-text">ETFs & Aktien Basics</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">VI</div>
+                    <div class="toc-text">Vermögensaufbau-Strategien</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">VII</div>
+                    <div class="toc-text">Bonus: Vorlagen & Rechner</div>
+                </div>
+            </div>
+
+            </div>
+            <div class="page" data-page="1">
+<div class="chapter-label">Kapitel 1</div>
+    <h1>Mindset & Geld-Psychologie</h1>
+    
+    <p>Bevor du einen Euro investierst, musst du verstehen wie du über Geld denkst. Dein Mindset bestimmt deinen finanziellen Erfolg! 🧠</p>
+    
+    <h2>1.1 Limitierende Glaubenssätze erkennen</h2>
+    
+    <p><strong>Was sind Glaubenssätze?</strong><br>
+    Unterbewusste Überzeugungen über Geld, die dein Verhalten steuern.</p>
+    
+    <h3>Die 7 häufigsten Geld-Blockaden</h3>
+    
+    <div class="belief-box">
+        <h4>❌ 'Geld ist die Wurzel allen Übels'</h4>
+        <p><strong>Warum falsch:</strong> Geld ist neutral. Es ist ein Werkzeug.</p>
+        <p><strong style="color: #27ae60;">Neuer Glaubenssatz:</strong> 'Geld ermöglicht mir Gutes zu tun'</p>
+    </div>
+    
+    <div class="belief-box">
+        <h4>❌ 'Reiche Menschen sind gierig'</h4>
+        <p><strong>Warum falsch:</strong> Generalisierung. Viele Reiche sind großzügig.</p>
+        <p><strong style="color: #27ae60;">Neuer Glaubenssatz:</strong> 'Ich kann reich UND großzügig sein'</p>
+    </div>
+    
+    <div class="belief-box">
+        <h4>❌ 'Ich bin nicht gut mit Geld'</h4>
+        <p><strong>Warum falsch:</strong> Geld-Skills sind erlernbar!</p>
+        <p><strong style="color: #27ae60;">Neuer Glaubenssatz:</strong> 'Ich lerne jeden Tag mehr über Finanzen'</p>
+    </div>
+    
+    <div class="belief-box">
+        <h4>❌ 'Man braucht Geld um Geld zu verdienen'</h4>
+        <p><strong>Warum falsch:</strong> Mit 50€/Monat starten ist genug!</p>
+        <p><strong style="color: #27ae60;">Neuer Glaubenssatz:</strong> 'Ich fange klein an und baue auf'</p>
+    </div>
+    
+    <div class="belief-box">
+        <h4>❌ 'Sparen bringt nichts bei der Inflation'</h4>
+        <p><strong>Warum falsch:</strong> Richtig investiert schlägst du die Inflation!</p>
+        <p><strong style="color: #27ae60;">Neuer Glaubenssatz:</strong> 'Ich investiere smart und baue Vermögen auf'</p>
+    </div>
+    
+    <div class="belief-box">
+        <h4>❌ 'Ich verdiene nicht genug zum Investieren'</h4>
+        <p><strong>Warum falsch:</strong> 25€/Monat reichen zum Start!</p>
+        <p><strong style="color: #27ae60;">Neuer Glaubenssatz:</strong> 'Jeder Betrag zählt und wächst'</p>
+    </div>
+    
+    <div class="belief-box">
+        <h4>❌ 'Geld macht nicht glücklich'</h4>
+        <p><strong>Warum falsch:</strong> Sicherheit & Freiheit machen sehr wohl glücklich!</p>
+        <p><strong style="color: #27ae60;">Neuer Glaubenssatz:</strong> 'Finanzielle Freiheit gibt mir Lebensqualität'</p>
+    </div>
+    
+    <h2>1.2 Deine Beziehung zu Geld</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 18px;"><strong>Geld ist wie eine Beziehung:</strong><br>
+        Wenn du es ignorierst → es verlässt dich<br>
+        Wenn du es pflegst → es wächst</p>
+    </div>
+    
+    <h3>Die 4 Geld-Persönlichkeiten</h3>
+    
+    <div class="personality-box">
+        <h4>1. Der Sparer</h4>
+        <ul>
+            <li>Hortet Geld aus Angst</li>
+            <li>Investiert nicht → verliert durch Inflation</li>
+            <li>Gönnt sich nichts</li>
+        </ul>
+        <p><strong style="color: #e74c3c;">Problem:</strong> Geld verliert Wert auf dem Konto</p>
+    </div>
+    
+    <div class="personality-box">
+        <h4>2. Der Verschwender</h4>
+        <ul>
+            <li>Gibt alles sofort aus</li>
+            <li>Kein Notgroschen</li>
+            <li>Lebt von Gehalt zu Gehalt</li>
+        </ul>
+        <p><strong style="color: #e74c3c;">Problem:</strong> Keine finanzielle Sicherheit</p>
+    </div>
+    
+    <div class="personality-box">
+        <h4>3. Der Vermeider</h4>
+        <ul>
+            <li>Schaut nicht auf Kontostand</li>
+            <li>Keine Ahnung wo Geld hingeht</li>
+            <li>Ignoriert Rechnungen</li>
+        </ul>
+        <p><strong style="color: #e74c3c;">Problem:</strong> Kontrollverlust über Finanzen</p>
+    </div>
+    
+    <div class="personality-box">
+        <h4>4. Der Baumeister</h4>
+        <ul>
+            <li>Spart strategisch</li>
+            <li>Investiert langfristig</li>
+            <li>Gönnt sich bewusst</li>
+        </ul>
+        <p><strong style="color: #27ae60;">Ergebnis:</strong> Vermögensaufbau + Lebensqualität</p>
+    </div>
+    
+    <div class="success-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Welcher Typ bist du?<br>Ziel: Werde der Baumeister! 🏗️</strong></p>
+    </div>
+    
+    <h2>1.3 Abundance vs. Scarcity Mindset</h2>
+    
+    <p><strong>Zwei Denkweisen bestimmen dein Leben:</strong></p>
+    
+    <table>
+        <tr>
+            <th>Scarcity (Mangel)</th>
+            <th>Abundance (Fülle)</th>
+        </tr>
+        <tr>
+            <td>'Es ist nie genug'</td>
+            <td>'Es gibt genug für alle'</td>
+        </tr>
+        <tr>
+            <td>Neid auf Erfolg anderer</td>
+            <td>Freude über Erfolg anderer</td>
+        </tr>
+        <tr>
+            <td>Angst vor Risiko</td>
+            <td>Chancen sehen</td>
+        </tr>
+        <tr>
+            <td>Fixiert auf Probleme</td>
+            <td>Fokus auf Lösungen</td>
+        </tr>
+        <tr>
+            <td>Geld festhalten</td>
+            <td>Geld fließen lassen</td>
+        </tr>
+        <tr>
+            <td>'Ich kann mir das nicht leisten'</td>
+            <td>'Wie kann ich mir das leisten?'</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p><strong>Übung:</strong> Wenn du dich bei Scarcity-Gedanken ertappst → bewusst umformulieren!</p>
+    </div>
+    
+    <h2>1.4 Die 5 Millionärs-Mindsets</h2>
+    
+    <p><strong>Was denken Menschen mit Vermögen anders?</strong></p>
+    
+    <div class="mindset-box">
+        <h4>Mindset #1: Delayed Gratification</h4>
+        <p><strong>Der Marshmallow-Test:</strong> Kinder die warten können (1 Marshmallow jetzt vs. 2 später) → erfolgreicher im Leben</p>
+        
+        <p><strong>Finanziell:</strong></p>
+        <ul>
+            <li>Jetzt: 1.000€ für neues iPhone ausgeben</li>
+            <li>Später: 1.000€ investiert = 5.000€ in 10 Jahren</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong>Die Frage:</strong> 'Brauche ich das JETZT oder kann ich warten?'</p>
+    </div>
+    
+    <div class="mindset-box">
+        <h4>Mindset #2: Assets über Liabilities</h4>
+        <p><strong>Asset:</strong> Bringt dir Geld ein (Aktien, ETFs, Immobilien)<br>
+        <strong>Liability:</strong> Kostet dich Geld (Auto, teure Wohnung)</p>
+        
+        <div class="example-box">
+            <p><strong>Beispiel:</strong><br>
+            30.000€ Auto (Liability) = -500€/Monat (Sprit, Versicherung, Wertverlust)<br>
+            30.000€ ETF (Asset) = +200€/Monat (7% Rendite)</p>
+            
+            <p><strong style="color: #27ae60;">Unterschied: 700€/Monat!</strong></p>
+        </div>
+    </div>
+    
+    <div class="mindset-box">
+        <h4>Mindset #3: Bezahle dich selbst zuerst</h4>
+        <p><strong>Die meisten Menschen:</strong><br>
+        Gehalt → Ausgaben → Sparen (was übrig bleibt = 0€)</p>
+        
+        <p><strong style="color: #27ae60;">Millionäre:</strong><br>
+        Gehalt → 20% Sparen (automatisch!) → Ausgaben</p>
+        
+        <p style="margin-top: 20px;"><strong>Die Regel:</strong> Spare BEVOR du ausgibst, nicht danach!</p>
+    </div>
+    
+    <div class="mindset-box">
+        <h4>Mindset #4: Wissen ist Macht</h4>
+        <p>Millionäre lesen durchschnittlich 1 Buch pro Woche.<br>
+        Der Durchschnitt? 1 Buch pro Jahr.</p>
+        
+        <p><strong>Investiere in dein Wissen:</strong></p>
+        <ul>
+            <li>Bücher (10-20€)</li>
+            <li>Kurse (100-500€)</li>
+            <li>Guides wie dieser (35€)</li>
+        </ul>
+        
+        <p><strong style="color: #27ae60;">ROI:</strong> 1 gutes Finanz-Buch kann dir 10.000€+ sparen/verdienen!</p>
+    </div>
+    
+    <div class="mindset-box">
+        <h4>Mindset #5: Langfristiges Denken</h4>
+        <p><strong>Die 10-Jahre-Frage:</strong> 'Wo will ich in 10 Jahren stehen?'</p>
+        
+        <p><strong>Rückwärts planen:</strong></p>
+        <ul>
+            <li>In 10 Jahren: 500.000€ Vermögen</li>
+            <li>In 5 Jahren: 200.000€</li>
+            <li>In 1 Jahr: 50.000€</li>
+            <li>Heute: 1.000€/Monat sparen starten</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong>Jede Entscheidung prüfen:</strong> 'Bringt mich das meinem 10-Jahres-Ziel näher?'</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 1</h3>
+        <p><strong>Dein Mindset ist dein Fundament! 🧠</strong></p>
+        <ul>
+            <li>Limitierende Glaubenssätze erkennen & ersetzen</li>
+            <li>4 Geld-Persönlichkeiten: Werde der Baumeister!</li>
+            <li>Abundance > Scarcity Mindset</li>
+            <li>Delayed Gratification = Erfolg</li>
+            <li>Assets kaufen, keine Liabilities</li>
+            <li>Bezahle dich selbst zuerst (20% sparen)</li>
+            <li>Denke in 10-Jahres-Zeiträumen</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Budgetierung & Sparen!</p>
+            </div>
+            <div class="page" data-page="2">
+<div class="chapter-label">Kapitel 2</div>
+    <h1>Budgetierung & Sparen</h1>
+    
+    <p>Du kannst kein Vermögen aufbauen ohne zu wissen wohin dein Geld fließt. Budgetierung ist dein Fundament! 📊</p>
+    
+    <h2>2.1 Die 50/30/20 Regel</h2>
+    
+    <div class="rule-box">
+        <h3>Das einfachste Budget-System der Welt!</h3>
+    </div>
+    
+    <h3>Wie funktioniert es?</h3>
+    
+    <div class="example-box">
+        <p><strong>50% Bedürfnisse (Needs)</strong></p>
+        <ul>
+            <li>Miete/Hypothek</li>
+            <li>Lebensmittel</li>
+            <li>Versicherungen</li>
+            <li>Transport (öffentlich/Auto minimal)</li>
+            <li>Strom, Wasser, Internet</li>
+        </ul>
+        
+        <p><strong>30% Wünsche (Wants)</strong></p>
+        <ul>
+            <li>Essen gehen, Lieferservice</li>
+            <li>Netflix, Spotify, Gym</li>
+            <li>Shopping (Kleidung, Gadgets)</li>
+            <li>Hobbies</li>
+            <li>Urlaub</li>
+        </ul>
+        
+        <p><strong>20% Sparen & Investieren</strong></p>
+        <ul>
+            <li>Notgroschen aufbauen</li>
+            <li>ETF-Sparplan</li>
+            <li>Aktien</li>
+            <li>Altersvorsorge</li>
+        </ul>
+    </div>
+    
+    <h3>Beispiel-Rechnung</h3>
+    
+    <p><strong>Netto-Gehalt: 2.500€/Monat</strong></p>
+    
+    <div class="example-box">
+        <p><strong>50% Bedürfnisse = 1.250€</strong></p>
+        <ul>
+            <li>Miete: 800€</li>
+            <li>Lebensmittel: 250€</li>
+            <li>Versicherungen: 100€</li>
+            <li>Transport: 50€</li>
+            <li>Nebenkosten: 50€</li>
+        </ul>
+        
+        <p><strong>30% Wünsche = 750€</strong></p>
+        <ul>
+            <li>Essen gehen: 200€</li>
+            <li>Subscriptions: 50€</li>
+            <li>Shopping: 300€</li>
+            <li>Hobbies: 100€</li>
+            <li>Urlaub (Rücklage): 100€</li>
+        </ul>
+        
+        <p><strong>20% Sparen = 500€</strong></p>
+        <ul>
+            <li>Notgroschen: 200€ (bis voll)</li>
+            <li>ETF-Sparplan: 300€</li>
+        </ul>
+        
+        <p style="font-size: 18px; margin-top: 20px;"><strong style="color: #27ae60;">→ In 10 Jahren: ~70.000€ Vermögen!</strong></p>
+    </div>
+    
+    <h2>2.2 Ausgaben tracken – Wo geht dein Geld hin?</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 18px; text-align: center;"><strong>Du kannst nur optimieren was du misst!</strong></p>
+    </div>
+    
+    <h3>Die 30-Tage Challenge</h3>
+    
+    <p><strong>Aufgabe:</strong> 30 Tage JEDE Ausgabe notieren!</p>
+    
+    <p><strong>Methoden:</strong></p>
+    <ul>
+        <li>App: Finanzguru, YNAB, MoneyStats</li>
+        <li>Excel/Google Sheets</li>
+        <li>Notizbuch (old school)</li>
+    </ul>
+    
+    <p><strong>Was notieren?</strong></p>
+    <ul>
+        <li>Datum</li>
+        <li>Betrag</li>
+        <li>Kategorie (Essen, Transport, Shopping etc.)</li>
+        <li>Notiz (optional)</li>
+    </ul>
+    
+    <h3>Die Schock-Erkenntnis</h3>
+    
+    <p><strong>Typische Entdeckungen nach 30 Tagen:</strong></p>
+    
+    <div class="shock-box">
+        <ul>
+            <li><strong>Kaffee to-go:</strong> 5€ × 20 Tage = 100€/Monat = 1.200€/Jahr 😱</li>
+            <li><strong>Lieferando:</strong> 3× pro Woche × 15€ = 180€/Monat = 2.160€/Jahr</li>
+            <li><strong>Impulskäufe:</strong> ~200€/Monat = 2.400€/Jahr</li>
+        </ul>
+        
+        <p style="font-size: 18px; margin-top: 20px;"><strong style="color: #e74c3c;">Gesamt: 5.760€/Jahr verschwendet!</strong></p>
+        
+        <p style="margin-top: 15px;"><strong>Würdest du die investieren:</strong><br>
+        → 480€/Monat × 7% Rendite × 10 Jahre = <strong style="color: #27ae60;">83.000€!</strong></p>
+    </div>
+    
+    <h3>Kategorien-Übersicht</h3>
+    
+    <table>
+        <tr>
+            <th>Kategorie</th>
+            <th>Beispiele</th>
+            <th>Ø Budget</th>
+        </tr>
+        <tr>
+            <td><strong>Wohnen</strong></td>
+            <td>Miete, Nebenkosten</td>
+            <td>35%</td>
+        </tr>
+        <tr>
+            <td><strong>Lebensmittel</strong></td>
+            <td>Supermarkt</td>
+            <td>10-15%</td>
+        </tr>
+        <tr>
+            <td><strong>Transport</strong></td>
+            <td>Öffi, Sprit, Auto</td>
+            <td>5-15%</td>
+        </tr>
+        <tr>
+            <td><strong>Essen gehen</strong></td>
+            <td>Restaurant, Lieferung</td>
+            <td>5-10%</td>
+        </tr>
+        <tr>
+            <td><strong>Shopping</strong></td>
+            <td>Kleidung, Elektronik</td>
+            <td>5-10%</td>
+        </tr>
+        <tr style="background: rgba(39, 174, 96, 0.1);">
+            <td><strong>Sparen</strong></td>
+            <td>Notgroschen, ETFs</td>
+            <td><strong>20%!</strong></td>
+        </tr>
+    </table>
+    
+    <h2>2.3 Automatisierung – Sparen ohne nachzudenken</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 18px; text-align: center;"><strong>Willenskraft ist endlich. Automatisierung ist für immer!</strong></p>
+    </div>
+    
+    <h3>Das 3-Konten-System</h3>
+    
+    <div class="konto-box">
+        <h4>Konto #1: Gehaltskonto (Ausgaben)</h4>
+        <ul>
+            <li>Gehalt kommt rein</li>
+            <li>Fixkosten gehen raus (Miete, Versicherungen)</li>
+            <li>Tägliche Ausgaben</li>
+        </ul>
+    </div>
+    
+    <div class="konto-box">
+        <h4>Konto #2: Sparkonto (Notgroschen)</h4>
+        <ul>
+            <li>Automatischer Dauerauftrag: 200€ am 1. des Monats</li>
+            <li>Nur für Notfälle!</li>
+            <li>Ziel: 3-6 Monatsgehälter</li>
+        </ul>
+    </div>
+    
+    <div class="konto-box">
+        <h4>Konto #3: Depot (Investieren)</h4>
+        <ul>
+            <li>ETF-Sparplan: 300€ automatisch</li>
+            <li>Langfristiger Vermögensaufbau</li>
+            <li>NIEMALS anfassen!</li>
+        </ul>
+    </div>
+    
+    <h3>Setup in 10 Minuten</h3>
+    
+    <ol>
+        <li>Sparkonto eröffnen (Online-Bank: DKB, ING, C24)</li>
+        <li>Depot eröffnen (Trade Republic, Scalable Capital)</li>
+        <li>Dauerauftrag einrichten: Gehaltskonto → Sparkonto (200€, 1. des Monats)</li>
+        <li>ETF-Sparplan einrichten: 300€/Monat in MSCI World</li>
+        <li>FERTIG! Jetzt läuft es automatisch 🎉</li>
+    </ol>
+    
+    <div class="success-box">
+        <p><strong>Warum funktioniert das?</strong><br>
+        Du siehst das Geld nie auf deinem Konto → kannst es nicht ausgeben!</p>
+    </div>
+    
+    <h2>2.4 Die 10 besten Spartipps</h2>
+    
+    <p><strong>Praktische Hacks die wirklich funktionieren!</strong></p>
+    
+    <div class="tip-box">
+        <h4>Tipp #1: Die 24-Stunden-Regel</h4>
+        <p>Impulskauf >50€? Warte 24 Stunden. 90% der Zeit brauchst du es nicht!<br>
+        <strong>Ersparnis: ~200€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #2: Meal Prep</h4>
+        <p>Sonntags für die Woche vorkochen. Statt täglich Kantine/Lieferservice.<br>
+        <strong>Ersparnis: ~150€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #3: Kaffee zuhause</h4>
+        <p>Starbucks: 5€ × 20 Tage = 100€/Monat<br>
+        Zuhause: 0,30€ × 20 Tage = 6€/Monat<br>
+        <strong>Ersparnis: ~94€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #4: Subscriptions prüfen</h4>
+        <p>Netflix, Spotify, Gym, etc. – brauchst du wirklich alles?<br>
+        3-5 vergessene Abos = ~50€/Monat<br>
+        <strong>Ersparnis: ~50€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #5: Secondhand kaufen</h4>
+        <p>Vinted, eBay Kleinanzeigen, Rebuy<br>
+        50-70% günstiger als neu!<br>
+        <strong>Ersparnis: ~100€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #6: Versicherungen vergleichen</h4>
+        <p>Check24, Verivox – jährlich neu vergleichen!<br>
+        <strong>Ersparnis: ~30€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #7: Bibliothek nutzen</h4>
+        <p>Bücher, Hörbücher, Magazine – alles kostenlos!<br>
+        <strong>Ersparnis: ~20€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #8: Eigene Flasche</h4>
+        <p>Statt täglich Wasser/Kaffee kaufen → eigene Flasche mitbringen<br>
+        <strong>Ersparnis: ~15€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #9: Cashback nutzen</h4>
+        <p>Shoop, Payback, iGraal – bei jedem Onlinekauf!<br>
+        <strong>Ersparnis: ~25€/Monat</strong></p>
+    </div>
+    
+    <div class="tip-box">
+        <h4>Tipp #10: No-Spend Days</h4>
+        <p>1-2 Tage pro Woche NICHTS ausgeben (außer Fixkosten)<br>
+        <strong>Ersparnis: ~80€/Monat</strong></p>
+    </div>
+    
+    <div class="success-box">
+        <p style="font-size: 20px; text-align: center;"><strong>TOTAL: ~764€/Monat = 9.168€/Jahr gespart! 🚀</strong></p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 2</h3>
+        <p><strong>Budget = Kontrolle = Vermögen! 💰</strong></p>
+        <ul>
+            <li>50/30/20 Regel: 50% Needs, 30% Wants, 20% Sparen</li>
+            <li>30-Tage Challenge: JEDE Ausgabe tracken</li>
+            <li>Schock-Erkenntnis: 5.760€/Jahr verschwendet → 83k in 10 Jahren!</li>
+            <li>3-Konten-System: Gehalt → Sparkonto → Depot (automatisch!)</li>
+            <li>10 Spartipps = 764€/Monat gespart</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Notgroschen & Absicherung!</p>
+            </div>
+            <div class="page" data-page="3">
+<div class="chapter-label">Kapitel 3</div>
+    <h1>Notgroschen & Absicherung</h1>
+    
+    <p>Bevor du einen Euro investierst: Baue dein Sicherheitsnetz! Ein Notgroschen rettet dich vor finanziellem Ruin. 🛡️</p>
+    
+    <h2>3.1 Der Notgroschen – Deine finanzielle Airbag</h2>
+    
+    <div class="airbag-box">
+        <h3>Was ist ein Notgroschen?</h3>
+        <p>Geld das SOFORT verfügbar ist für Notfälle:</p>
+        <ul>
+            <li>Jobverlust</li>
+            <li>Kaputte Waschmaschine</li>
+            <li>Auto-Reparatur</li>
+            <li>Krankheit</li>
+            <li>Unerwartete Zahnarztrechnung</li>
+        </ul>
+    </div>
+    
+    <h3>Die 3-6 Monatsregel</h3>
+    
+    <p><strong>Faustregel: 3-6 Monatsausgaben als Notgroschen</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Berechnung:</strong><br>
+        Monatliche Ausgaben: 2.000€</p>
+        <p>× 3 Monate = <strong>6.000€</strong> (Minimum)<br>
+        × 6 Monate = <strong>12.000€</strong> (Ideal)</p>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>Wann 3 Monate:</strong></p>
+        <ul>
+            <li>Festanstellung</li>
+            <li>Sichere Branche</li>
+            <li>Doppelverdiener-Haushalt</li>
+        </ul>
+        
+        <p><strong>Wann 6 Monate:</strong></p>
+        <ul>
+            <li>Selbstständig</li>
+            <li>Unsichere Branche</li>
+            <li>Alleinverdiener mit Familie</li>
+            <li>Freelancer</li>
+        </ul>
+    </div>
+    
+    <h3>Wo den Notgroschen lagern?</h3>
+    
+    <div class="warning-box">
+        <p><strong>NICHT:</strong></p>
+        <ul>
+            <li><span class="xmark">❌</span> In Aktien (volatil!)</li>
+            <li><span class="xmark">❌</span> In Krypto (zu riskant!)</li>
+            <li><span class="xmark">❌</span> Unter der Matratze (Inflation!)</li>
+        </ul>
+    </div>
+    
+    <div class="success-box">
+        <p><strong>SONDERN:</strong></p>
+        <ul>
+            <li><span class="checkmark">✓</span> Tagesgeldkonto (3-4% Zinsen aktuell)</li>
+            <li><span class="checkmark">✓</span> Sofort verfügbar</li>
+            <li><span class="checkmark">✓</span> Keine Volatilität</li>
+            <li><span class="checkmark">✓</span> Einlagensicherung bis 100.000€</li>
+        </ul>
+    </div>
+    
+    <table>
+        <tr>
+            <th>Bank</th>
+            <th>Zinsen</th>
+            <th>Verfügbar</th>
+            <th>Rating</th>
+        </tr>
+        <tr>
+            <td><strong>Trade Republic</strong></td>
+            <td>3,75%</td>
+            <td>Sofort</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>C24</strong></td>
+            <td>3,5%</td>
+            <td>Sofort</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>ING</strong></td>
+            <td>3,3%</td>
+            <td>Sofort</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>DKB</strong></td>
+            <td>3,5%</td>
+            <td>Sofort</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p><strong>Empfehlung:</strong> Trade Republic oder C24 (höchste Zinsen + sofort verfügbar)</p>
+    </div>
+    
+    <h2>3.2 Versicherungen – Was brauchst du wirklich?</h2>
+    
+    <div class="warning-box">
+        <p><strong>Deutsche sind überversichert!</strong><br>
+        Durchschnitt: 6 Versicherungen, 200€/Monat<br>
+        Davon brauchen sie 3!</p>
+    </div>
+    
+    <h3>Die 3 Pflicht-Versicherungen</h3>
+    
+    <div class="insurance-box">
+        <h4>1. Krankenversicherung</h4>
+        <p><strong>Warum Pflicht:</strong> Gesetzlich vorgeschrieben<br>
+        <strong>Kosten:</strong> ~200€/Monat (abhängig vom Gehalt)<br>
+        <strong>Deckt ab:</strong> Arztkosten, Krankenhaus, Medikamente</p>
+    </div>
+    
+    <div class="insurance-box">
+        <h4>2. Haftpflichtversicherung</h4>
+        <p><strong>Warum Pflicht:</strong> Schützt vor Millionen-Schäden!<br>
+        <strong>Beispiel:</strong> Du fährst jemandem ins Auto → 50.000€ Schaden<br>
+        <strong>Kosten:</strong> 5-8€/Monat<br>
+        <strong>Deckt ab:</strong> Personen-, Sach-, Vermögensschäden</p>
+    </div>
+    
+    <div class="insurance-box">
+        <h4>3. Berufsunfähigkeitsversicherung</h4>
+        <p><strong>Warum Pflicht:</strong> 25% werden berufsunfähig!<br>
+        <strong>Kosten:</strong> 50-150€/Monat (je nach Alter/Beruf)<br>
+        <strong>Deckt ab:</strong> Einkommen wenn du nicht mehr arbeiten kannst<br>
+        <strong>Wichtig:</strong> Früh abschließen (jung = günstig)</p>
+    </div>
+    
+    <h3>Nice-to-Have Versicherungen</h3>
+    
+    <div class="example-box">
+        <p><strong>Hausratversicherung</strong></p>
+        <ul>
+            <li>Wenn du wertvolle Sachen hast (>10.000€)</li>
+            <li>Kosten: 5-10€/Monat</li>
+        </ul>
+        
+        <p><strong>Rechtsschutzversicherung</strong></p>
+        <ul>
+            <li>Wenn du oft streitest 😅</li>
+            <li>Kosten: 15-30€/Monat</li>
+        </ul>
+        
+        <p><strong>Auslandskrankenversicherung</strong></p>
+        <ul>
+            <li>Wenn du oft verreist</li>
+            <li>Kosten: 10-20€/Jahr (!)</li>
+        </ul>
+    </div>
+    
+    <h3>NICHT brauchst du</h3>
+    
+    <div class="warning-box">
+        <ul>
+            <li><span class="xmark">❌</span> Handyversicherung (zu teuer, selten genutzt)</li>
+            <li><span class="xmark">❌</span> Brillenversicherung (zahlt sich nicht aus)</li>
+            <li><span class="xmark">❌</span> Sterbegeldversicherung (überflüssig bei Notgroschen)</li>
+            <li><span class="xmark">❌</span> Glasbruchversicherung (absurd teuer)</li>
+            <li><span class="xmark">❌</span> Insassenunfallversicherung (Haftpflicht deckt ab)</li>
+        </ul>
+    </div>
+    
+    <h2>3.3 Die richtige Reihenfolge</h2>
+    
+    <p><strong>Finanzielle Prioritäten in der richtigen Reihenfolge:</strong></p>
+    
+    <div class="priority-box">
+        <ol>
+            <li><strong>Krankenversicherung</strong> (Pflicht)</li>
+            <li><strong>Haftpflichtversicherung</strong> (5-8€/Monat)</li>
+            <li><strong>1.000€ Mini-Notgroschen</strong> (für kleine Notfälle)</li>
+            <li><strong>Hochverzinsliche Schulden tilgen</strong> (Kreditkarte, Dispo)</li>
+            <li><strong>Berufsunfähigkeitsversicherung</strong> (jung abschließen!)</li>
+            <li><strong>3-6 Monate Notgroschen aufbauen</strong> (Vollständig!)</li>
+            <li><strong>Niedrigverzinsliche Schulden tilgen</strong> (Studienkredit)</li>
+            <li><strong>ERST DANN investieren!</strong> (ETFs, Aktien)</li>
+        </ol>
+    </div>
+    
+    <div class="important-box">
+        <p><strong>Warum diese Reihenfolge?</strong><br>
+        Weil ein Notfall IMMER vor Rendite kommt!</p>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong><br>
+        Du investierst ohne Notgroschen → Auto kaputt → musst Aktien mit Verlust verkaufen</p>
+        
+        <p><strong style="color: #27ae60;">Mit Notgroschen:</strong><br>
+        Auto kaputt → Notgroschen nutzen → Aktien bleiben unangetastet → weiter Rendite!</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 3</h3>
+        <p><strong>Sicherheit FIRST! 🛡️</strong></p>
+        <ul>
+            <li>Notgroschen = 3-6 Monatsausgaben</li>
+            <li>Auf Tagesgeldkonto lagern (Trade Republic, C24: 3,5-3,75%)</li>
+            <li>3 Pflicht-Versicherungen: Kranken, Haftpflicht, Berufsunfähigkeit</li>
+            <li>Haftpflicht nur 5-8€/Monat aber MEGA wichtig!</li>
+            <li>Viele Versicherungen sind überflüssig (Handy, Brille, Sterbegeld)</li>
+            <li>Richtige Reihenfolge: Versicherung → Notgroschen → DANN investieren!</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Investieren für Anfänger!</p>
+            </div>
+            <div class="page" data-page="4">
+<div class="chapter-label">Kapitel 4</div>
+    <h1>Investieren für Anfänger</h1>
+    
+    <p>Jetzt wird's spannend! Von Sparen zu Vermögensaufbau. Wie du dein Geld für dich arbeiten lässt! 📈</p>
+    
+    <h2>4.1 Der Zinseszins-Effekt – Das 8. Weltwunder</h2>
+    
+    <div class="einstein-box">
+        <p>"Zinseszins ist das achte Weltwunder. Wer ihn versteht, verdient ihn. Wer nicht, bezahlt ihn."<br>
+        <strong>– Albert Einstein</strong></p>
+    </div>
+    
+    <h3>Was ist Zinseszins?</h3>
+    
+    <p><strong>Du verdienst Zinsen auf deine Zinsen!</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong></p>
+        <p>Jahr 1: 1.000€ × 7% = 70€ Gewinn → 1.070€<br>
+        Jahr 2: 1.070€ × 7% = 75€ Gewinn → 1.145€<br>
+        Jahr 3: 1.145€ × 7% = 80€ Gewinn → 1.225€</p>
+        
+        <p style="margin-top: 20px;"><strong>Nach 10 Jahren: 1.967€</strong> (statt 1.700€ ohne Zinseszins!)<br>
+        <strong>Nach 30 Jahren: 7.612€</strong> (statt 3.100€!)</p>
+    </div>
+    
+    <h3>Die Macht der Zeit</h3>
+    
+    <div class="power-box">
+        <h3>Früh anfangen = ALLES!</h3>
+    </div>
+    
+    <p><strong>Vergleich:</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Person A (startet mit 25):</strong></p>
+        <ul>
+            <li>Investiert 300€/Monat</li>
+            <li>40 Jahre bis Rente (65)</li>
+            <li>7% Rendite p.a.</li>
+        </ul>
+        <p><strong style="color: #27ae60; font-size: 20px;">Ergebnis: 719.000€</strong></p>
+        
+        <p style="margin-top: 30px;"><strong>Person B (startet mit 35):</strong></p>
+        <ul>
+            <li>Investiert 300€/Monat</li>
+            <li>30 Jahre bis Rente (65)</li>
+            <li>7% Rendite p.a.</li>
+        </ul>
+        <p><strong style="color: #e74c3c; font-size: 20px;">Ergebnis: 340.000€</strong></p>
+        
+        <p style="font-size: 22px; margin-top: 30px; text-align: center;"><strong style="color: #f1c40f;">Unterschied: 379.000€!</strong><br>
+        Nur wegen 10 Jahren früher starten!</p>
+    </div>
+    
+    <h2>4.2 Risiko & Rendite – Die goldene Regel</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Die Grundregel des Investierens:<br>Mehr Rendite = Mehr Risiko</strong></p>
+    </div>
+    
+    <h3>Das Risiko-Rendite-Spektrum</h3>
+    
+    <table>
+        <tr>
+            <th>Asset</th>
+            <th>Rendite/Jahr</th>
+            <th>Risiko</th>
+            <th>Volatilität</th>
+        </tr>
+        <tr>
+            <td><strong>Tagesgeld</strong></td>
+            <td>3-4%</td>
+            <td>Sehr niedrig</td>
+            <td>0%</td>
+        </tr>
+        <tr>
+            <td><strong>Anleihen (AAA)</strong></td>
+            <td>3-5%</td>
+            <td>Niedrig</td>
+            <td>5%</td>
+        </tr>
+        <tr style="background: rgba(39, 174, 96, 0.1);">
+            <td><strong>ETFs (Welt)</strong></td>
+            <td>7-9%</td>
+            <td>Mittel</td>
+            <td>15%</td>
+        </tr>
+        <tr>
+            <td><strong>Einzelaktien</strong></td>
+            <td>8-12%</td>
+            <td>Hoch</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td><strong>Krypto</strong></td>
+            <td>15-50%+</td>
+            <td>Sehr hoch</td>
+            <td>50%+</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p><strong>Sweet Spot für die meisten: ETFs (7-9% Rendite, 15% Volatilität)</strong></p>
+    </div>
+    
+    <h2>4.3 Asset-Klassen verstehen</h2>
+    
+    <p><strong>Die Haupt-Asset-Klassen:</strong></p>
+    
+    <div class="asset-box">
+        <h4>1. Aktien (Stocks)</h4>
+        <p><strong>Was:</strong> Anteile an Unternehmen<br>
+        <strong>Rendite:</strong> 8-12% langfristig<br>
+        <strong>Beispiele:</strong> Apple, Microsoft, Amazon<br>
+        <strong>Vorteil:</strong> Hohe Rendite, Dividenden<br>
+        <strong>Nachteil:</strong> Volatil, Einzelrisiko</p>
+    </div>
+    
+    <div class="asset-box">
+        <h4>2. ETFs (Exchange Traded Funds)</h4>
+        <p><strong>Was:</strong> Körbe mit vielen Aktien<br>
+        <strong>Rendite:</strong> 7-9% langfristig<br>
+        <strong>Beispiele:</strong> MSCI World, S&P 500, FTSE All-World<br>
+        <strong>Vorteil:</strong> Diversifiziert, günstig<br>
+        <strong>Nachteil:</strong> Keine Überrendite möglich</p>
+    </div>
+    
+    <div class="asset-box">
+        <h4>3. Anleihen (Bonds)</h4>
+        <p><strong>Was:</strong> Kredite an Staaten/Firmen<br>
+        <strong>Rendite:</strong> 3-5% (aktuell)<br>
+        <strong>Beispiele:</strong> Bundesanleihen, US Treasury<br>
+        <strong>Vorteil:</strong> Sicher, stabil<br>
+        <strong>Nachteil:</strong> Niedrige Rendite</p>
+    </div>
+    
+    <div class="asset-box">
+        <h4>4. Immobilien (Real Estate)</h4>
+        <p><strong>Was:</strong> Häuser, Wohnungen<br>
+        <strong>Rendite:</strong> 4-8% (Miete + Wertsteigerung)<br>
+        <strong>Vorteil:</strong> Passives Einkommen, anfassbar<br>
+        <strong>Nachteil:</strong> Hoher Kapitalbedarf, Instandhaltung</p>
+    </div>
+    
+    <div class="asset-box">
+        <h4>5. Rohstoffe (Commodities)</h4>
+        <p><strong>Was:</strong> Gold, Öl, Silber<br>
+        <strong>Rendite:</strong> 2-5% langfristig<br>
+        <strong>Vorteil:</strong> Inflationsschutz<br>
+        <strong>Nachteil:</strong> Keine Dividenden, volatil</p>
+    </div>
+    
+    <h2>4.4 Diversifikation – Lege nicht alle Eier in einen Korb</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Die wichtigste Regel im Investieren!</strong></p>
+    </div>
+    
+    <h3>Was ist Diversifikation?</h3>
+    
+    <p><strong>Dein Risiko auf viele Investments verteilen.</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel SCHLECHT:</strong><br>
+        10.000€ in 1 Aktie (Tesla)<br>
+        → Tesla -50% = Portfolio -50%</p>
+        
+        <p style="margin-top: 20px;"><strong style="color: #27ae60;">Beispiel GUT:</strong><br>
+        10.000€ in MSCI World ETF (1.600 Aktien)<br>
+        → 1 Firma pleite = -0,06%</p>
+    </div>
+    
+    <h3>Die 4 Ebenen der Diversifikation</h3>
+    
+    <div class="example-box">
+        <p><strong>Ebene 1: Asset-Klassen</strong></p>
+        <ul>
+            <li>70% Aktien/ETFs</li>
+            <li>20% Anleihen</li>
+            <li>10% Krypto/Rohstoffe</li>
+        </ul>
+        
+        <p><strong>Ebene 2: Geografisch</strong></p>
+        <ul>
+            <li>60% USA</li>
+            <li>25% Europa</li>
+            <li>15% Emerging Markets</li>
+        </ul>
+        
+        <p><strong>Ebene 3: Branchen</strong></p>
+        <ul>
+            <li>Tech, Healthcare, Finance, Consumer, Energy etc.</li>
+        </ul>
+        
+        <p><strong>Ebene 4: Unternehmen</strong></p>
+        <ul>
+            <li>Viele verschiedene Firmen (ETFs machen das automatisch!)</li>
+        </ul>
+    </div>
+    
+    <h3>Beispiel-Portfolios</h3>
+    
+    <div class="portfolio-box">
+        <p><strong>Portfolio Anfänger (Keep it simple!):</strong></p>
+        <ul>
+            <li>100% MSCI World ETF</li>
+        </ul>
+    </div>
+    
+    <div class="portfolio-box">
+        <p><strong>Portfolio Fortgeschritten:</strong></p>
+        <ul>
+            <li>70% MSCI World ETF</li>
+            <li>20% Emerging Markets ETF</li>
+            <li>10% Einzelaktien (Top-Picks)</li>
+        </ul>
+    </div>
+    
+    <div class="portfolio-box">
+        <p><strong>Portfolio Aggressiv:</strong></p>
+        <ul>
+            <li>50% MSCI World ETF</li>
+            <li>20% Nasdaq 100 (Tech)</li>
+            <li>20% Einzelaktien</li>
+            <li>10% Krypto</li>
+        </ul>
+    </div>
+    
+    <h2>4.5 Zeit im Markt schlägt Timing des Marktes</h2>
+    
+    <div class="truth-box">
+        <p><strong>Die größte Wahrheit des Investierens:<br>Time in market > Timing the market</strong></p>
+    </div>
+    
+    <h3>Warum Market Timing nicht funktioniert</h3>
+    
+    <p><strong>Studie: Wenn du die 10 besten Tage im S&P 500 verpasst (1993-2023):</strong></p>
+    
+    <div class="example-box">
+        <ul>
+            <li><strong>Voll investiert:</strong> 10.000€ → 174.000€</li>
+            <li><strong>Verpasste 10 beste Tage:</strong> 10.000€ → 88.000€</li>
+            <li><strong>Verpasste 20 beste Tage:</strong> 10.000€ → 51.000€</li>
+        </ul>
+        
+        <p style="font-size: 20px; margin-top: 20px; text-align: center;"><strong style="color: #e74c3c;">Fazit: Du kannst es NICHT timen!</strong></p>
+    </div>
+    
+    <h3>Was stattdessen tun?</h3>
+    
+    <div class="important-box">
+        <p><strong>Buy & Hold Strategie:</strong></p>
+        <ol>
+            <li>Jeden Monat investieren (DCA)</li>
+            <li>Egal ob Markt hoch oder runter</li>
+            <li>10+ Jahre halten</li>
+            <li>Crashes ignorieren</li>
+        </ol>
+        <p style="margin-top: 20px;"><strong style="color: #27ae60;">Ergebnis: Statistisch beste Rendite!</strong></p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 4</h3>
+        <p><strong>Investieren = Vermögen aufbauen! 📈</strong></p>
+        <ul>
+            <li>Zinseszins = 8. Weltwunder (1k → 7,6k in 30 Jahren)</li>
+            <li>10 Jahre früher starten = 379.000€ Unterschied!</li>
+            <li>Mehr Rendite = Mehr Risiko (Sweet Spot: ETFs 7-9%)</li>
+            <li>5 Asset-Klassen: Aktien, ETFs, Anleihen, Immobilien, Rohstoffe</li>
+            <li>Diversifikation = Risiko verteilen (MSCI World = 1.600 Aktien!)</li>
+            <li>Zeit im Markt > Timing des Marktes (10 Tage verpassen = 50% weniger!)</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: ETFs & Aktien Basics!</p>
+            </div>
+            <div class="page" data-page="5">
+<div class="chapter-label">Kapitel 5</div>
+    <h1>ETFs & Aktien Basics</h1>
+    
+    <p>Konkrete Empfehlungen! Welche ETFs und Aktien solltest du kaufen? Let's go! 📊</p>
+    
+    <h2>5.1 ETF-Grundlagen – Was du wissen musst</h2>
+    
+    <div class="important-box">
+        <p><strong>Was ist ein ETF?</strong><br>
+        Exchange Traded Fund = börsengehandelter Indexfonds</p>
+        <p><strong>In einfach:</strong> Ein Korb mit vielen Aktien, den du mit 1 Klick kaufst.</p>
+    </div>
+    
+    <h3>ETF vs. Aktie – Der Unterschied</h3>
+    
+    <div class="example-box">
+        <p><strong>Einzelaktie:</strong><br>
+        Du kaufst Apple → du hast 1 Firma<br>
+        Apple geht pleite → -100%</p>
+        
+        <p style="margin-top: 20px;"><strong style="color: #27ae60;">ETF (MSCI World):</strong><br>
+        Du kaufst MSCI World → du hast 1.600 Firmen<br>
+        1 Firma geht pleite → -0,06%</p>
+        
+        <p style="margin-top: 20px; font-size: 18px;"><strong style="color: #27ae60;">→ ETFs sind VIEL sicherer!</strong></p>
+    </div>
+    
+    <h3>Thesaurierend vs. Ausschüttend</h3>
+    
+    <div class="example-box">
+        <p><strong>Thesaurierend (Acc = Accumulating):</strong></p>
+        <ul>
+            <li>Dividenden werden automatisch reinvestiert</li>
+            <li>Maximaler Zinseszins-Effekt</li>
+        </ul>
+        <p><strong style="color: #27ae60;">Vorteil:</strong> Höhere Rendite langfristig</p>
+        
+        <p style="margin-top: 20px;"><strong>Ausschüttend (Dist = Distributing):</strong></p>
+        <ul>
+            <li>Dividenden werden aufs Konto ausgezahlt</li>
+            <li>Passives Einkommen sichtbar</li>
+        </ul>
+        <p><strong>Vorteil:</strong> Cashflow (gut für Rentner)</p>
+    </div>
+    
+    <div class="success-box">
+        <p><strong>Für Vermögensaufbau: Thesaurierend!<br>
+        Ausschüttend erst im Ruhestand.</strong></p>
+    </div>
+    
+    <h2>5.2 Die besten ETFs 2026</h2>
+    
+    <p><strong>Top 5 ETFs für Anfänger:</strong></p>
+    
+    <table>
+        <tr>
+            <th>ETF</th>
+            <th>ISIN</th>
+            <th>Aktien</th>
+            <th>TER</th>
+            <th>Rating</th>
+        </tr>
+        <tr style="background: rgba(39, 174, 96, 0.1);">
+            <td><strong>MSCI World</strong></td>
+            <td>IE00BK5BQT80</td>
+            <td>1.600</td>
+            <td>0,12%</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>FTSE All-World</strong></td>
+            <td>IE00BK5BQV03</td>
+            <td>4.000</td>
+            <td>0,15%</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>S&P 500</strong></td>
+            <td>IE00B5BMR087</td>
+            <td>500</td>
+            <td>0,07%</td>
+            <td class="rating">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>NASDAQ 100</strong></td>
+            <td>IE00BFMXXD54</td>
+            <td>100</td>
+            <td>0,20%</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Emerging Markets</strong></td>
+            <td>IE00BKM4GZ66</td>
+            <td>2.500</td>
+            <td>0,18%</td>
+            <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+    
+    <div class="success-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Empfehlung für Anfänger:<br>100% MSCI World (IE00BK5BQT80)<br>Fertig. Mehr brauchst du nicht!</strong></p>
+    </div>
+    
+    <h3>Was ist TER?</h3>
+    
+    <p><strong>Total Expense Ratio = Jährliche Kosten des ETFs</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong> 10.000€ im MSCI World (TER 0,12%)<br>
+        → Kosten: 12€/Jahr</p>
+        
+        <p style="margin-top: 15px;"><strong>Zum Vergleich:</strong> Aktiv gemanagter Fonds: 1,5-2,5% TER<br>
+        = 150-250€/Jahr!</p>
+    </div>
+    
+    <h2>5.3 Einzelaktien – Für Fortgeschrittene</h2>
+    
+    <h3>Wann Einzelaktien kaufen?</h3>
+    
+    <div class="example-box">
+        <p><strong style="color: #27ae60;">Kaufen wenn:</strong></p>
+        <ul>
+            <li>Wenn ETF-Portfolio schon läuft (70%+)</li>
+            <li>Wenn du die Firma verstehst</li>
+            <li>Wenn du Zeit für Research hast</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong style="color: #e74c3c;">NICHT kaufen wenn:</strong></p>
+        <ul>
+            <li>Du keine Ahnung von der Firma hast</li>
+            <li>Kein ETF-Portfolio vorhanden</li>
+            <li>FOMO (weil alle drüber reden)</li>
+        </ul>
+    </div>
+    
+    <h3>Die 5 Kategorien</h3>
+    
+    <div class="category-box">
+        <p><strong>1. Blue Chips (Sichere Riesen)</strong></p>
+        <ul>
+            <li>Apple, Microsoft, Google, Amazon</li>
+            <li>Stabil, langsames Wachstum</li>
+            <li>Rendite: 8-12%/Jahr</li>
+        </ul>
+    </div>
+    
+    <div class="category-box">
+        <p><strong>2. Dividenden-Aristokraten</strong></p>
+        <ul>
+            <li>Coca-Cola, Johnson & Johnson, Procter & Gamble</li>
+            <li>25+ Jahre Dividenden-Erhöhungen</li>
+            <li>Dividende: 3-5%/Jahr</li>
+        </ul>
+    </div>
+    
+    <div class="category-box">
+        <p><strong>3. Growth Stocks (Wachstum)</strong></p>
+        <ul>
+            <li>Tesla, Nvidia, AMD, Shopify</li>
+            <li>Schnelles Wachstum, volatil</li>
+            <li>Rendite: 15-30%+ (oder -50%!)</li>
+        </ul>
+    </div>
+    
+    <div class="category-box">
+        <p><strong>4. Value Stocks (Unterbewertet)</strong></p>
+        <ul>
+            <li>Berkshire Hathaway, JPMorgan</li>
+            <li>Niedriges KGV, stabil</li>
+            <li>Rendite: 10-15%/Jahr</li>
+        </ul>
+    </div>
+    
+    <div class="category-box">
+        <p><strong>5. Small Caps (Klein & Riskant)</strong></p>
+        <ul>
+            <li>Kleine Unternehmen <2 Mrd Market Cap</li>
+            <li>Hohes Risiko, hohes Potenzial</li>
+            <li>Rendite: -50% bis +500%</li>
+        </ul>
+    </div>
+    
+    <h3>Wie Aktien auswählen?</h3>
+    
+    <div class="checklist-box">
+        <p><strong>Die 5-Punkte-Checkliste:</strong></p>
+        <ol>
+            <li><strong>Verstehst du das Geschäftsmodell?</strong><br>Wenn nein → NICHT kaufen!</li>
+            <li><strong>Wächst das Unternehmen?</strong><br>Umsatz-Wachstum 10%+ pro Jahr?</li>
+            <li><strong>Ist es profitabel?</strong><br>Netto-Marge >10%?</li>
+            <li><strong>Hat es einen 'Moat'?</strong><br>Burggräben = Wettbewerbsvorteile (Marke, Netzwerk, Patente)</li>
+            <li><strong>Ist die Bewertung fair?</strong><br>KGV <30? (Außer Growth Stocks)</li>
+        </ol>
+    </div>
+    
+    <h2>5.4 Dividenden-Strategie – Passives Einkommen</h2>
+    
+    <p><strong>Was sind Dividenden?</strong><br>
+    Gewinn-Ausschüttungen an Aktionäre. Passives Einkommen!</p>
+    
+    <h3>Beispiel-Rechnung</h3>
+    
+    <div class="example-box">
+        <p><strong>Coca-Cola Aktie:</strong></p>
+        <ul>
+            <li>Kurs: 60€</li>
+            <li>Dividende: 1,80€/Jahr</li>
+            <li>Dividendenrendite: 3%</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong>Du hast 100 Aktien = 6.000€ Investment</strong><br>
+        → 180€/Jahr passiv<br>
+        → 15€/Monat</p>
+        
+        <p style="margin-top: 20px;"><strong style="color: #27ae60;">Mit 50.000€:</strong><br>
+        → 1.500€/Jahr<br>
+        → 125€/Monat passiv! 💰</p>
+    </div>
+    
+    <h3>Top Dividenden-Aktien</h3>
+    
+    <table>
+        <tr>
+            <th>Aktie</th>
+            <th>Dividende</th>
+            <th>Jahre Erhöhung</th>
+        </tr>
+        <tr>
+            <td><strong>Coca-Cola</strong></td>
+            <td>3,0%</td>
+            <td>62 Jahre</td>
+        </tr>
+        <tr>
+            <td><strong>Johnson & Johnson</strong></td>
+            <td>2,8%</td>
+            <td>61 Jahre</td>
+        </tr>
+        <tr>
+            <td><strong>Procter & Gamble</strong></td>
+            <td>2,5%</td>
+            <td>68 Jahre</td>
+        </tr>
+        <tr>
+            <td><strong>Realty Income</strong></td>
+            <td>5,2%</td>
+            <td>29 Jahre</td>
+        </tr>
+        <tr>
+            <td><strong>AT&T</strong></td>
+            <td>6,5%</td>
+            <td>39 Jahre</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p><strong>ABER:</strong> Hohe Dividende ≠ gute Aktie!<br>
+        Manchmal zahlt Firma hohe Dividende weil Aktie schlecht läuft.</p>
+    </div>
+    
+    <h2>5.5 Dein erster ETF/Aktien-Kauf</h2>
+    
+    <p><strong>Step-by-Step Anleitung:</strong></p>
+    
+    <ol>
+        <li><strong>Depot eröffnen</strong><br>Trade Republic, Scalable Capital, oder ING</li>
+        <li><strong>Verifizierung</strong><br>Ausweis hochladen, Video-Ident</li>
+        <li><strong>Geld einzahlen</strong><br>SEPA-Überweisung aufs Depot</li>
+        <li><strong>ETF/Aktie suchen</strong><br>ISIN eingeben: IE00BK5BQT80 (MSCI World)</li>
+        <li><strong>Kaufen</strong><br>Betrag eingeben (mind. 25€), 'Kaufen' klicken</li>
+        <li><strong>Sparplan einrichten</strong><br>300€/Monat automatisch</li>
+        <li><strong>FERTIG!</strong> Jetzt läuft's 🎉</li>
+    </ol>
+    
+    <div class="important-box">
+        <p><strong>Wichtig:</strong></p>
+        <ul>
+            <li>Market Order = sofort zum aktuellen Preis</li>
+            <li>Limit Order = erst bei deinem Wunschpreis</li>
+        </ul>
+        <p><strong>Für Anfänger: Market Order nutzen!</strong></p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 5</h3>
+        <p><strong>ETFs & Aktien verstanden! 📊</strong></p>
+        <ul>
+            <li>ETF = Korb mit vielen Aktien (1.600 bei MSCI World)</li>
+            <li>Thesaurierend > Ausschüttend (für Vermögensaufbau)</li>
+            <li>Top 5 ETFs: MSCI World, FTSE All-World, S&P 500, NASDAQ 100, EM</li>
+            <li>Anfänger: 100% MSCI World (IE00BK5BQT80)</li>
+            <li>Einzelaktien: 5 Kategorien (Blue Chips, Dividenden, Growth, Value, Small Caps)</li>
+            <li>5-Punkte-Checkliste: Verstehen, Wachstum, Profit, Moat, Bewertung</li>
+            <li>Dividenden-Aktien: 3-6% passives Einkommen (Coca-Cola, J&J, P&G)</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Vermögensaufbau-Strategien!</p>
+            </div>
+            <div class="page" data-page="6">
+<div class="chapter-label">Kapitel 6</div>
+    <h1>Vermögensaufbau-Strategien</h1>
+    
+    <p>Konkrete Strategien für deine finanzielle Freiheit! Von DCA bis FIRE – hier ist alles! 🚀</p>
+    
+    <h2>6.1 Dollar-Cost-Averaging (DCA)</h2>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Die bewährteste Investitions-Strategie!</strong></p>
+    </div>
+    
+    <h3>Was ist DCA?</h3>
+    
+    <p><strong>Statt 10.000€ auf einmal investieren → 300€ jeden Monat</strong></p>
+    
+    <div class="success-box">
+        <p><strong>Vorteil:</strong></p>
+        <ul>
+            <li>Kaufst bei verschiedenen Preisen</li>
+            <li>Durchschnittspreis über Zeit</li>
+            <li>Kein Market-Timing nötig</li>
+            <li>Emotionen raus</li>
+        </ul>
+    </div>
+    
+    <h3>DCA vs. Lump Sum</h3>
+    
+    <p><strong>Szenario: 12.000€ investieren über 1 Jahr</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Lump Sum (alles sofort):</strong></p>
+        <ul>
+            <li>Januar: 12.000€ bei 100€/Aktie = 120 Aktien</li>
+            <li>Markt fällt auf 80€</li>
+            <li>Dein Portfolio: -20%</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong style="color: #27ae60;">DCA (1.000€ monatlich):</strong></p>
+        <ul>
+            <li>Jan: 1.000€ bei 100€ = 10 Aktien</li>
+            <li>Feb: 1.000€ bei 90€ = 11 Aktien</li>
+            <li>Mär: 1.000€ bei 80€ = 12,5 Aktien</li>
+            <li>... kaufst mehr bei niedrigen Preisen!</li>
+        </ul>
+        
+        <p style="margin-top: 20px; font-size: 18px;"><strong style="color: #27ae60;">Ergebnis: DCA = besserer Durchschnittspreis!</strong></p>
+    </div>
+    
+    <h3>Wie DCA umsetzen?</h3>
+    
+    <ol>
+        <li><strong>Sparplan einrichten</strong>
+            <ul>
+                <li>Trade Republic / Scalable Capital</li>
+                <li>MSCI World ETF</li>
+                <li>300€ am 1. des Monats</li>
+            </ul>
+        </li>
+        <li><strong>Automatisch!</strong>
+            <ul>
+                <li>Keine manuellen Käufe</li>
+                <li>Egal ob Markt hoch oder runter</li>
+            </ul>
+        </li>
+        <li><strong>Nie stoppen!</strong>
+            <ul>
+                <li>Auch bei Crash weitermachen</li>
+                <li>Gerade bei Crash kaufst du günstig!</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <h2>6.2 Die 4%-Regel – Wann bist du frei?</h2>
+    
+    <div class="fire-box">
+        <h3>Die berühmteste Finanz-Regel!</h3>
+    </div>
+    
+    <h3>Was ist die 4%-Regel?</h3>
+    
+    <p><strong>Du kannst jährlich 4% deines Portfolios entnehmen, ohne dass es je aufgebraucht wird!</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong><br>
+        Portfolio: 500.000€<br>
+        4% davon = 20.000€/Jahr = 1.667€/Monat</p>
+        
+        <p style="margin-top: 15px;"><strong style="color: #27ae60;">OHNE dass dein Kapital schrumpft!</strong><br>
+        (Weil Portfolio ~7% wächst, du nur 4% entnimmst)</p>
+    </div>
+    
+    <h3>Wie viel brauchst du?</h3>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;"><strong>Formel: Jahresausgaben × 25 = Benötigtes Kapital</strong></p>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>Beispiele:</strong></p>
+        
+        <p><strong>2.000€/Monat Ausgaben:</strong><br>
+        • 24.000€/Jahr × 25 = <strong>600.000€ benötigt</strong></p>
+        
+        <p><strong>3.000€/Monat Ausgaben:</strong><br>
+        • 36.000€/Jahr × 25 = <strong>900.000€ benötigt</strong></p>
+        
+        <p><strong>1.500€/Monat Ausgaben:</strong><br>
+        • 18.000€/Jahr × 25 = <strong>450.000€ benötigt</strong></p>
+    </div>
+    
+    <table>
+        <tr>
+            <th>Monatlich</th>
+            <th>Jährlich</th>
+            <th>Benötigt (×25)</th>
+        </tr>
+        <tr>
+            <td>1.000€</td>
+            <td>12.000€</td>
+            <td>300.000€</td>
+        </tr>
+        <tr>
+            <td>2.000€</td>
+            <td>24.000€</td>
+            <td>600.000€</td>
+        </tr>
+        <tr>
+            <td>3.000€</td>
+            <td>36.000€</td>
+            <td>900.000€</td>
+        </tr>
+        <tr>
+            <td>4.000€</td>
+            <td>48.000€</td>
+            <td>1.200.000€</td>
+        </tr>
+        <tr>
+            <td>5.000€</td>
+            <td>60.000€</td>
+            <td>1.500.000€</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p style="text-align: center; font-size: 18px;"><strong>Wichtig: Je weniger du ausgibst, desto schneller bist du frei!</strong></p>
+    </div>
+    
+    <h2>6.3 FIRE – Financial Independence, Retire Early</h2>
+    
+    <div class="fire-box">
+        <h3>Mit 40 in Rente? Ja, möglich!</h3>
+    </div>
+    
+    <h3>Was ist FIRE?</h3>
+    
+    <p><strong>Financial Independence</strong> = Du brauchst keinen Job mehr<br>
+    <strong>Retire Early</strong> = Mit 35-45 statt 67</p>
+    
+    <div class="example-box">
+        <p><strong>Die Formel:</strong></p>
+        <ol>
+            <li>Extrem sparen (50-70% vom Gehalt)</li>
+            <li>Aggressiv investieren</li>
+            <li>Minimalistische Ausgaben</li>
+            <li>Mit 40: Genug Kapital (4%-Regel)</li>
+            <li>Job kündigen, von Dividenden leben</li>
+        </ol>
+    </div>
+    
+    <h3>Die 3 FIRE-Typen</h3>
+    
+    <div class="fire-type-box">
+        <p><strong>Lean FIRE:</strong></p>
+        <ul>
+            <li>Minimal lifestyle (1.000€/Monat)</li>
+            <li>Benötigt: 300.000€</li>
+            <li>Erreichbar in: 10-15 Jahren</li>
+        </ul>
+    </div>
+    
+    <div class="fire-type-box">
+        <p><strong>Regular FIRE:</strong></p>
+        <ul>
+            <li>Normal lifestyle (2.500€/Monat)</li>
+            <li>Benötigt: 750.000€</li>
+            <li>Erreichbar in: 15-20 Jahren</li>
+        </ul>
+    </div>
+    
+    <div class="fire-type-box">
+        <p><strong>Fat FIRE:</strong></p>
+        <ul>
+            <li>Luxury lifestyle (5.000€/Monat)</li>
+            <li>Benötigt: 1.500.000€</li>
+            <li>Erreichbar in: 20-30 Jahren</li>
+        </ul>
+    </div>
+    
+    <h3>Beispiel-Rechnung</h3>
+    
+    <div class="example-box">
+        <p><strong>Person: 25 Jahre, 3.000€ Netto/Monat</strong></p>
+        
+        <p>Sparquote: 60% = 1.800€/Monat<br>
+        Leben von: 1.200€/Monat</p>
+        
+        <p>Benötigtes Kapital: 14.400€/Jahr × 25 = <strong>360.000€</strong></p>
+        
+        <p>Mit 1.800€/Monat bei 7% Rendite:<br>
+        Nach 13 Jahren: 360.000€ erreicht!</p>
+        
+        <p style="font-size: 22px; margin-top: 20px; text-align: center;"><strong style="color: #27ae60;">→ FIRE mit 38 Jahren! 🎉</strong></p>
+    </div>
+    
+    <h2>6.4 Rebalancing – Portfolio pflegen</h2>
+    
+    <p><strong>Warum Rebalancing wichtig ist:</strong></p>
+    
+    <h3>Das Problem</h3>
+    
+    <div class="example-box">
+        <p><strong>Start-Portfolio:</strong></p>
+        <ul>
+            <li>70% Aktien ETF (7.000€)</li>
+            <li>30% Anleihen (3.000€)</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong>Nach 1 Jahr guten Markt:</strong></p>
+        <ul>
+            <li>Aktien: +20% = 8.400€ (77%)</li>
+            <li>Anleihen: +3% = 3.090€ (23%)</li>
+        </ul>
+        
+        <p style="margin-top: 15px;"><strong style="color: #e74c3c;">Problem: Portfolio ist jetzt zu riskant (77% statt 70%)</strong></p>
+    </div>
+    
+    <h3>Die Lösung: Rebalancing</h3>
+    
+    <div class="success-box">
+        <p><strong>1x pro Jahr Portfolio anpassen:</strong></p>
+        <ul>
+            <li>400€ Aktien verkaufen</li>
+            <li>400€ Anleihen kaufen</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong>Ergebnis:</strong></p>
+        <ul>
+            <li>Aktien: 8.000€ (70%)</li>
+            <li>Anleihen: 3.490€ (30%)</li>
+        </ul>
+        <p><strong style="color: #27ae60;">→ Balance wiederhergestellt!</strong></p>
+    </div>
+    
+    <h3>Wann Rebalancen?</h3>
+    
+    <div class="example-box">
+        <p><strong>Methode 1: Zeitbasiert</strong><br>
+        • 1x pro Jahr (immer am 31.12.)</p>
+        
+        <p style="margin-top: 15px;"><strong>Methode 2: Schwellen-basiert</strong><br>
+        • Wenn Abweichung >5%<br>
+        • Z.B. Aktien 75% statt 70% → Rebalancen</p>
+        
+        <p style="margin-top: 20px;"><strong style="color: #27ae60;">Empfehlung: Zeitbasiert, 1x pro Jahr!</strong></p>
+    </div>
+    
+    <h2>6.5 Langfristige Vermögensplanung</h2>
+    
+    <p><strong>Die 3 Phasen des Vermögensaufbaus:</strong></p>
+    
+    <div class="phase-box">
+        <h4>Phase 1: Akkumulation (20-50 Jahre)</h4>
+        <p><strong>Fokus: Maximales Wachstum</strong></p>
+        
+        <p><strong>Portfolio:</strong></p>
+        <ul>
+            <li>100% Aktien/ETFs</li>
+            <li>Keine Anleihen</li>
+            <li>Hohe Sparquote (20-60%)</li>
+        </ul>
+        
+        <p><strong>Strategie:</strong></p>
+        <ul>
+            <li>DCA jeden Monat</li>
+            <li>Crashes ignorieren</li>
+            <li>NIE verkaufen</li>
+        </ul>
+    </div>
+    
+    <div class="phase-box">
+        <h4>Phase 2: Konsolidierung (50-65 Jahre)</h4>
+        <p><strong>Fokus: Risiko reduzieren</strong></p>
+        
+        <p><strong>Portfolio:</strong></p>
+        <ul>
+            <li>70% Aktien/ETFs</li>
+            <li>30% Anleihen</li>
+            <li>Weiter sparen (15-30%)</li>
+        </ul>
+        
+        <p><strong>Strategie:</strong></p>
+        <ul>
+            <li>Jährliches Rebalancing</li>
+            <li>Langsam sicherer werden</li>
+            <li>Noch keine Entnahmen</li>
+        </ul>
+    </div>
+    
+    <div class="phase-box">
+        <h4>Phase 3: Entnahme (65+ Jahre / FIRE)</h4>
+        <p><strong>Fokus: Einkommen generieren</strong></p>
+        
+        <p><strong>Portfolio:</strong></p>
+        <ul>
+            <li>50-60% Aktien/ETFs</li>
+            <li>40-50% Anleihen/Dividenden-Aktien</li>
+        </ul>
+        
+        <p><strong>Strategie:</strong></p>
+        <ul>
+            <li>4% jährlich entnehmen</li>
+            <li>Von Dividenden leben</li>
+            <li>Kapital erhalten</li>
+        </ul>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 6</h3>
+        <p><strong>Strategie = Erfolg! 🚀</strong></p>
+        <ul>
+            <li>DCA = 300€ monatlich automatisch, nie stoppen</li>
+            <li>4%-Regel: Jahresausgaben × 25 = Benötigtes Kapital</li>
+            <li>FIRE möglich: 50-70% sparen, mit 38 frei!</li>
+            <li>3 FIRE-Typen: Lean (300k), Regular (750k), Fat (1,5M)</li>
+            <li>Rebalancing: 1x pro Jahr Portfolio anpassen</li>
+            <li>3 Phasen: Akkumulation (100% Aktien) → Konsolidierung (70/30) → Entnahme (50/50)</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im Bonus-Kapitel: Vorlagen & Rechner!</p>
+            </div>
+            <div class="page" data-page="7">
+<div class="chapter-label">Bonus-Kapitel</div>
+    <h1>Vorlagen & Rechner</h1>
+    
+    <p>Alle Tools, Checklisten und Ressourcen auf einen Blick! Deine Finanz-Toolbox. 🎯</p>
+    
+    <h2>Checkliste #1: Finanzielle Grundlagen</h2>
+    
+    <p><strong>Die wichtigsten Steps für jeden Anfänger:</strong></p>
+    
+    <div class="checklist">
+        <ul>
+            <li>Mindset: Glaubenssätze erkannt und transformiert</li>
+            <li>Budget: 50/30/20 Regel implementiert</li>
+            <li>Tracking: 30 Tage alle Ausgaben notiert</li>
+            <li>Automatisierung: 3-Konten-System eingerichtet</li>
+            <li>Notgroschen: 3-6 Monate auf Tagesgeldkonto</li>
+            <li>Versicherungen: Kranken, Haftpflicht, BU abgeschlossen</li>
+            <li>Depot: Eröffnet (Trade Republic / Scalable)</li>
+            <li>ETF: MSCI World Sparplan eingerichtet</li>
+            <li>DCA: 300€/Monat automatisch investieren</li>
+            <li>Plan: FIRE-Ziel definiert (z.B. 750k in 15 Jahren)</li>
+        </ul>
+    </div>
+    
+    <h2>Die wichtigsten Rechner</h2>
+    
+    <h3>Zinseszins-Rechner</h3>
+    
+    <div class="calculator-box">
+        <p><strong>Formel:</strong> Endwert = Startkapital × (1 + Rendite)^Jahre</p>
+        
+        <p style="margin-top: 20px;"><strong>Beispiel:</strong><br>
+        10.000€ × (1,07)^30 = <strong>76.123€</strong></p>
+        
+        <p><strong>Mit Sparplan:</strong><br>
+        300€/Monat × 30 Jahre × 7% = <strong>340.000€</strong></p>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>Online-Rechner:</strong></p>
+        <ul>
+            <li>zinsen-berechnen.de/sparrechner</li>
+            <li>zinsen-berechnen.de/fondsrechner</li>
+            <li>Portfolio Performance (kostenlose Software)</li>
+        </ul>
+    </div>
+    
+    <h3>FIRE-Rechner</h3>
+    
+    <p><strong>Berechne wann du FIRE erreichst:</strong></p>
+    
+    <div class="calculator-box">
+        <p><strong>Input:</strong></p>
+        <ul>
+            <li>Aktuelles Vermögen: 20.000€</li>
+            <li>Monatliches Investment: 1.500€</li>
+            <li>Erwartete Rendite: 7%</li>
+            <li>Jährliche Ausgaben: 30.000€</li>
+        </ul>
+        
+        <p style="margin-top: 20px;"><strong>Output:</strong></p>
+        <ul>
+            <li>Benötigtes Kapital: 750.000€ (30k × 25)</li>
+            <li>Zeit bis FIRE: 17 Jahre</li>
+            <li>FIRE-Datum: 2043</li>
+        </ul>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>Online-Rechner:</strong></p>
+        <ul>
+            <li>firecalc.com</li>
+            <li>networthify.com/calculator/earlyretirement</li>
+            <li>calculator.ficalc.app</li>
+        </ul>
+    </div>
+    
+    <h2>Die besten Finanz-Ressourcen</h2>
+    
+    <h3>Bücher (Must-Read)</h3>
+    
+    <table>
+        <tr>
+            <th>Buch</th>
+            <th>Autor</th>
+            <th>Level</th>
+        </tr>
+        <tr>
+            <td><strong>Rich Dad Poor Dad</strong></td>
+            <td>Robert Kiyosaki</td>
+            <td>Anfänger</td>
+        </tr>
+        <tr>
+            <td><strong>The Intelligent Investor</strong></td>
+            <td>Benjamin Graham</td>
+            <td>Fort.</td>
+        </tr>
+        <tr>
+            <td><strong>A Random Walk Down Wall Street</strong></td>
+            <td>Burton Malkiel</td>
+            <td>Fort.</td>
+        </tr>
+        <tr>
+            <td><strong>Your Money or Your Life</strong></td>
+            <td>Vicki Robin</td>
+            <td>FIRE</td>
+        </tr>
+        <tr>
+            <td><strong>The Simple Path to Wealth</strong></td>
+            <td>JL Collins</td>
+            <td>FIRE</td>
+        </tr>
+        <tr>
+            <td><strong>Souverän Investieren</strong></td>
+            <td>Gerd Kommer</td>
+            <td>DE</td>
+        </tr>
+    </table>
+    
+    <h3>YouTube Channels</h3>
+    
+    <ul>
+        <li><strong>Finanzfluss:</strong> Deutsche Finanz-Basics, ETFs, Börse</li>
+        <li><strong>Finanztip:</strong> Verbraucherschutz, Versicherungen, Sparen</li>
+        <li><strong>Graham Stephan:</strong> FIRE, Real Estate, Millionaire Mindset</li>
+        <li><strong>Andrei Jikh:</strong> Investing, Stock Market, ETFs</li>
+        <li><strong>The Plain Bagel:</strong> Finance Education, Deep Dives</li>
+    </ul>
+    
+    <h3>Podcasts</h3>
+    
+    <ul>
+        <li><strong>Der Finanzwesir rockt:</strong> Albert & Daniel, DE</li>
+        <li><strong>ChooseFI:</strong> FIRE Movement, EN</li>
+        <li><strong>BiggerPockets Money:</strong> FIRE, Real Estate, EN</li>
+        <li><strong>The Investor's Podcast:</strong> Value Investing, EN</li>
+    </ul>
+    
+    <h3>Communities</h3>
+    
+    <ul>
+        <li><strong>r/Finanzen:</strong> Deutsche Finanz-Community</li>
+        <li><strong>r/financialindependence:</strong> FIRE Community</li>
+        <li><strong>Finanzfluss Forum:</strong> forum.finanzfluss.de</li>
+        <li><strong>WertpapierForum:</strong> wertpapier-forum.de</li>
+    </ul>
+    
+    <h2>Die 10 Goldenen Regeln</h2>
+    
+    <div class="golden-rules">
+        <h3>Finanzielle Freiheit in 10 Regeln:</h3>
+        <ol>
+            <li><strong>Bezahle dich selbst zuerst</strong> – 20% sofort sparen</li>
+            <li><strong>Lebe unter deinen Verhältnissen</strong> – Lifestyle Inflation vermeiden</li>
+            <li><strong>Investiere früh und regelmäßig</strong> – Zeit = Zinseszins</li>
+            <li><strong>Diversifiziere</strong> – Nie alles auf eine Karte</li>
+            <li><strong>Kaufe Assets, keine Liabilities</strong> – Was bringt Geld vs. kostet Geld</li>
+            <li><strong>Automatisiere alles</strong> – Willenskraft ist endlich</li>
+            <li><strong>Halte langfristig</strong> – Zeit im Markt > Timing</li>
+            <li><strong>Ignoriere Emotionen</strong> – Gier & Angst = deine Feinde</li>
+            <li><strong>Bilde dich weiter</strong> – 1 Buch/Monat minimum</li>
+            <li><strong>Bleib geduldig</strong> – Reich werden dauert 10-20 Jahre</li>
+        </ol>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <h2>Schlusswort</h2>
+    
+    <div class="final-box">
+        <h3 style="color: #9c8a76; margin-bottom: 20px;">Du hast es geschafft! 🎉</h3>
+    </div>
+    
+    <p><strong>Du kennst jetzt:</strong></p>
+    <ul>
+        <li><span class="checkmark">✓</span> Das richtige Money-Mindset</li>
+        <li><span class="checkmark">✓</span> Die 50/30/20 Budgetierungs-Regel</li>
+        <li><span class="checkmark">✓</span> Wie du 3-6 Monate Notgroschen aufbaust</li>
+        <li><span class="checkmark">✓</span> Den Zinseszins-Effekt (8. Weltwunder!)</li>
+        <li><span class="checkmark">✓</span> Die besten ETFs (MSCI World!)</li>
+        <li><span class="checkmark">✓</span> DCA, 4%-Regel & FIRE</li>
+        <li><span class="checkmark">✓</span> Alle Tools & Ressourcen</li>
+    </ul>
+    
+    <h3>Was jetzt?</h3>
+    
+    <div class="important-box">
+        <p style="font-size: 20px; text-align: center;"><strong>HANDELN!</strong></p>
+        <p style="text-align: center;">Wissen ohne Action = wertlos.</p>
+    </div>
+    
+    <div class="success-box">
+        <p><strong>Die nächsten 3 Schritte:</strong></p>
+        <ol>
+            <li>Budget aufsetzen (HEUTE!)</li>
+            <li>Depot eröffnen (diese Woche)</li>
+            <li>ETF-Sparplan starten (300€/Monat)</li>
+        </ol>
+    </div>
+    
+    <div class="final-box">
+        <p style="font-size: 18px; color: #f5f5f0;"><strong>Die Wahrheit:</strong></p>
+        <p style="font-size: 16px; margin-top: 15px;">Finanzielle Freiheit ist ein Marathon, kein Sprint.</p>
+        <p style="font-size: 16px; margin-top: 15px;">Die meisten geben nach 3 Monaten auf.<br>Die Gewinner halten 10-20 Jahre durch.</p>
+        <p style="font-size: 20px; margin-top: 25px; color: #9c8a76;"><strong>Sei ein Gewinner. Bleib dran. Du schaffst das!</strong></p>
+    </div>
+    
+    <p style="text-align: center; font-size: 22px; margin-top: 40px; color: #9c8a76;"><strong>Viel Erfolg auf deiner Finanz-Reise! 🚀</strong></p>
+    
+    <h2>Über den Autor</h2>
+    
+    <div class="important-box">
+        <p style="font-style: italic; color: #9c8a76;">[DEIN INPUT: Hier kommt deine vollständige Bio!]</p>
+        <ul style="text-align: left;">
+            <li>Wer bist du?</li>
+            <li>Seit wann interessierst du dich für Finanzen?</li>
+            <li>Größte finanzielle Erfolge?</li>
+            <li>Größte Fails?</li>
+            <li>Warum hast du diesen Guide geschrieben?</li>
+            <li>Was ist deine Mission?</li>
+            <li>Kontakt-Links (Instagram, YouTube, Website, Email)?</li>
+        </ul>
+        <p style="font-style: italic; margin-top: 20px;">4-6 Absätze + Foto von dir!</p>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <div class="footer">
+        <p>━━━━━━━━━━━━━━━━━━━━━</p>
+        <p style="margin: 20px 0; font-size: 18px; letter-spacing: 5px;"><strong>FINANZFUNDAMENTALS 2026</strong></p>
+        <p>Version 1.0 - 2026</p>
+        <p>━━━━━━━━━━━━━━━━━━━━━</p>
+        <p style="margin-top: 30px; font-size: 16px; letter-spacing: 2px;">THE END</p>
+        <p style="margin-top: 20px;">Danke fürs Lesen! 🙏</p>
+    
+            </div>
+        </div>
+        
+        <div class="nav-controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousPage()">◄ ZURÜCK</button>
+            <div class="page-indicator">
+                <span id="currentPage">1</span> / <span id="totalPages">8</span>
+            </div>
+            <button class="nav-btn" id="nextBtn" onclick="nextPage()">WEITER ►</button>
+        </div>
+        
+        <div class="keyboard-hint">Tipp: Nutze ← → Pfeiltasten zum Blättern</div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 8;
+        const pages = document.querySelectorAll('.page');
+
+        function updatePage() {
+            pages.forEach(page => {
+                page.classList.remove('active', 'prev');
+            });
+
+            pages[currentPage].classList.add('active');
+            
+            if (currentPage > 0) {
+                pages[currentPage - 1].classList.add('prev');
+            }
+
+            document.getElementById('currentPage').textContent = currentPage + 1;
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+            pages[currentPage].scrollTop = 0;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updatePage();
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePage();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') previousPage();
+        });
+
+        updatePage();
+    </script>
+</body>
+</html>

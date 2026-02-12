@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aktien Masterclass 2026 - Digital Book</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #f5f5f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        /* BOOK CONTAINER */
+        .book-container {
+            position: relative;
+            width: 900px;
+            max-width: 95vw;
+            height: 80vh;
+            max-height: 1100px;
+            perspective: 2000px;
+        }
+        
+        /* BOOK */
+        .book {
+            width: 100%;
+            height: 100%;
+            background: #2a2a2a;
+            border-radius: 8px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* PAGES */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 80px 100px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        
+        .page.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+        
+        .page.prev {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        
+        /* CUSTOM SCROLLBAR */
+        .page::-webkit-scrollbar { width: 8px; }
+        .page::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .page::-webkit-scrollbar-thumb { background: #a0927d; border-radius: 4px; }
+        
+        /* NAVIGATION */
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background: rgba(160, 146, 125, 0.2);
+            border: 1px solid #a0927d;
+            color: #f5f5f0;
+            padding: 12px 30px;
+            font-family: 'Arial', sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: #a0927d;
+            color: #2a2a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(160, 146, 125, 0.3);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .page-indicator {
+            background: rgba(42, 42, 42, 0.8);
+            border: 1px solid #707070;
+            color: #a0927d;
+            padding: 10px 25px;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* PAGE CONTENT STYLES */
+        .chapter-label {
+            font-size: 12px;
+            color: #a0927d;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 20px;
+        }
+        
+        h1 { font-size: 42px; font-weight: 400; color: #f5f5f0; margin-bottom: 15px; line-height: 1.2; }
+        h2 { font-size: 28px; font-weight: 400; color: #f5f5f0; margin-top: 40px; margin-bottom: 20px; }
+        h3 { font-size: 22px; font-weight: 400; color: #d0d0c8; margin-top: 35px; margin-bottom: 18px; }
+        h4 { font-size: 18px; font-weight: 400; color: #d0d0c8; margin-top: 28px; margin-bottom: 14px; }
+        p { margin-bottom: 18px; color: #d0d0c8; font-size: 15px; line-height: 1.7; }
+        strong { color: #f5f5f0; font-weight: 600; }
+        ul, ol { margin: 18px 0; padding-left: 28px; }
+        li { margin-bottom: 10px; color: #d0d0c8; line-height: 1.6; }
+        
+        /* COVER STYLES */
+        .cover-badge {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid #707070;
+            color: #a09c94;
+            padding: 8px 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+        }
+        
+        .cover-title {
+            font-size: 64px;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+        
+        .cover-subtitle {
+            font-size: 18px;
+            color: #b0b0a8;
+            font-weight: 300;
+            margin-bottom: 50px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid #707070;
+            padding: 35px;
+            margin-top: 35px;
+        }
+        
+        .toc-title {
+            color: #a09c94;
+            font-size: 11px;
+            font-family: 'Arial', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 22px;
+        }
+        
+        .toc-item {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 13px;
+            color: #d0d0c8;
+        }
+        
+        .toc-number {
+            color: #a0927d;
+            width: 22px;
+            font-size: 13px;
+        }
+        
+        .toc-text {
+            font-size: 13px;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+        
+        /* BOX STYLES */
+        .example-box { background: rgba(255, 255, 255, 0.03); border-left: 3px solid #a0927d; padding: 22px; margin: 25px 0; }
+        .important-box { background: rgba(160, 146, 125, 0.1); border: 2px solid #a0927d; padding: 22px; margin: 25px 0; }
+        .warning-box { background: rgba(231, 76, 60, 0.1); border: 2px solid #e74c3c; padding: 22px; margin: 25px 0; }
+        .success-box { background: rgba(39, 174, 96, 0.1); border: 2px solid #27ae60; padding: 22px; margin: 25px 0; }
+        .summary-box { background: rgba(255, 255, 255, 0.03); padding: 25px; margin: 35px 0; border-top: 2px solid #707070; border-bottom: 2px solid #707070; }
+        .checklist { background: rgba(255, 255, 255, 0.03); border-left: 3px solid #a0927d; padding: 22px; margin: 25px 0; }
+        .checklist li { list-style: none; padding-left: 28px; position: relative; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; color: #a0927d; font-size: 18px; }
+        
+        /* TABLE STYLES */
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; background: rgba(255, 255, 255, 0.02); font-size: 14px; }
+        th { background: rgba(160, 146, 125, 0.2); color: #f5f5f0; padding: 12px; text-align: left; font-weight: 600; border: 1px solid #404040; }
+        td { padding: 12px; border: 1px solid #404040; color: #d0d0c8; }
+        
+        /* KEYBOARD HINT */
+        .keyboard-hint {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #808080;
+            font-size: 11px;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book">
+            <div class="page active" data-page="0">
+
+            <div class="cover-badge">Premium Guide 2026</div>
+            <h1 class="cover-title">AKTIEN<br/>MASTERCLASS</h1>
+            <div class="cover-subtitle">
+                Der komplette Guide für erfolgreiches<br/>Investieren an der Börse
+            </div>
+            <div class="toc">
+                <div class="toc-title">Inhaltsverzeichnis</div>
+                <div class="toc-item">
+                    <div class="toc-number">I</div>
+                    <div class="toc-text">Börse verstehen – Grundlagen & Funktionsweise</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">II</div>
+                    <div class="toc-text">Der erste Aktienkauf – Step by Step</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">III</div>
+                    <div class="toc-text">Aktienanalyse – Fundamentaldaten & Charts</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">IV</div>
+                    <div class="toc-text">Strategien – DCA, Dividenden & Momentum</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">V</div>
+                    <div class="toc-text">Risikomanagement – Fehler & Diversifikation</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">VI</div>
+                    <div class="toc-text">Steueroptimierung – Freibeträge & Tricks</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">VII</div>
+                    <div class="toc-text">Bonus – Checklisten & Tools</div>
+                </div>
+            </div>
+
+            </div>
+            <div class="page" data-page="1">
+<div class="chapter-label">Beispiel-Kapitel</div>
+    
+    <h1>AKTIEN MASTERCLASS</h1>
+    <div class="subtitle">Vom ersten Aktienkauf zur erfolgreichen Dividendenstrategie</div>
+    
+    <h2>Kapitel 1: Die Grundlagen</h2>
+    
+    <p>Bevor du dein erstes Geld in Aktien investierst, ist es wichtig, die Grundlagen zu verstehen. Dieses Kapitel gibt dir das fundamentale Wissen, das du brauchst, um informierte Entscheidungen zu treffen.</p>
+    
+    <h3>1.1 Was sind Aktien?</h3>
+    
+    <p>Eine Aktie ist im Grunde ein Anteil an einem Unternehmen. Wenn du eine Aktie kaufst, wirst du zum Miteigentümer dieses Unternehmens – wenn auch nur zu einem sehr kleinen Teil.</p>
+    
+    <div class="example-box">
+        <strong>Beispiel:</strong> Apple hat etwa 15,5 Milliarden Aktien ausgegeben. Wenn du 100 Apple-Aktien besitzt, gehören dir 0,0000006% des Unternehmens. Das klingt nach wenig, aber mit dem Aktienkurs von über 180$ bedeutet das bereits ein Investment von 18.000$.
+    </div>
+    
+    <h3>Wie funktioniert die Börse?</h3>
+    
+    <p>Die Börse ist ein Marktplatz, auf dem Aktien gekauft und verkauft werden. Sie funktioniert nach dem Prinzip von Angebot und Nachfrage:</p>
+    
+    <ul>
+        <li>Hohe Nachfrage + wenig Angebot = Preis steigt</li>
+        <li>Niedrige Nachfrage + viel Angebot = Preis fällt</li>
+        <li>Die Börse ist täglich geöffnet (außer an Feiertagen)</li>
+    </ul>
+    
+    <p>In Deutschland ist die wichtigste Börse die Frankfurter Wertpapierbörse (Xetra). In den USA gibt es die NYSE (New York Stock Exchange) und NASDAQ.</p>
+    
+    <h3>Aktie vs. Anleihe vs. ETF</h3>
+    
+    <p>Viele Anfänger verwechseln diese drei Begriffe. Hier ist der Unterschied:</p>
+    
+    <table>
+        <tr>
+            <th>Merkmal</th>
+            <th>Aktie</th>
+            <th>Anleihe</th>
+            <th>ETF</th>
+        </tr>
+        <tr>
+            <td><strong>Was ist es?</strong></td>
+            <td>Anteil am Unternehmen</td>
+            <td>Kredit an Unternehmen/Staat</td>
+            <td>Bündel vieler Aktien</td>
+        </tr>
+        <tr>
+            <td><strong>Risiko</strong></td>
+            <td>Hoch (Schwankungen)</td>
+            <td>Niedrig (festgelegt)</td>
+            <td>Mittel (diversifiziert)</td>
+        </tr>
+        <tr>
+            <td><strong>Rendite</strong></td>
+            <td>7-10% p.a. (langfristig)</td>
+            <td>2-4% p.a.</td>
+            <td>6-8% p.a.</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <strong>Wichtig:</strong> Für Anfänger sind ETFs oft die beste Wahl, da sie automatisch diversifiziert sind und weniger Wissen erfordern als Einzelaktien.
+    </div>
+    
+    <h3>1.2 Warum in Aktien investieren?</h3>
+    
+    <p>Die kurze Antwort: Weil Aktien langfristig fast alle anderen Anlageformen schlagen.</p>
+    
+    <h3>Langfristige Renditen</h3>
+    
+    <p>Historische Daten der letzten 100 Jahre zeigen:</p>
+    
+    <ul>
+        <li><strong>Aktien (MSCI World):</strong> ~9% Rendite pro Jahr</li>
+        <li><strong>Immobilien:</strong> ~4-5% pro Jahr</li>
+        <li><strong>Gold:</strong> ~2-3% pro Jahr</li>
+        <li><strong>Sparbuch/Tagesgeld:</strong> ~1-2% pro Jahr (oft unter Inflation!)</li>
+    </ul>
+    
+    <h3>Inflation schlagen</h3>
+    
+    <p>Die Inflation (Geldentwertung) liegt durchschnittlich bei 2-3% pro Jahr. Das bedeutet:</p>
+    
+    <p>10.000€ auf dem Sparbuch verlieren jährlich ~200-300€ an Kaufkraft, selbst wenn nominell mehr draufsteht!</p>
+    
+    <p>Aktien mit 7-9% Rendite schlagen die Inflation deutlich und dein Geld wächst real.</p>
+    
+    <h3>Vermögensaufbau-Beispiel</h3>
+    
+    <p>Angenommen, du investierst monatlich 300€ über 30 Jahre:</p>
+    
+    <ul>
+        <li><strong>Sparbuch (1% Rendite):</strong> ~125.000€</li>
+        <li><strong>Aktien/ETFs (7% Rendite):</strong> ~367.000€</li>
+    </ul>
+    
+    <p><strong>Unterschied: 242.000€ mehr</strong> – nur durch die bessere Anlageform!</p>
+    
+    <h3>1.3 Risiken verstehen</h3>
+    
+    <p>Aktien bieten höhere Renditen, aber auch höhere Risiken. Das wichtigste Risiko ist die <strong>Volatilität</strong> – also Kursschwankungen.</p>
+    
+    <h3>Volatilität erklärt</h3>
+    
+    <p>Volatilität bedeutet, dass der Wert deiner Aktien täglich steigen oder fallen kann:</p>
+    
+    <ul>
+        <li>Heute: +5%</li>
+        <li>Morgen: -3%</li>
+        <li>Übernächster Tag: +2%</li>
+    </ul>
+    
+    <p>Diese Schwankungen sind normal und kein Grund zur Panik! <strong>Langfristig gleichen sich Schwankungen aus.</strong></p>
+    
+    <h3>Diversifikation – deine Versicherung</h3>
+    
+    <p>Die wichtigste Regel zum Risikomanagement lautet:</p>
+    
+    <p style="text-align: center; font-style: italic; color: #a0927d; font-size: 20px; margin: 30px 0;">"Lege nicht alle Eier in einen Korb!"</p>
+    
+    <p>Diversifikation bedeutet: Verteile dein Geld auf viele verschiedene Aktien, Branchen und Länder.</p>
+    
+    <div class="example-box">
+        <strong>Beispiel:</strong> Wenn du nur Apple-Aktien besitzt und Apple abstürzt, verlierst du alles. Wenn du aber 50 verschiedene Aktien hast und Apple fällt, macht das nur 2% deines Portfolios aus.
+    </div>
+    
+    <h3>Worst-Case Szenarien</h3>
+    
+    <p>Was ist das Schlimmste, das passieren kann?</p>
+    
+    <ul>
+        <li><strong>Börsencrash:</strong> Der Markt kann 30-50% einbrechen (wie 2008 oder 2020)</li>
+        <li><strong>Pleite einer Firma:</strong> Einzelne Aktien können auf 0€ fallen (z.B. Wirecard)</li>
+        <li><strong>Langfristige Stagnation:</strong> Manche Märkte erholen sich nur langsam (z.B. Japan 1990-2020)</li>
+    </ul>
+    
+    <p><strong>Die gute Nachricht:</strong> Historisch haben sich alle großen Crashes wieder erholt. Wer 2008 investiert blieb, hatte 2013 wieder alles aufgeholt – und danach massive Gewinne gemacht.</p>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 1</h3>
+        
+        <p>Die wichtigsten Punkte auf einen Blick:</p>
+        
+        <ul>
+            <li>Aktien = Anteile an Unternehmen, du wirst Miteigentümer</li>
+            <li>Börse = Marktplatz mit Angebot & Nachfrage</li>
+            <li>Aktien schlagen langfristig fast alle Anlageformen (7-10% Rendite)</li>
+            <li>Inflation macht Sparbücher real wertlos</li>
+            <li>Volatilität = Schwankungen sind normal, kein Grund zur Panik</li>
+            <li>Diversifikation = Verteile dein Geld auf viele Aktien</li>
+            <li>Langfristig denken = Crashes erholen sich immer wieder</li>
+        </ul>
+    </div>
+    
+    <p class="next-chapter">Im nächsten Kapitel lernst du, wie du dein erstes Depot eröffnest und deine erste Aktie kaufst!</p>
+            </div>
+            <div class="page" data-page="2">
+<div class="chapter-label">Kapitel 2</div>
+    
+    <h1>Der erste Aktienkauf</h1>
+    
+    <p>Jetzt wird es praktisch! In diesem Kapitel zeige ich dir Schritt für Schritt, wie du dein erstes Depot eröffnest und deine erste Aktie kaufst. Nach diesem Kapitel bist du startklar.</p>
+    
+    <h2>2.1 Depot eröffnen</h2>
+    
+    <p>Um Aktien kaufen zu können, brauchst du ein Depot – das ist wie ein Bankkonto, nur für Wertpapiere. Die Wahl des richtigen Brokers ist wichtig, denn hier liegen Unterschiede in Kosten und Funktionen.</p>
+    
+    <h3>Broker-Vergleich 2026</h3>
+    
+    <p>Hier sind die beliebtesten Broker in Deutschland:</p>
+    
+    <table>
+        <tr>
+            <th>Broker</th>
+            <th>Gebühren/Order</th>
+            <th>Sparplan</th>
+            <th>Besonderheit</th>
+            <th>Empfehlung</th>
+        </tr>
+        <tr>
+            <td><strong>Trade Republic</strong></td>
+            <td>1€</td>
+            <td>Kostenlos ab 1€</td>
+            <td>Einfache App</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Scalable Capital</strong></td>
+            <td>0,99€</td>
+            <td>Kostenlos</td>
+            <td>Prime Abo: 2,99€/M</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>ING</strong></td>
+            <td>4,90€ + 0,25%</td>
+            <td>1,75% (max 69,90€)</td>
+            <td>Klassische Bank</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td><strong>Comdirect</strong></td>
+            <td>4,90€ + 0,25%</td>
+            <td>1,5% (mind. 1,50€)</td>
+            <td>Viele Tools</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+    
+    <h3>Depot eröffnen: Schritt für Schritt</h3>
+    
+    <p>Ich zeige dir den Prozess am Beispiel von Trade Republic (bei anderen Brokern läuft es ähnlich):</p>
+    
+    <ol>
+        <li><strong>App herunterladen:</strong> Trade Republic im App Store/Play Store suchen und installieren</li>
+        <li><strong>Registrierung:</strong> Handynummer eingeben, Code erhalten, verifizieren</li>
+        <li><strong>Persönliche Daten:</strong> Name, Adresse, Geburtsdatum, Steuer-ID angeben</li>
+        <li><strong>Legitimation (VideoIdent):</strong> Ausweis bereithalten, kurzes Video-Gespräch (5 Min)</li>
+        <li><strong>Bankkonto verknüpfen:</strong> Dein Girokonto verbinden für Ein-/Auszahlungen</li>
+        <li><strong>Freistellungsauftrag erteilen:</strong> WICHTIG! 1.000€ Freibetrag nutzen (siehe Steuer-Kapitel)</li>
+        <li><strong>Fertig!</strong> Depot ist eröffnet, Geld einzahlen und loslegen</li>
+    </ol>
+    
+    <p><strong>Dauer:</strong> Der gesamte Prozess dauert 10-15 Minuten. Die Freischaltung erfolgt meist innerhalb von 1-2 Werktagen.</p>
+    
+    <p><strong>Kosten:</strong> Die Depoteröffnung ist bei allen modernen Brokern kostenlos. Es gibt keine Depot-Führungsgebühren.</p>
+    
+    <h2>2.2 Deine erste Order</h2>
+    
+    <p>Jetzt wird es spannend! Bevor du aber blind drauf los kaufst, musst du die verschiedenen Ordertypen verstehen.</p>
+    
+    <h3>Market Order vs. Limit Order</h3>
+    
+    <p>Es gibt zwei Haupt-Orderarten:</p>
+    
+    <div class="example-box">
+        <p><strong>1. Market Order (Marktpreis)</strong></p>
+        <p>Du kaufst zum aktuellen Marktpreis. Die Order wird sofort ausgeführt.</p>
+        <p><strong>Vorteil:</strong> Schnell, du bekommst die Aktie garantiert</p>
+        <p><strong>Nachteil:</strong> Du weißt nicht genau welchen Preis du zahlst (kann bei volatilen Aktien teurer werden)</p>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>2. Limit Order (Limitpreis)</strong></p>
+        <p>Du legst einen Maximalpreis fest. Die Order wird nur ausgeführt, wenn der Kurs diesen Preis erreicht.</p>
+        <p><strong>Vorteil:</strong> Volle Kontrolle über den Preis</p>
+        <p><strong>Nachteil:</strong> Order könnte nicht ausgeführt werden, wenn der Preis nie erreicht wird</p>
+    </div>
+    
+    <div class="important-box">
+        <p><strong>Meine Empfehlung:</strong> Für Anfänger: Limit Order! Lege ein Limit 1-2% über dem aktuellen Kurs. So vermeidest du böse Überraschungen.</p>
+    </div>
+    
+    <h3>Weitere Ordertypen</h3>
+    
+    <ul>
+        <li><strong>Stop-Loss Order:</strong> Automatischer Verkauf bei Kursverlust (z.B. bei -10%)</li>
+        <li><strong>Stop-Buy Order:</strong> Kauf erst bei Kursanstieg (für Trendfolger)</li>
+        <li><strong>Trailing-Stop:</strong> Dynamischer Stop-Loss der dem Kurs folgt</li>
+    </ul>
+    
+    <p><em>Für Anfänger:</em> Konzentriere dich auf Market und Limit Orders. Die anderen lernst du mit der Zeit.</p>
+    
+    <h3>Schritt-für-Schritt: Erste Aktie kaufen</h3>
+    
+    <p>Beispiel: Du möchtest 10 Apple-Aktien kaufen (ca. 1.800€):</p>
+    
+    <ol>
+        <li><strong>Aktie suchen:</strong> In der App 'AAPL' oder 'Apple' eingeben</li>
+        <li><strong>Kaufen klicken:</strong> Button 'Kaufen' oder 'Buy' drücken</li>
+        <li><strong>Anzahl eingeben:</strong> 10 Stück (oder Betrag in Euro)</li>
+        <li><strong>Ordertyp wählen:</strong> Limit Order auswählen</li>
+        <li><strong>Limit setzen:</strong> Aktueller Kurs: 180$, Limit: 182$ (1% Puffer)</li>
+        <li><strong>Gültigkeit:</strong> 'Tagesgültig' oder 'Gültig bis...' wählen</li>
+        <li><strong>Prüfen:</strong> Übersicht checken: 10x Apple, Limit 182$, Gesamt ~1.820$</li>
+        <li><strong>Bestätigen:</strong> Order absenden und warten auf Ausführung</li>
+    </ol>
+    
+    <p><strong>Wichtig:</strong> Nach dem Kauf erscheint die Aktie in deinem Depot. Du bekommst eine Benachrichtigung wenn die Order ausgeführt wurde.</p>
+    
+    <h3>Häufige Anfängerfehler</h3>
+    
+    <ul>
+        <li>❌ <strong>Market Order bei volatilen Aktien:</strong> Preis kann plötzlich steigen</li>
+        <li>❌ <strong>Zu enges Limit:</strong> Order wird nie ausgeführt</li>
+        <li>❌ <strong>Außerhalb der Handelszeiten kaufen:</strong> Börse ist geschlossen (9:00-17:30 Uhr in DE)</li>
+        <li>❌ <strong>Währungsgebühren vergessen:</strong> US-Aktien = Dollar, Umrechnung kostet extra</li>
+        <li>❌ <strong>Emotionaler Kauf:</strong> Nie aus FOMO kaufen! (siehe 72-Stunden-Regel)</li>
+    </ul>
+    
+    <h2>2.3 Wie viel Geld investieren?</h2>
+    
+    <p>Die wichtigste Frage: Wie viel Geld solltest du in Aktien stecken? Die Antwort hängt von deiner Situation ab.</p>
+    
+    <h3>Die 50/30/20 Regel</h3>
+    
+    <p>Ein bewährtes Modell für dein monatliches Einkommen:</p>
+    
+    <ul>
+        <li><strong>50% Fixkosten:</strong> Miete, Versicherungen, Essen, Transport</li>
+        <li><strong>30% Lifestyle:</strong> Hobbys, Urlaub, Ausgehen, Shopping</li>
+        <li><strong>20% Sparen/Investieren:</strong> Notgroschen + Aktien</li>
+    </ul>
+    
+    <div class="example-box">
+        <p><strong>Beispiel bei 2.500€ Netto:</strong></p>
+        <ul>
+            <li>1.250€ Fixkosten</li>
+            <li>750€ Lifestyle</li>
+            <li>500€ Sparen/Investieren</li>
+        </ul>
+    </div>
+    
+    <h3>Notgroschen ZUERST!</h3>
+    
+    <div class="important-box">
+        <p><strong>WICHTIG:</strong> Bevor du in Aktien investierst, brauchst du einen Notgroschen!</p>
+        
+        <p><strong>Notgroschen = 3-6 Monatsgehälter</strong></p>
+        <p>Dieses Geld liegt auf dem Tagesgeldkonto (nicht in Aktien!) für Notfälle:</p>
+        
+        <ul>
+            <li>Auto kaputt</li>
+            <li>Jobverlust</li>
+            <li>Waschmaschine ersetzt</li>
+            <li>Unerwartete Arztrechnungen</li>
+        </ul>
+        
+        <p><strong>Warum?</strong> Damit du nicht in einer Krise deine Aktien mit Verlust verkaufen musst!</p>
+    </div>
+    
+    <h3>Sparplan vs. Einmalanlage</h3>
+    
+    <p>Zwei Wege um zu investieren:</p>
+    
+    <div class="example-box">
+        <p><strong>1. Sparplan (Empfohlen für Anfänger!)</strong></p>
+        <p>Monatlich einen festen Betrag automatisch investieren</p>
+        <p><em>Beispiel: Jeden 1. des Monats 200€ in MSCI World ETF</em></p>
+        
+        <p><strong>Vorteile:</strong></p>
+        <ul>
+            <li>✓ Automatisch, kein aktives Handeln nötig</li>
+            <li>✓ Cost-Average-Effect (durchschnittlicher Einkaufspreis)</li>
+            <li>✓ Kein Market-Timing nötig</li>
+            <li>✓ Disziplin durch Automatisierung</li>
+        </ul>
+    </div>
+    
+    <div class="example-box">
+        <p><strong>2. Einmalanlage</strong></p>
+        <p>Großen Betrag auf einmal investieren</p>
+        <p><em>Beispiel: 10.000€ auf einen Schlag</em></p>
+        
+        <p><strong>Vorteile:</strong></p>
+        <ul>
+            <li>✓ Statistisch leicht bessere Rendite</li>
+            <li>✓ Geld arbeitet sofort</li>
+        </ul>
+        
+        <p><strong>Nachteile:</strong></p>
+        <ul>
+            <li>✗ Timing-Risiko (was wenn Crash kommt?)</li>
+            <li>✗ Psychologisch schwerer</li>
+        </ul>
+    </div>
+    
+    <div class="important-box">
+        <p><strong>Meine Empfehlung:</strong> Kombiniere beide! Sparplan laufen lassen + größere Summen schrittweise über 3-6 Monate verteilt investieren.</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 2</h3>
+        
+        <p>Du bist jetzt startklar! Die wichtigsten Punkte:</p>
+        
+        <ul>
+            <li>Broker wählen: Trade Republic oder Scalable Capital für Anfänger</li>
+            <li>Depot eröffnen dauert 10-15 Minuten</li>
+            <li>Freistellungsauftrag nicht vergessen!</li>
+            <li>Limit Order für Anfänger (Kontrolle über Preis)</li>
+            <li>50/30/20 Regel für dein Budget</li>
+            <li>Notgroschen ZUERST (3-6 Monatsgehälter)</li>
+            <li>Sparplan einrichten für Automatisierung</li>
+        </ul>
+    </div>
+    
+    <p class="next-chapter">Im nächsten Kapitel lernst du, wie du Aktien analysierst und die richtigen auswählst!</p>
+            </div>
+            <div class="page" data-page="3">
+<div class="chapter-label">Kapitel 3</div>
+    <h1>Aktienanalyse für Einsteiger</h1>
+    
+    <p>Jetzt wird es analytisch! Du lernst, wie du Aktien bewertest und entscheidest, ob eine Aktie ein gutes Investment ist. Keine Sorge – du musst kein Finanzexperte werden. Ich zeige dir die wichtigsten Kennzahlen, die wirklich zählen.</p>
+    
+    <h2>3.1 Fundamentalanalyse Basics</h2>
+    <p>Die Fundamentalanalyse schaut sich die wirtschaftliche Situation eines Unternehmens an. Ziel: Ist die Aktie unterbewertet oder überbewertet?</p>
+    
+    <h3>KGV - Kurs-Gewinn-Verhältnis</h3>
+    <div class="example-box">
+        <p><strong>Das wichtigste Kennzahl für Anfänger!</strong></p>
+        <p><strong>Formel:</strong> KGV = Aktienkurs ÷ Gewinn pro Aktie</p>
+        <p>Das KGV zeigt, wie viele Jahre es dauert, bis das Unternehmen seinen Aktienkurs als Gewinn erwirtschaftet hat.</p>
+        <p><strong>Beispiel Apple:</strong><br>
+        Aktienkurs: 180$<br>
+        Gewinn pro Aktie: 6$<br>
+        KGV = 180 ÷ 6 = 30</p>
+        <p>Bei gleichbleibendem Gewinn würde es 30 Jahre dauern, bis Apple den Aktienwert erwirtschaftet hat.</p>
+    </div>
+    
+    <p><strong>Richtwerte:</strong></p>
+    <ul>
+        <li>KGV < 15: Günstig/unterbewertet</li>
+        <li>KGV 15-25: Fair bewertet</li>
+        <li>KGV > 25: Teuer/überbewertet</li>
+        <li>KGV > 40: Sehr teuer (oft Tech-Aktien)</li>
+    </ul>
+    
+    <div class="important-box">
+        <p><strong>WICHTIG:</strong> Das KGV ist branchenabhängig! Tech-Aktien haben oft KGV > 30, Banken oft < 10. Vergleiche immer innerhalb der gleichen Branche!</p>
+    </div>
+    
+    <h3>Dividendenrendite</h3>
+    <p><strong>Formel:</strong> Dividendenrendite = (Dividende pro Aktie ÷ Aktienkurs) × 100</p>
+    <p>Die Dividendenrendite zeigt, wie viel Prozent deines Investments du jährlich als Dividende ausgezahlt bekommst.</p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel Coca-Cola:</strong><br>
+        Aktienkurs: 60$<br>
+        Dividende pro Aktie: 1,80$ pro Jahr<br>
+        Dividendenrendite = (1,80 ÷ 60) × 100 = 3%</p>
+    </div>
+    
+    <p><strong>Richtwerte:</strong></p>
+    <ul>
+        <li>0-2%: Niedrig (typisch für Wachstumsaktien)</li>
+        <li>2-4%: Solide</li>
+        <li>4-6%: Hoch (etablierte Unternehmen)</li>
+        <li>>6%: Vorsicht! Könnte Dividenden-Falle sein</li>
+    </ul>
+    
+    <h2>3.2 Die wichtigsten Kennzahlen</h2>
+    
+    <table>
+        <tr>
+            <th>Kennzahl</th>
+            <th>Was zeigt sie?</th>
+            <th>Guter Wert</th>
+        </tr>
+        <tr>
+            <td><strong>KGV</strong></td>
+            <td>Bewertungsniveau</td>
+            <td>15-25 (branchenabhängig)</td>
+        </tr>
+        <tr>
+            <td><strong>Dividendenrendite</strong></td>
+            <td>Jährliche Ausschüttung</td>
+            <td>2-4% solide</td>
+        </tr>
+        <tr>
+            <td><strong>Eigenkapitalquote</strong></td>
+            <td>Finanzstabilität</td>
+            <td>>40%</td>
+        </tr>
+        <tr>
+            <td><strong>Umsatzwachstum</strong></td>
+            <td>Wachstumsdynamik</td>
+            <td>>5% p.a.</td>
+        </tr>
+        <tr>
+            <td><strong>Gewinnmarge</strong></td>
+            <td>Profitabilität</td>
+            <td>>10%</td>
+        </tr>
+    </table>
+    
+    <h3>Wo finde ich diese Daten?</h3>
+    <ul>
+        <li><strong>finanzen.net</strong> (Deutsch, sehr übersichtlich)</li>
+        <li><strong>Yahoo Finance</strong> (Englisch, viele Details)</li>
+        <li><strong>onvista.de</strong> (Deutsch, gute Übersicht)</li>
+        <li><strong>In deiner Broker-App</strong> (Trade Republic, Scalable etc.)</li>
+    </ul>
+    
+    <h3>Checkliste zum Ausdrucken</h3>
+    <p><strong>Nutze diese Checkliste bei jeder Aktienanalyse:</strong></p>
+    <ul>
+        <li>☐ KGV < 25 (oder branchenüblich)</li>
+        <li>☐ Dividendenrendite > 2% (wenn Dividendenaktie)</li>
+        <li>☐ Eigenkapitalquote > 40%</li>
+        <li>☐ Umsatzwachstum positiv (letzte 3 Jahre)</li>
+        <li>☐ Gewinnmarge > 10%</li>
+        <li>☐ Verschuldungsgrad < 100%</li>
+        <li>☐ Free Cashflow positiv</li>
+        <li>☐ Geschäftsmodell verstanden</li>
+    </ul>
+    
+    <div class="important-box">
+        <p><strong>Regel:</strong> Mindestens 6 von 8 Punkten sollten erfüllt sein!</p>
+    </div>
+    
+    <h2>3.3 Branchen & Sektoren verstehen</h2>
+    
+    <h3>Die wichtigsten Sektoren</h3>
+    
+    <p><strong>1. Technologie (Tech)</strong><br>
+    Beispiele: Apple, Microsoft, Google, SAP<br>
+    Merkmale: Hohes Wachstum, hohes KGV (oft >30), niedrige Dividenden<br>
+    Risiko: Volatil, anfällig für Zinsen<br>
+    Chance: Enorme Wachstumspotenziale</p>
+    
+    <p><strong>2. Gesundheit/Pharma</strong><br>
+    Beispiele: Johnson & Johnson, Pfizer, Bayer<br>
+    Merkmale: Defensiv, stabile Nachfrage, mittlere Dividenden<br>
+    Risiko: Regulierung, Patent-Abläufe<br>
+    Chance: Alternde Gesellschaft = wachsende Nachfrage</p>
+    
+    <p><strong>3. Finanzen/Banken</strong><br>
+    Beispiele: JPMorgan, Deutsche Bank, Allianz<br>
+    Merkmale: Niedriges KGV, mittlere Dividenden<br>
+    Risiko: Zinssensitiv, Regulierung<br>
+    Chance: Steigende Zinsen = höhere Margen</p>
+    
+    <h3>Zyklisch vs. Defensiv</h3>
+    
+    <p><strong>Zyklische Aktien</strong> (schwanken mit der Konjunktur):<br>
+    • Automobilhersteller (BMW, VW)<br>
+    • Reise & Tourismus<br>
+    • Luxusgüter<br>
+    → In Boom-Zeiten stark, in Krisen schwach</p>
+    
+    <p><strong>Defensive Aktien</strong> (stabil auch in Krisen):<br>
+    • Lebensmittel (Nestlé)<br>
+    • Pharma<br>
+    • Versorger (Strom, Wasser)<br>
+    → Menschen brauchen sie immer</p>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 3</h3>
+        <ul>
+            <li>KGV zeigt Bewertungsniveau (15-25 = fair)</li>
+            <li>Dividendenrendite = jährliche Ausschüttung</li>
+            <li>Eigenkapitalquote zeigt Finanzstabilität (>40%)</li>
+            <li>Nutze finanzen.net oder Yahoo Finance</li>
+            <li>Checkliste: 6/8 Punkte erfüllt = gute Aktie</li>
+            <li>Branchenvergleich ist wichtig</li>
+            <li>Zyklisch vs. Defensiv verstehen</li>
+        </ul>
+    </div>
+    
+    <p class="next-chapter">Im nächsten Kapitel lernst du die besten Strategien für langfristigen Erfolg!</p>
+            </div>
+            <div class="page" data-page="4">
+<div class="chapter-label">Kapitel 4</div>
+    <h1>Strategien für langfristigen Erfolg</h1>
+    
+    <p>Jetzt wird es richtig wertvoll! In diesem Kapitel lernst du die Strategien, die den Unterschied zwischen Gewinner und Verlierer machen. Das sind keine theoretischen Konzepte – das sind Battle-tested Methoden, die funktionieren.</p>
+    
+    <h2>4.1 Die 72-Stunden-Regel</h2>
+    
+    <p><strong style="color: #a0927d;">Die vielleicht wichtigste Regel überhaupt!</strong></p>
+    
+    <p>Emotionales Trading ist der Killer Nr. 1 für Anfänger. Du siehst eine Aktie +50% steigen, alle reden darüber, FOMO kickt rein – und du kaufst auf dem Höhepunkt. Dann fällt sie -30% und du verkaufst panisch mit Verlust.</p>
+    
+    <p><em>Sound familiar?</em></p>
+    
+    <h3>Die Regel</h3>
+    
+    <div class="rule-box">
+        <strong>Warte 72 Stunden bevor du eine Aktie kaufst!</strong>
+    </div>
+    
+    <p><strong>So funktioniert's:</strong></p>
+    
+    <div class="example-box">
+        <p><strong>1. Du siehst eine interessante Aktie</strong><br>
+        → Nicht sofort kaufen!</p>
+        
+        <p><strong>2. Schreibe auf:</strong><br>
+        • Name der Aktie<br>
+        • Aktueller Kurs<br>
+        • Warum du sie kaufen willst</p>
+        
+        <p><strong>3. Warte 72 Stunden (3 Tage)</strong><br>
+        → Keine Charts checken!<br>
+        → Kein Reddit/Twitter lesen!</p>
+        
+        <p><strong>4. Nach 72 Stunden:</strong><br>
+        Willst du sie immer noch? → Kaufen<br>
+        Zweifel? → Nicht kaufen</p>
+    </div>
+    
+    <h3>Warum funktioniert das?</h3>
+    
+    <p><strong>Psychologie:</strong> FOMO und Hype-Emotionen klingen nach 72 Stunden ab. Du triffst rationale statt emotionale Entscheidungen.</p>
+    
+    <p><strong>Praktisch:</strong> Du vermeidest Käufe auf dem Höhepunkt einer Hype-Welle.</p>
+    
+    <p><strong>Statistik:</strong> Über 80% der emotionalen Kaufimpulse verschwinden nach 3 Tagen.</p>
+    
+    <h3>Praxis-Beispiel</h3>
+    
+    <div class="example-box">
+        <p><strong>GameStop Hype 2021:</strong></p>
+        <p><strong>Tag 1:</strong> Reddit explodiert, GameStop +150%, du willst kaufen bei 300$</p>
+        <p><strong>72h später:</strong> Kurs bei 90$, Hype vorbei</p>
+        <p><strong style="color: #27ae60;">Ergebnis:</strong> Du hast 210$ Verlust pro Aktie vermieden!</p>
+    </div>
+    
+    <h3>Mentale Checkliste</h3>
+    
+    <p>Stelle dir diese Fragen NACH 72 Stunden:</p>
+    <ul>
+        <li>Verstehe ich das Geschäftsmodell wirklich?</li>
+        <li>Würde ich kaufen, wenn niemand darüber spricht?</li>
+        <li>Sind die Fundamentaldaten solide?</li>
+        <li>Kann ich 5-10 Jahre halten?</li>
+        <li>Ist das ein Trend oder ein solides Investment?</li>
+    </ul>
+    
+    <div class="important-box">
+        <p><strong style="color: #e74c3c;">Wenn du auch nur EINE Frage mit Nein beantwortest: NICHT KAUFEN!</strong></p>
+    </div>
+    
+    <h2>4.2 Dollar-Cost-Averaging (DCA)</h2>
+    
+    <p>Die einfachste und gleichzeitig mächtigste Strategie für Anfänger!</p>
+    
+    <h3>Was ist Dollar-Cost-Averaging?</h3>
+    
+    <p><strong>Prinzip:</strong> Du investierst regelmäßig einen festen Betrag – egal ob der Markt steigt oder fällt.</p>
+    
+    <p>Beispiel: Jeden Monat 200€ in den MSCI World ETF</p>
+    
+    <p><strong>Warum funktioniert das?</strong></p>
+    <ul>
+        <li>Bei hohen Kursen kaufst du weniger Anteile</li>
+        <li>Bei niedrigen Kursen kaufst du mehr Anteile</li>
+        <li>→ Dein Durchschnittspreis glättet sich über die Zeit!</li>
+    </ul>
+    
+    <h3>Mathematik-Beispiel</h3>
+    
+    <p><strong>Du investierst 6 Monate lang jeden Monat 200€:</strong></p>
+    
+    <table>
+        <tr>
+            <th>Monat</th>
+            <th>Kurs/Anteil</th>
+            <th>Investment</th>
+            <th>Anteile</th>
+        </tr>
+        <tr>
+            <td>Januar</td>
+            <td>100€</td>
+            <td>200€</td>
+            <td>2,00</td>
+        </tr>
+        <tr>
+            <td>Februar</td>
+            <td>80€</td>
+            <td>200€</td>
+            <td>2,50</td>
+        </tr>
+        <tr>
+            <td>März</td>
+            <td>90€</td>
+            <td>200€</td>
+            <td>2,22</td>
+        </tr>
+        <tr>
+            <td>April</td>
+            <td>110€</td>
+            <td>200€</td>
+            <td>1,82</td>
+        </tr>
+        <tr>
+            <td>Mai</td>
+            <td>95€</td>
+            <td>200€</td>
+            <td>2,11</td>
+        </tr>
+        <tr>
+            <td>Juni</td>
+            <td>105€</td>
+            <td>200€</td>
+            <td>1,90</td>
+        </tr>
+        <tr style="background: rgba(160, 146, 125, 0.2);">
+            <td><strong>GESAMT</strong></td>
+            <td><strong>Ø 96,67€</strong></td>
+            <td><strong>1.200€</strong></td>
+            <td><strong>12,55</strong></td>
+        </tr>
+    </table>
+    
+    <div class="example-box">
+        <p><strong>Ergebnis:</strong><br>
+        Durchschnittlicher Kaufpreis: 96,67€ pro Anteil<br>
+        Hätte ich alles im Januar für 100€ gekauft: 12 Anteile<br>
+        Mit DCA: 12,55 Anteile</p>
+        <p><strong style="color: #27ae60;">→ Durch Streuung besserer Durchschnittspreis!</strong></p>
+    </div>
+    
+    <h3>Vorteile von DCA</h3>
+    
+    <ul>
+        <li><strong>Kein Market-Timing nötig:</strong> Du musst nicht den perfekten Zeitpunkt treffen</li>
+        <li><strong>Automatisierung:</strong> Einmal einrichten, läuft von alleine</li>
+        <li><strong>Emotionslos:</strong> Keine Angst, keine Gier – einfach Schema F</li>
+        <li><strong>Crashes nutzen:</strong> Wenn Markt fällt, kaufst du automatisch günstiger</li>
+        <li><strong>Disziplin:</strong> Du bleibst dabei, auch wenn's schwankt</li>
+    </ul>
+    
+    <h3>So setzt du DCA um</h3>
+    
+    <ol>
+        <li><strong>Betrag festlegen:</strong> Z.B. 200€/Monat</li>
+        <li><strong>ETF/Aktie wählen:</strong> Z.B. MSCI World ETF</li>
+        <li><strong>Sparplan einrichten:</strong> Bei Trade Republic/Scalable</li>
+        <li><strong>Ausführungstag:</strong> Z.B. jeden 1. des Monats</li>
+        <li><strong>Laufen lassen:</strong> Nicht ständig checken, einfach weiterlaufen lassen!</li>
+    </ol>
+    
+    <h2>4.3 Dividendenstrategie</h2>
+    
+    <p>Passives Einkommen durch Dividenden – der Traum vieler Investoren!</p>
+    
+    <h3>Was sind Dividenden?</h3>
+    
+    <p>Dividenden sind Gewinnausschüttungen von Unternehmen an ihre Aktionäre.</p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong><br>
+        Du besitzt 100 Coca-Cola Aktien<br>
+        Dividende: 1,80$ pro Aktie pro Jahr<br>
+        → Du bekommst 180$ ausgezahlt (meist quartalsweise 45$)</p>
+    </div>
+    
+    <h3>Dividenden-Aristokraten</h3>
+    
+    <p><strong>Das sind die Könige der Dividenden!</strong></p>
+    
+    <p><strong>Definition:</strong> Unternehmen, die ihre Dividende mindestens 25 Jahre in Folge erhöht haben.</p>
+    
+    <p>Warum sind sie besonders? Sie haben Krisen überstanden und zahlen zuverlässig!</p>
+    
+    <h3>Top 6 deutsche Dividenden-Aktien 2026</h3>
+    
+    <table>
+        <tr>
+            <th>Unternehmen</th>
+            <th>Branche</th>
+            <th>Div.rendite</th>
+            <th>KGV</th>
+        </tr>
+        <tr>
+            <td><strong>Allianz</strong></td>
+            <td>Versicherung</td>
+            <td>4,8%</td>
+            <td>10,2</td>
+        </tr>
+        <tr>
+            <td><strong>Munich Re</strong></td>
+            <td>Rückversicherung</td>
+            <td>4,5%</td>
+            <td>11,5</td>
+        </tr>
+        <tr>
+            <td><strong>BASF</strong></td>
+            <td>Chemie</td>
+            <td>5,2%</td>
+            <td>9,8</td>
+        </tr>
+        <tr>
+            <td><strong>Mercedes-Benz</strong></td>
+            <td>Automobil</td>
+            <td>7,1%</td>
+            <td>6,2</td>
+        </tr>
+        <tr>
+            <td><strong>Talanx</strong></td>
+            <td>Versicherung</td>
+            <td>4,3%</td>
+            <td>8,9</td>
+        </tr>
+        <tr>
+            <td><strong>E.ON</strong></td>
+            <td>Energie/Versorger</td>
+            <td>4,9%</td>
+            <td>12,3</td>
+        </tr>
+    </table>
+    
+    <h3>Dividenden reinvestieren oder auszahlen?</h3>
+    
+    <p><strong>Option 1: Reinvestieren (Thesaurieren)</strong><br>
+    Dividenden automatisch wieder anlegen<br>
+    <strong style="color: #27ae60;">Vorteil:</strong> Zinseszins-Effekt! Dein Depot wächst schneller<br>
+    <strong style="color: #e74c3c;">Nachteil:</strong> Kein Cash-Flow</p>
+    
+    <p><strong>Option 2: Auszahlen lassen</strong><br>
+    Dividenden auf Girokonto überweisen<br>
+    <strong style="color: #27ae60;">Vorteil:</strong> Passives Einkommen! Du bekommst regelmäßig Geld<br>
+    <strong style="color: #e74c3c;">Nachteil:</strong> Geringeres Wachstum</p>
+    
+    <div class="important-box">
+        <p><strong style="color: #a0927d;">Meine Empfehlung:</strong><br>
+        Aufbauphase (jung, < 40 Jahre): Reinvestieren!<br>
+        Entnahmephase (Rente, finanziell frei): Auszahlen!</p>
+    </div>
+    
+    <h3>Beispiel-Rechnung: Dividenden-Portfolio</h3>
+    
+    <div class="example-box">
+        <p><strong>Ziel: 1.000€ passives Einkommen pro Monat</strong></p>
+        
+        <p>Bei 4% Dividendenrendite brauchst du:<br>
+        12.000€ / Jahr ÷ 0,04 = <strong>300.000€ Portfolio</strong></p>
+        
+        <p>Bei 5% Dividendenrendite:<br>
+        12.000€ / Jahr ÷ 0,05 = <strong>240.000€ Portfolio</strong></p>
+        
+        <p><strong>Tipp:</strong> Mit monatlichem Sparplan von 500€ und 7% Rendite erreichst du 300.000€ in ca. 23 Jahren!</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 4</h3>
+        <p><strong>Die drei Power-Strategien für deinen Erfolg:</strong></p>
+        <ul>
+            <li><strong>72-Stunden-Regel:</strong> Warte 72h vor jedem Kauf → keine emotionalen Fehlkäufe</li>
+            <li><strong>Dollar-Cost-Averaging:</strong> Monatlicher Sparplan → besserer Durchschnittspreis, kein Timing</li>
+            <li><strong>Dividendenstrategie:</strong> Passives Einkommen aufbauen → 4-5% Rendite</li>
+            <li>Dividenden-Aristokraten = zuverlässige Zahler</li>
+            <li>Reinvestieren in Aufbauphase, Auszahlen in Entnahmephase</li>
+            <li>300.000€ Portfolio = 1.000€/Monat bei 4% Dividende</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel lernst du Risikomanagement und wie du die häufigsten Fehler vermeidest!</p>
+            </div>
+            <div class="page" data-page="5">
+<div class="chapter-label">Kapitel 5</div>
+    <h1>Risikomanagement & Fehler vermeiden</h1>
+    
+    <p><strong>Das wichtigste Kapitel für dein Geld!</strong> Es geht nicht nur darum Gewinne zu machen, sondern vor allem darum, KEINE Verluste zu machen. Die meisten Anfänger verlieren Geld durch vermeidbare Fehler. Nicht mit dir!</p>
+    
+    <h2>5.1 Die 10 häufigsten Anfängerfehler</h2>
+    
+    <p>Diese Fehler kosten Anfänger tausende Euro. Lerne aus den Fehlern anderer!</p>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #1: Emotionales Trading (FOMO)</h4>
+        <p><strong>Das Problem:</strong><br>
+        Eine Aktie steigt +50% in einer Woche. Alle reden darüber. Du hast Angst etwas zu verpassen (FOMO = Fear Of Missing Out) und kaufst auf dem Höhepunkt.</p>
+        <p><strong>Resultat:</strong> Aktie fällt -30%, du verkaufst panisch mit Verlust.</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>72-Stunden-Regel nutzen!</li>
+            <li>Nie auf Hype-Wellen kaufen</li>
+            <li>Frage dich: Würde ich kaufen wenn niemand darüber spricht?</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #2: Keine Diversifikation</h4>
+        <p><strong>Das Problem:</strong><br>
+        Alles Geld in 1-3 Aktien investieren. Wenn eine abstürzt, verlierst du massiv.</p>
+        <p><strong>Beispiel Wirecard:</strong> Wer 100% in Wirecard hatte → -100% Totalverlust</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Mindestens 10-15 verschiedene Aktien</li>
+            <li>Oder einfach: MSCI World ETF (1.600+ Aktien)</li>
+            <li>Verschiedene Branchen & Länder</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #3: Zu viele Einzelaktien</h4>
+        <p><strong>Das Problem:</strong><br>
+        50+ verschiedene Aktien im Depot. Du verlierst den Überblick und kannst keine sinnvolle Analyse mehr machen.</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Sweet Spot: 15-25 Aktien</li>
+            <li>Plus 1-2 ETFs als Basis</li>
+            <li>Qualität statt Quantität!</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #4: Hype-Aktien nachjagen</h4>
+        <p><strong>Das Problem:</strong><br>
+        Reddit, TikTok, YouTube: "Diese Aktie geht 1000% hoch!" Du kaufst blind.</p>
+        <p><strong>Klassiker:</strong></p>
+        <ul>
+            <li>Meme-Stocks (GameStop, AMC)</li>
+            <li>Penny Stocks</li>
+            <li>"Die nächste Tesla"</li>
+        </ul>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Eigene Analyse machen!</li>
+            <li>Geschäftsmodell verstehen</li>
+            <li>Kennzahlen-Checkliste aus Kapitel 3 nutzen</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #5: Verluste nicht akzeptieren</h4>
+        <p><strong>Das Problem:</strong><br>
+        Aktie fällt -20%. Du hoffst auf Erholung und hältst. Sie fällt weiter auf -50%, -70%. Du willst "nicht mit Verlust verkaufen" und sitzt ewig auf toten Aktien.</p>
+        <p><strong>Psychologie:</strong> Loss Aversion – Verluste schmerzen 2x mehr als Gewinne freuen</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Stop-Loss setzen (z.B. bei -15%)</li>
+            <li>Verlust = Teil des Spiels</li>
+            <li>Frage: Würde ich JETZT zu diesem Preis kaufen? Nein? → Verkaufen!</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #6: Zu hohe Gebühren zahlen</h4>
+        <p><strong>Das Problem:</strong><br>
+        Hausbank nutzen: 10€ + 0,5% pro Order = bei 1.000€ Order = 15€ Gebühren!<br>
+        Bei 10 Orders pro Jahr = 150€ weg, nur für Gebühren.</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Neobroker nutzen (Trade Republic, Scalable: 1€/Order)</li>
+            <li>Bei gleichen Orders: 10€ statt 150€ = 140€ gespart!</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #7: Keine Strategie haben</h4>
+        <p><strong>Das Problem:</strong><br>
+        Heute Dividenden-Aktien kaufen, morgen Growth-Tech, übermorgen Value-Aktien. Keine Linie, kein Plan.</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>EINE Strategie wählen (z.B. DCA + Dividenden)</li>
+            <li>Strategie schriftlich festhalten</li>
+            <li>Dranbleiben, auch wenn's schwankt!</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #8: Market-Timing versuchen</h4>
+        <p><strong>Das Problem:</strong><br>
+        "Ich warte noch auf den Crash, dann kaufe ich billig!" → Markt steigt 30%, du verpasst alles.</p>
+        <p><strong>Statistik:</strong> Die 10 besten Börsentage zu verpassen kostet dich 50% deiner Rendite!</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Time IN the market beats Timing THE market</li>
+            <li>DCA-Sparplan = kein Timing nötig</li>
+            <li>Früh anfangen > perfekten Zeitpunkt warten</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #9: Dividenden-Falle</h4>
+        <p><strong>Das Problem:</strong><br>
+        Aktie hat 8% Dividende – wow! Du kaufst. Dann streicht das Unternehmen die Dividende oder geht pleite.</p>
+        <p><strong>Warnsignale:</strong></p>
+        <ul>
+            <li>Dividendenrendite >6%</li>
+            <li>Fallender Aktienkurs</li>
+            <li>Ausschüttung höher als Gewinn</li>
+        </ul>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Dividenden-Aristokraten bevorzugen</li>
+            <li>Fundamentaldaten checken</li>
+            <li>Lieber 3-4% stabil als 8% riskant</li>
+        </ul>
+    </div>
+    
+    <div class="error-box">
+        <h4>❌ Fehler #10: Zu schnell verkaufen</h4>
+        <p><strong>Das Problem:</strong><br>
+        Aktie steigt +20%, du verkaufst aus Angst vor Verlust. Dann steigt sie +200% weiter.</p>
+        <p><strong>Beispiel:</strong> Amazon-Aktie 2015 für 300$ gekauft → bei 400$ (+33%) verkauft → heute 3.500$ (+1.000% verpasst!)</p>
+    </div>
+    
+    <div class="solution-box">
+        <p><strong>Die Lösung:</strong></p>
+        <ul>
+            <li>Buy & Hold Mentalität</li>
+            <li>Nur verkaufen wenn sich Fundamentaldaten verschlechtern</li>
+            <li>Gewinne laufen lassen!</li>
+        </ul>
+    </div>
+    
+    <h2>5.2 Portfolio-Diversifikation</h2>
+    
+    <p><strong>Die goldene Regel:</strong> Lege nicht alle Eier in einen Korb!</p>
+    
+    <h3>Wie viele Aktien brauchst du?</h3>
+    
+    <div class="important-box">
+        <p><strong>Wissenschaft:</strong> Ab 15-20 Aktien ist das unsystematische Risiko (Einzelaktienrisiko) zu 80-90% eliminiert.</p>
+        
+        <p><strong>Praktisch:</strong></p>
+        <ul>
+            <li>10-15 Aktien: Minimum</li>
+            <li>15-25 Aktien: Sweet Spot ✅</li>
+            <li>25-40 Aktien: Gut diversifiziert</li>
+            <li>40+ Aktien: Überdiversifikation, schwer zu managen</li>
+        </ul>
+    </div>
+    
+    <h3>Regionen diversifizieren</h3>
+    
+    <p>Verteile dein Geld auf verschiedene Länder:</p>
+    
+    <table>
+        <tr>
+            <th>Region</th>
+            <th>Empfohlener Anteil</th>
+        </tr>
+        <tr>
+            <td><strong>USA</strong></td>
+            <td>40-50%</td>
+        </tr>
+        <tr>
+            <td><strong>Europa</strong></td>
+            <td>20-30%</td>
+        </tr>
+        <tr>
+            <td><strong>Asien</strong></td>
+            <td>15-25%</td>
+        </tr>
+        <tr>
+            <td><strong>Rest der Welt</strong></td>
+            <td>5-10%</td>
+        </tr>
+    </table>
+    
+    <p><strong>Einfacher Weg:</strong> MSCI World ETF = automatisch 88% entwickelte Länder weltweit!</p>
+    
+    <h3>Branchen-Mix</h3>
+    
+    <p>Verteile auf verschiedene Sektoren:</p>
+    
+    <table>
+        <tr>
+            <th>Sektor</th>
+            <th>Empfohlener Anteil</th>
+        </tr>
+        <tr>
+            <td><strong>Technologie</strong></td>
+            <td>20-30%</td>
+        </tr>
+        <tr>
+            <td><strong>Gesundheit/Pharma</strong></td>
+            <td>15-20%</td>
+        </tr>
+        <tr>
+            <td><strong>Finanzen</strong></td>
+            <td>10-15%</td>
+        </tr>
+        <tr>
+            <td><strong>Konsum</strong></td>
+            <td>10-15%</td>
+        </tr>
+        <tr>
+            <td><strong>Industrie</strong></td>
+            <td>10-15%</td>
+        </tr>
+        <tr>
+            <td><strong>Energie</strong></td>
+            <td>5-10%</td>
+        </tr>
+        <tr>
+            <td><strong>Andere Sektoren</strong></td>
+            <td>10-20%</td>
+        </tr>
+    </table>
+    
+    <h3>Beispiel-Portfolios</h3>
+    
+    <div class="example-box">
+        <h4>Portfolio 1: Konservativ (risikoarm)</h4>
+        <ul>
+            <li>70% MSCI World ETF</li>
+            <li>20% Dividenden-Aristokraten (5 Aktien)</li>
+            <li>10% Tagesgeld</li>
+        </ul>
+        <p><strong>Ziel:</strong> Stabile Rendite, wenig Volatilität</p>
+    </div>
+    
+    <div class="example-box">
+        <h4>Portfolio 2: Ausgewogen (balanced)</h4>
+        <ul>
+            <li>50% MSCI World ETF</li>
+            <li>30% Einzelaktien (15 Stück, gemischt)</li>
+            <li>20% Dividenden-Aktien</li>
+        </ul>
+        <p><strong>Ziel:</strong> Balance zwischen Sicherheit & Rendite</p>
+    </div>
+    
+    <div class="example-box">
+        <h4>Portfolio 3: Risikoreich (aggressiv)</h4>
+        <ul>
+            <li>30% MSCI World ETF</li>
+            <li>50% Tech-Wachstumsaktien (20 Stück)</li>
+            <li>20% Emerging Markets</li>
+        </ul>
+        <p><strong>Ziel:</strong> Maximale Rendite, hohe Schwankungen OK</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 5</h3>
+        <p><strong>Schütze dein Geld vor vermeidbaren Fehlern!</strong></p>
+        <ul>
+            <li>Die 10 häufigsten Fehler kennen & vermeiden</li>
+            <li>#1 Fehler: Emotionales Trading (FOMO)</li>
+            <li>Diversifikation: 15-25 Aktien optimal</li>
+            <li>Regionen: USA 40-50%, Europa 20-30%, Asien 15-25%</li>
+            <li>Branchen-Mix beachten (nicht alles Tech!)</li>
+            <li>Beispiel-Portfolios: Konservativ, Ausgewogen, Risikoreich</li>
+            <li>Eigenes Risikoprofil definieren</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Im nächsten Kapitel: Steueroptimierung – wie du legal Steuern sparst!</p>
+            </div>
+            <div class="page" data-page="6">
+<div class="chapter-label">Kapitel 6</div>
+    <h1>Steueroptimierung</h1>
+    
+    <p>Steuern sind unvermeidbar – aber du kannst sie legal minimieren! In diesem Kapitel lernst du, wie du als Anleger das Maximum aus deinen Freibeträgen holst und tausende Euro sparst.</p>
+    
+    <div class="disclaimer">
+        <strong>Wichtig:</strong> Ich bin kein Steuerberater! Dies sind allgemeine Informationen. Bei komplexen Fragen konsultiere einen Steuerberater.
+    </div>
+    
+    <h2>6.1 Abgeltungssteuer verstehen</h2>
+    
+    <p>In Deutschland werden Kapitalerträge (Zinsen, Dividenden, Kursgewinne) mit der Abgeltungssteuer besteuert.</p>
+    
+    <h3>Die Berechnung</h3>
+    
+    <div class="example-box">
+        <p><strong>Abgeltungssteuer = 25% + Solidaritätszuschlag</strong></p>
+        
+        <p>25,00% Abgeltungssteuer<br>
+        + 5,5% Soli (auf die 25%) = 1,375%<br>
+        + ggf. 8-9% Kirchensteuer = 2-2,25%</p>
+        
+        <p><strong>Gesamt:</strong><br>
+        Ohne Kirchensteuer: <strong>26,375%</strong><br>
+        Mit Kirchensteuer: <strong>~28%</strong></p>
+    </div>
+    
+    <h3>Beispiel-Rechnung</h3>
+    
+    <div class="example-box">
+        <p><strong>Du verkaufst Aktien mit 5.000€ Gewinn:</strong></p>
+        
+        <p><strong>Ohne Freibetrag:</strong><br>
+        5.000€ × 26,375% = 1.318,75€ Steuern<br>
+        → Bleiben dir: 3.681,25€</p>
+        
+        <p><strong>Mit Freibetrag (1.000€):</strong><br>
+        (5.000€ - 1.000€) × 26,375% = 1.055€ Steuern<br>
+        → Bleiben dir: 3.945€</p>
+        
+        <p><strong style="color: #27ae60;">Ersparnis durch Freibetrag: 263,75€!</strong></p>
+    </div>
+    
+    <h3>Was wird besteuert?</h3>
+    
+    <table>
+        <tr>
+            <th>Art</th>
+            <th>Beschreibung</th>
+        </tr>
+        <tr>
+            <td><strong>Kursgewinne</strong></td>
+            <td>Verkaufst du Aktien mit Gewinn</td>
+        </tr>
+        <tr>
+            <td><strong>Dividenden</strong></td>
+            <td>Ausschüttungen von Unternehmen</td>
+        </tr>
+        <tr>
+            <td><strong>Zinsen</strong></td>
+            <td>Tagesgeld, Festgeld etc.</td>
+        </tr>
+        <tr>
+            <td><strong>Fondsgewinne</strong></td>
+            <td>Bei ETFs & Fonds</td>
+        </tr>
+    </table>
+    
+    <div class="important-box">
+        <p><strong>Wichtig:</strong> Die Steuer wird automatisch von deinem Broker abgezogen und ans Finanzamt überwiesen. Du musst nichts in der Steuererklärung angeben (außer bei ausländischen Brokern).</p>
+    </div>
+    
+    <h2>6.2 Freistellungsauftrag - 1.000€ geschenkt!</h2>
+    
+    <p><strong style="color: #a0927d;">DAS wichtigste Tool zur Steueroptimierung!</strong></p>
+    
+    <h3>Was ist der Sparerpauschbetrag?</h3>
+    
+    <p>Jeder Bürger in Deutschland hat einen steuerfreien Freibetrag für Kapitalerträge:</p>
+    
+    <div class="success-box">
+        <p><strong>Einzelperson:</strong> 1.000€ pro Jahr (ab 2023)<br>
+        <strong>Verheiratete/Lebenspartner:</strong> 2.000€ pro Jahr</p>
+        
+        <p><strong>Das bedeutet:</strong> Die ersten 1.000€ Gewinn/Dividenden sind steuerfrei!</p>
+    </div>
+    
+    <h3>Wie nutzt du den Freibetrag?</h3>
+    
+    <p><strong>Schritt 1: Freistellungsauftrag erteilen</strong><br>
+    Bei deinem Broker (Trade Republic, Scalable etc.) unter 'Einstellungen' → 'Freistellungsauftrag'</p>
+    
+    <p><strong>Schritt 2: Betrag eintragen</strong><br>
+    Wenn du nur EINEN Broker hast: 1.000€ eintragen<br>
+    Wenn du MEHRERE Broker hast: Betrag aufteilen (z.B. 500€ + 500€)</p>
+    
+    <h3>Freibetrag aufteilen (mehrere Broker)</h3>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong> Du hast Trade Republic UND Scalable Capital</p>
+        
+        <p><strong>Option 1: Strategisch verteilen</strong><br>
+        Trade Republic (Dividenden-Aktien): 700€<br>
+        Scalable (Wachstumsaktien): 300€</p>
+        
+        <p><strong>Option 2: Gleich verteilen</strong><br>
+        Trade Republic: 500€<br>
+        Scalable: 500€</p>
+        
+        <p><strong style="color: #e74c3c;">Wichtig: Die Summe darf 1.000€ NICHT überschreiten!</strong></p>
+    </div>
+    
+    <h3>Häufiger Fehler</h3>
+    
+    <div class="warning-box">
+        <p><strong>❌ FALSCH:</strong> Bei jedem Broker 1.000€ eintragen (= 2.000€ gesamt)<br>
+        → Das Finanzamt bemerkt es und du zahlst Steuern + Strafe!</p>
+        
+        <p><strong>✓ RICHTIG:</strong> Gesamt maximal 1.000€ über alle Broker verteilen</p>
+    </div>
+    
+    <h2>6.3 Verlustverrechnung nutzen</h2>
+    
+    <p>Verluste sind ärgerlich – aber steuerlich Gold wert!</p>
+    
+    <h3>Wie funktioniert's?</h3>
+    
+    <p><strong>Prinzip:</strong> Verluste werden mit Gewinnen verrechnet. Du zahlst nur Steuern auf den Nettogewinn.</p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong><br>
+        Aktie A: +3.000€ Gewinn<br>
+        Aktie B: -1.000€ Verlust</p>
+        
+        <p><strong>Steuerpflichtig:</strong> 3.000€ - 1.000€ = 2.000€<br>
+        Steuern: 2.000€ × 26,375% = 527,50€</p>
+        
+        <p><strong>Ohne Verlustverrechnung:</strong><br>
+        Steuern auf 3.000€ = 791,25€</p>
+        
+        <p><strong style="color: #27ae60;">Ersparnis: 263,75€!</strong></p>
+    </div>
+    
+    <h3>Verluste über Jahre mitnehmen</h3>
+    
+    <p><strong>Verluste verfallen nicht!</strong> Du kannst sie ins nächste Jahr übertragen.</p>
+    
+    <div class="example-box">
+        <p><strong>Beispiel:</strong></p>
+        
+        <p><strong>2024:</strong> -2.000€ Verlust, 0€ Gewinn<br>
+        → Verlustvortrag: 2.000€</p>
+        
+        <p><strong>2025:</strong> +5.000€ Gewinn<br>
+        Verrechnung: 5.000€ - 2.000€ = 3.000€ steuerpflichtig</p>
+        
+        <p><strong style="color: #27ae60;">Du sparst: 2.000€ × 26,375% = 527,50€ Steuern!</strong></p>
+    </div>
+    
+    <h3>Taktik: Verluste vor Jahresende realisieren</h3>
+    
+    <p><strong>Tax Loss Harvesting</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Situation:</strong> Ende Dezember, du hast 4.000€ Gewinn gemacht und 1 Aktie liegt bei -800€ Verlust.</p>
+        
+        <p><strong>Strategie:</strong><br>
+        Verkaufe die Verlust-Aktie noch vor Jahresende (31.12.)<br>
+        → Verrechnung: 4.000€ - 800€ = 3.200€ steuerpflichtig</p>
+        
+        <p><strong>Optional:</strong> Am 2. Januar wieder kaufen, wenn du an die Aktie glaubst</p>
+        
+        <p><strong style="color: #27ae60;">Vorteil: Du sparst 800€ × 26,375% = 211€ Steuern!</strong></p>
+    </div>
+    
+    <h2>6.4 Legale Steuertricks</h2>
+    
+    <p>Alle Tricks sind 100% legal – nutze sie!</p>
+    
+    <h3>Trick #1: Günstigerprüfung</h3>
+    
+    <p>Wenn dein persönlicher Steuersatz unter 25% liegt, kannst du die Günstigerprüfung beantragen.</p>
+    
+    <p><strong>Für wen sinnvoll?</strong></p>
+    <ul>
+        <li>Studenten</li>
+        <li>Geringverdiener</li>
+        <li>Teilzeitbeschäftigte</li>
+    </ul>
+    
+    <p><strong>So geht's:</strong> In der Steuererklärung 'Anlage KAP' ausfüllen → Finanzamt prüft automatisch</p>
+    
+    <h3>Trick #2: Depotübertrag (steuerfrei!)</h3>
+    
+    <p>Du kannst Aktien steuerfrei zwischen Depots übertragen.</p>
+    
+    <p><strong>Nutzen:</strong></p>
+    <ul>
+        <li>Broker wechseln ohne Verkauf (keine Steuern!)</li>
+        <li>Depot auf Partner/Kind übertragen</li>
+    </ul>
+    
+    <div class="important-box">
+        <p><strong>Wichtig:</strong> Der ursprüngliche Kaufpreis bleibt erhalten!</p>
+    </div>
+    
+    <h3>Trick #3: Thesaurierende ETFs</h3>
+    
+    <p><strong>Thesaurierend vs. Ausschüttend:</strong></p>
+    
+    <div class="example-box">
+        <p><strong>Ausschüttend:</strong> Dividenden werden ausgezahlt → sofort steuerpflichtig</p>
+        
+        <p><strong>Thesaurierend:</strong> Dividenden bleiben im ETF → Steuern erst beim Verkauf</p>
+        
+        <p><strong style="color: #27ae60;">Vorteil:</strong> Steuerstundung = mehr Geld arbeitet länger für dich!</p>
+    </div>
+    
+    <h3>Trick #4: Kirchensteuer sparen</h3>
+    
+    <p><em>Kontrovers, aber legal:</em></p>
+    
+    <div class="example-box">
+        <p>Kirchensteuer = 8-9% zusätzlich auf Kapitalerträge<br>
+        Bei 10.000€ Gewinn = 200-225€ mehr Steuern</p>
+        
+        <p><strong>Option:</strong> Aus der Kirche austreten</p>
+        
+        <p><strong style="color: #e74c3c;">ABER:</strong> Das ist eine persönliche Entscheidung! Überlege gut.</p>
+    </div>
+    
+    <div class="summary-box">
+        <h3>Zusammenfassung Kapitel 6</h3>
+        <p><strong>Steueroptimierung ist legal und wichtig!</strong></p>
+        <ul>
+            <li>Abgeltungssteuer: 25% + 1,375% Soli = 26,375%</li>
+            <li>Freistellungsauftrag: 1.000€ steuerfrei nutzen!</li>
+            <li>Bei mehreren Brokern: Freibetrag aufteilen</li>
+            <li>Verlustverrechnung: Verluste mit Gewinnen verrechnen</li>
+            <li>Tax Loss Harvesting: Verluste vor Jahresende realisieren</li>
+            <li>Günstigerprüfung für Geringverdiener</li>
+            <li>Depotübertrag = steuerfrei</li>
+            <li>Thesaurierende ETFs = Steuerstundung</li>
+        </ul>
+    </div>
+    
+    <p style="font-style: italic; text-align: center; margin-top: 50px; color: #b0b0a8;">Geschafft! Jetzt fehlt nur noch das Bonus-Kapitel mit Checklisten & Tools!</p>
+            </div>
+            <div class="page" data-page="7">
+<div class="chapter-label">Bonus-Kapitel</div>
+    <h1>Checklisten & Tools</h1>
+    
+    <p>Hier findest du alle wichtigen Checklisten zum Ausdrucken, Tools & Ressourcen die dir weiterhelfen. Speichere dieses Kapitel als Nachschlagewerk!</p>
+    
+    <h2>Checkliste #1: Depot eröffnen</h2>
+    
+    <p><strong>Drucke diese Checkliste aus und hake ab!</strong></p>
+    
+    <div class="checklist">
+        <ul>
+            <li>Broker ausgewählt (Trade Republic, Scalable Capital, etc.)</li>
+            <li>App heruntergeladen & installiert</li>
+            <li>Persönliche Daten eingegeben</li>
+            <li>VideoIdent durchgeführt (Ausweis bereithalten!)</li>
+            <li>Bankkonto verknüpft</li>
+            <li>Freistellungsauftrag erteilt (1.000€!)</li>
+            <li>Erstes Geld eingezahlt</li>
+            <li>Depot ist aktiv und bereit zum Investieren!</li>
+        </ul>
+    </div>
+    
+    <h2>Checkliste #2: Vor dem Aktienkauf</h2>
+    
+    <p><strong>Nutze diese Checkliste bei JEDEM Aktienkauf!</strong></p>
+    
+    <h3>Finanzielle Voraussetzungen</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Notgroschen vorhanden (3-6 Monatsgehälter)</li>
+            <li>Keine Konsumschulden (Dispo, Ratenkredit)</li>
+            <li>Kann das Geld 5+ Jahre entbehren</li>
+        </ul>
+    </div>
+    
+    <h3>72-Stunden-Regel</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>72 Stunden seit Entdeckung der Aktie vergangen</li>
+            <li>Immer noch überzeugt von der Aktie</li>
+            <li>Kaufe NICHT aus FOMO</li>
+        </ul>
+    </div>
+    
+    <h3>Fundamentalanalyse</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Geschäftsmodell verstanden</li>
+            <li>KGV < 25 (oder branchenüblich)</li>
+            <li>Eigenkapitalquote > 40%</li>
+            <li>Umsatzwachstum positiv (letzte 3 Jahre)</li>
+            <li>Gewinnmarge > 10%</li>
+            <li>Free Cashflow positiv</li>
+            <li>Mindestens 6 von 8 Kriterien erfüllt</li>
+        </ul>
+    </div>
+    
+    <h3>Risiko-Check</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Passt zur Portfolio-Diversifikation</li>
+            <li>Branche noch nicht übergewichtet</li>
+            <li>Maximal 5% des Portfolios in diese Aktie</li>
+            <li>Kann 5-10 Jahre halten</li>
+        </ul>
+    </div>
+    
+    <div class="success-box">
+        <p style="font-size: 20px;"><strong>Wenn ALLE Punkte abgehakt: KAUFEN! ✓</strong></p>
+    </div>
+    
+    <h2>Checkliste #3: Monatliches Finanz-Review</h2>
+    
+    <p><strong>Einmal pro Monat durchgehen (z.B. jeden 1. des Monats)</strong></p>
+    
+    <h3>Depot-Check</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Gesamtperformance angeschaut</li>
+            <li>Größte Gewinner & Verlierer identifiziert</li>
+            <li>Diversifikation gecheckt (Branchen, Länder)</li>
+            <li>Rebalancing nötig? (bei >5% Abweichung)</li>
+        </ul>
+    </div>
+    
+    <h3>Sparplan</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Sparplan wurde ausgeführt</li>
+            <li>Sparrate noch passend?</li>
+            <li>Bei Gehaltserhöhung: Sparrate erhöhen!</li>
+        </ul>
+    </div>
+    
+    <h3>Steuern</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Freistellungsauftrag ausgeschöpft?</li>
+            <li>Verluste vorhanden für Verrechnung?</li>
+            <li>Ende Dezember: Tax Loss Harvesting prüfen</li>
+        </ul>
+    </div>
+    
+    <h3>Strategie-Check</h3>
+    
+    <div class="checklist">
+        <ul>
+            <li>Halte ich mich an meine Strategie?</li>
+            <li>Emotionale Käufe gemacht? (vermeiden!)</li>
+            <li>Ziele noch aktuell?</li>
+        </ul>
+    </div>
+    
+    <h2>Tools & Ressourcen</h2>
+    
+    <h3>Broker (Depot)</h3>
+    
+    <table>
+        <tr>
+            <th>Tool</th>
+            <th>Zweck</th>
+            <th>Link</th>
+        </tr>
+        <tr>
+            <td><strong>Trade Republic</strong></td>
+            <td>Neobroker, 1€/Order</td>
+            <td>traderepublic.com</td>
+        </tr>
+        <tr>
+            <td><strong>Scalable Capital</strong></td>
+            <td>Neobroker, Prime Abo</td>
+            <td>scalable.capital</td>
+        </tr>
+        <tr>
+            <td><strong>ING</strong></td>
+            <td>Klassische Bank</td>
+            <td>ing.de</td>
+        </tr>
+    </table>
+    
+    <h3>Analyse & Research</h3>
+    
+    <table>
+        <tr>
+            <th>Tool</th>
+            <th>Zweck</th>
+            <th>Link</th>
+        </tr>
+        <tr>
+            <td><strong>finanzen.net</strong></td>
+            <td>Kennzahlen deutsch</td>
+            <td>finanzen.net</td>
+        </tr>
+        <tr>
+            <td><strong>Yahoo Finance</strong></td>
+            <td>US-Aktien, detailliert</td>
+            <td>finance.yahoo.com</td>
+        </tr>
+        <tr>
+            <td><strong>onvista</strong></td>
+            <td>Charts & Kennzahlen</td>
+            <td>onvista.de</td>
+        </tr>
+        <tr>
+            <td><strong>MarketScreener</strong></td>
+            <td>Tiefenanalyse</td>
+            <td>marketscreener.com</td>
+        </tr>
+    </table>
+    
+    <h3>Portfolio-Tracking</h3>
+    
+    <ul>
+        <li><strong>Portfolio Performance</strong> (Kostenlos, Desktop) - portfolioperformance.info</li>
+        <li><strong>Parqet</strong> (App & Web) - parqet.com</li>
+        <li><strong>getquin</strong> (Social + Tracking) - getquin.com</li>
+    </ul>
+    
+    <h2>Weiterbildung & News</h2>
+    
+    <h3>YouTube-Kanäle (Deutsch)</h3>
+    
+    <ul>
+        <li><strong>Finanzfluss</strong> - ETFs, Grundlagen, solide Infos</li>
+        <li><strong>Finanztip</strong> - Verbraucherschutz-Perspektive</li>
+        <li><strong>Aktien mit Kopf</strong> - Einzelaktien-Analysen</li>
+    </ul>
+    
+    <h3>Podcasts</h3>
+    
+    <ul>
+        <li><strong>Finanzfluss Podcast</strong> - Wöchentlich, Grundlagen</li>
+        <li><strong>Mission Money</strong> - Interviews mit Experten</li>
+        <li><strong>Doppelgänger Tech Talk</strong> - Tech-Aktien fokussiert</li>
+    </ul>
+    
+    <h3>News & Blogs</h3>
+    
+    <ul>
+        <li><strong>Handelsblatt</strong> - Tagesaktuelle Wirtschaftsnews</li>
+        <li><strong>DER AKTIONÄR</strong> - Aktien-Magazin</li>
+        <li><strong>extraETF Blog</strong> - ETF-fokussiert</li>
+    </ul>
+    
+    <h3>Reddit & Communities</h3>
+    
+    <ul>
+        <li><strong>r/Finanzen</strong> - Deutsches Forum, sehr aktiv</li>
+        <li><strong>r/mauerstrassenwetten</strong> - Trading/Memes (Vorsicht!)</li>
+        <li><strong>wertpapier-forum.de</strong> - Klassisches Forum</li>
+    </ul>
+    
+    <div class="divider"></div>
+    
+    <h2>Schlusswort</h2>
+    
+    <div class="final-box">
+        <h3 style="color: #a0927d; margin-bottom: 20px;">Gratulation! Du hast die Aktien Masterclass durchgearbeitet. 🎉</h3>
+    </div>
+    
+    <p><strong>Du kennst jetzt:</strong></p>
+    <ul>
+        <li>Die Grundlagen von Aktien & Börse</li>
+        <li>Wie du ein Depot eröffnest & deine erste Order platzierst</li>
+        <li>Aktienanalyse mit KGV, Dividendenrendite & Co.</li>
+        <li>Bewährte Strategien (72h-Regel, DCA, Dividenden)</li>
+        <li>Risikomanagement & die 10 häufigsten Fehler</li>
+        <li>Steueroptimierung & legale Tricks</li>
+    </ul>
+    
+    <h3>Was jetzt?</h3>
+    
+    <div class="important-box">
+        <ul>
+            <li><strong>HANDELN!</strong> Wissen ohne Umsetzung ist wertlos</li>
+            <li>Depot eröffnen (wenn noch nicht geschehen)</li>
+            <li>Sparplan einrichten</li>
+            <li>Erste Aktie kaufen (mit 72h-Regel!)</li>
+            <li>Dranbleiben & langfristig denken</li>
+        </ul>
+    </div>
+    
+    <p><strong>Wichtig:</strong> Der Weg zur finanziellen Freiheit ist kein Sprint, sondern ein Marathon. Sei geduldig, bleib diszipliniert und vergleiche dich nicht mit anderen.</p>
+    
+    <div class="final-box">
+        <p style="font-size: 22px; color: #f5f5f0;"><strong>Deine Reise beginnt jetzt. Viel Erfolg! 🚀</strong></p>
+    </div>
+    
+    <h2>Über den Autor</h2>
+    
+    <div class="important-box">
+        <p style="font-style: italic; color: #a0927d;">[DEIN INPUT: Schreibe hier deine Bio:]</p>
+        <ul style="text-align: left;">
+            <li>Wer bist du?</li>
+            <li>Deine Erfahrung mit Aktien (Jahre, Portfolio-Größe)</li>
+            <li>Warum hast du diesen Guide geschrieben?</li>
+            <li>Deine größten Erfolge & Misserfolge</li>
+            <li>Was du heute anders machen würdest</li>
+            <li>Kontakt (optional): E-Mail, Website, Social Media</li>
+        </ul>
+        <p style="font-style: italic; margin-top: 20px;"><strong>Tipp:</strong> Sei authentisch! Leser wollen den Menschen hinter dem Guide kennenlernen.</p>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <div class="footer">
+        <p>━━━━━━━━━━━━━━━━━━━━━</p>
+        <p style="margin: 20px 0; font-size: 18px; letter-spacing: 5px;"><strong>AKTIEN MASTERCLASS</strong></p>
+        <p>Version 1.0 - 2026</p>
+        <p>━━━━━━━━━━━━━━━━━━━━━</p>
+    
+            </div>
+        </div>
+        
+        <div class="nav-controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousPage()">◄ ZURÜCK</button>
+            <div class="page-indicator">
+                <span id="currentPage">1</span> / <span id="totalPages">8</span>
+            </div>
+            <button class="nav-btn" id="nextBtn" onclick="nextPage()">WEITER ►</button>
+        </div>
+        
+        <div class="keyboard-hint">Tipp: Nutze ← → Pfeiltasten zum Blättern</div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 8;
+        const pages = document.querySelectorAll('.page');
+
+        function updatePage() {
+            // Remove all classes
+            pages.forEach(page => {
+                page.classList.remove('active', 'prev');
+            });
+
+            // Set current page
+            pages[currentPage].classList.add('active');
+            
+            // Set previous page
+            if (currentPage > 0) {
+                pages[currentPage - 1].classList.add('prev');
+            }
+
+            // Update indicator
+            document.getElementById('currentPage').textContent = currentPage + 1;
+            
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+            
+            // Scroll to top of new page
+            pages[currentPage].scrollTop = 0;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updatePage();
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePage();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') previousPage();
+        });
+
+        // Initialize
+        updatePage();
+    </script>
+</body>
+</html>
