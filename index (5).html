@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzwissen für Ihre Zukunft</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap');
+        
+        :root {
+            --primary: #1a3a52;
+            --secondary: #2d5f7f;
+            --accent: #c9a961;
+            --light: #f8f6f3;
+            --text: #2a2a2a;
+            --text-light: #6b6b6b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--text);
+            background: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(201,169,97,0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 1s ease-out 0.2s backwards;
+        }
+        
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+        
+        .subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            font-weight: 300;
+            opacity: 0.95;
+            max-width: 700px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 1s ease-out 0.4s backwards;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--secondary);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        .language-switcher {
+            margin-left: auto;
+        }
+        
+        .lang-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-family: 'Work Sans', sans-serif;
+        }
+        
+        .lang-button:hover {
+            background: #b39451;
+            transform: scale(1.05);
+        }
+        
+        .flag {
+            font-size: 1.2rem;
+        }
+        
+        .lang-text {
+            letter-spacing: 0.5px;
+        }
+        
+        /* Hook Section */
+        .hook-section {
+            background: linear-gradient(to bottom, #ffffff 0%, var(--light) 100%);
+            padding: 4rem 2rem;
+            border-bottom: 1px solid rgba(26,58,82,0.1);
+            animation: fadeIn 1s ease-out 0.4s backwards;
+        }
+        
+        .hook-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .hook-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .hook-text {
+            font-size: clamp(1.15rem, 2vw, 1.35rem);
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+        
+        .hook-highlight {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            font-size: clamp(1.15rem, 2vw, 1.3rem);
+            line-height: 1.8;
+            margin: 2rem 0;
+            box-shadow: 0 8px 24px rgba(26,58,82,0.15);
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .hook-highlight::before {
+            content: '"';
+            font-family: 'Cormorant Garamond', serif;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 5rem;
+            color: var(--accent);
+            opacity: 0.3;
+        }
+        
+        .hook-calculation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .calc-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: var(--light);
+            border-radius: 8px;
+            min-width: 150px;
+        }
+        
+        .calc-item.highlight {
+            background: linear-gradient(135deg, var(--accent) 0%, #b39451 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .calc-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .calc-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .calc-arrow {
+            font-size: 2rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .hook-final {
+            font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+            color: var(--primary);
+            font-weight: 600;
+            line-height: 1.6;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(201,169,97,0.1) 0%, rgba(201,169,97,0.05) 100%);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            .hook-calculation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .calc-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .calc-item {
+                width: 100%;
+            }
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        /* Value Proposition */
+        .value-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeIn 1s ease-out 0.6s backwards;
+        }
+        
+        .value-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .value-section p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+        
+        /* Bundle Section */
+        .bundle-section {
+            margin: 4rem 0;
+            animation: fadeIn 1s ease-out 1.2s backwards;
+        }
+        
+        .bundle-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f6f3 100%);
+            border: 3px solid var(--accent);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(201,169,97,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bundle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--secondary) 50%, var(--accent) 100%);
+        }
+        
+        .bundle-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+        
+        .bundle-card h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .bundle-description {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+        
+        .bundle-includes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem auto;
+            max-width: 900px;
+        }
+        
+        .bundle-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            color: var(--text);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .bundle-pricing {
+            margin: 2.5rem 0;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        
+        .bundle-old-price {
+            display: block;
+            text-decoration: line-through;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .bundle-discount-price {
+            display: block;
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+        
+        .bundle-price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bundle-savings {
+            display: block;
+            color: white;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(231,76,60,0.3);
+        }
+        
+        .bundle-note {
+            margin-top: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+        
+        .bundle-button {
+            font-size: 1.2rem;
+            padding: 1.2rem 3rem;
+            margin-top: 1rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: visible;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: fadeInUp 0.8s ease-out backwards;
+            animation-delay: calc(var(--card-index) * 0.1s);
+            position: relative;
+        }
+        
+        .promo-badge {
+            position: absolute;
+            top: 20px;
+            right: -40px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 0.5rem 3rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transform: rotate(45deg);
+            box-shadow: 0 4px 12px rgba(231,76,60,0.6);
+            z-index: 10;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+        }
+        
+        .product-header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .product-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        .product-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .product-level {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        
+        .product-body {
+            padding: 2rem;
+        }
+        
+        .product-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .product-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-features li {
+            padding: 0.6rem 0;
+            padding-left: 1.8rem;
+            position: relative;
+            color: var(--text);
+        }
+        
+        .product-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* Product Preview Inside Cards */
+        .product-preview {
+            background: linear-gradient(135deg, rgba(201,169,97,0.08) 0%, rgba(201,169,97,0.03) 100%);
+            border: 2px solid rgba(201,169,97,0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .preview-header span {
+            font-size: 1.5rem;
+        }
+        
+        .preview-header h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0;
+        }
+        
+        .preview-example strong {
+            display: block;
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        .preview-mini-problem,
+        .preview-mini-solution {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+        }
+        
+        .preview-mini-problem span:first-child,
+        .preview-mini-solution span:first-child {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .preview-mini-problem {
+            color: #c0392b;
+        }
+        
+        .preview-mini-solution {
+            color: #27ae60;
+        }
+        
+        .price-container {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(201,169,97,0.05) 0%, rgba(201,169,97,0.1) 100%);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+        }
+        
+        .old-price {
+            display: block;
+            text-decoration: line-through;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        
+        .price span {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-light);
+        }
+        
+        .savings {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .guarantee-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, rgba(46,204,113,0.1) 0%, rgba(46,204,113,0.05) 100%);
+            border: 2px solid rgba(46,204,113,0.3);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #27ae60;
+        }
+        
+        .guarantee-icon {
+            font-size: 1.2rem;
+        }
+        
+        /* Testimonials Section */
+        .testimonials-section {
+            background: white;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .social-proof-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .rating-summary {
+            text-align: center;
+        }
+        
+        .stars {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .rating-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        .rating-subtext {
+            display: block;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+        
+        .customers-count {
+            text-align: center;
+        }
+        
+        .count-number {
+            display: block;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Cormorant Garamond', serif;
+            line-height: 1;
+        }
+        
+        .customers-count span:last-child {
+            display: block;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+        
+        .testimonials-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 600;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 2px solid rgba(26,58,82,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        
+        .testimonial-stars {
+            color: #f39c12;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .testimonial-author strong {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .testimonial-author span {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .testimonial-savings {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, #b39451 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .testimonial-verified {
+            color: #27ae60;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        /* Guarantee Section */
+        .guarantee-section {
+            background: linear-gradient(135deg, rgba(46,204,113,0.08) 0%, rgba(46,204,113,0.03) 100%);
+            border: 3px solid rgba(46,204,113,0.3);
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            text-align: center;
+        }
+        
+        .guarantee-icon-large {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .guarantee-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .guarantee-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text);
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+        }
+        
+        .guarantee-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .guarantee-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .feature-check {
+            color: #27ae60;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+        
+        .cta-button:hover {
+            background: #b39451;
+            transform: scale(1.02);
+            box-shadow: 0 4px 16px rgba(201,169,97,0.3);
+        }
+        
+        /* Features Section */
+        .features-section {
+            background: white;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            animation: fadeIn 1s ease-out 0.8s backwards;
+        }
+        
+        .features-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 600;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .feature {
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out backwards;
+            animation-delay: calc(var(--feature-index) * 0.15s);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 4px 16px rgba(26,58,82,0.2);
+        }
+        
+        .feature h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .feature p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            border-radius: 8px;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out 1s backwards;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        .cta-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-section .cta-button {
+            display: inline-block;
+            width: auto;
+            padding: 1.2rem 3rem;
+            background: var(--accent);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        footer a:hover {
+            opacity: 0.8;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(-20px, 20px) rotate(5deg);
+            }
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1.5rem;
+                justify-content: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    
+    <header>
+        <div class="header-content">
+            <h1 data-translate="header_title">Finanzielle Freiheit durch Wissen</h1>
+            <p class="subtitle" data-translate="header_subtitle">Expertenwissen zu Aktien, Kryptowährungen und Finanzen, verständlich aufbereitet für Ihren Erfolg</p>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#produkte" data-translate="nav_products">Produkte</a></li>
+            <li><a href="#vorteile" data-translate="nav_benefits">Vorteile</a></li>
+            <li class="language-switcher">
+                <button id="langSwitch" class="lang-button">
+                    <span class="flag">🇩🇪</span>
+                    <span class="lang-text">DE</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+    
+    <section class="hook-section">
+        <div class="hook-content">
+            <h2 data-translate="hook_title">Was kostet Sie Ihr Unwissen?</h2>
+            <p class="hook-text" data-translate="hook_text">Ein falscher Investmentfehler kostet Sie tausende Euro. Ein verpasster Kryptotrend? Noch mehr. Keine Altersvorsorge? Unbezahlbar.</p>
+            <p class="hook-highlight" data-translate="hook_highlight">Jeder erfolgreiche Investor hatte einen Mentor. Für den Preis von zwei Restaurantbesuchen erhalten Sie hier das Wissen, das andere 10.000€+ in Verlusten gekostet hat zu lernen.</p>
+            <div class="hook-calculation">
+                <div class="calc-item">
+                    <span class="calc-label" data-translate="calc_investment">Ihr Investment:</span>
+                    <span class="calc-value">34€</span>
+                </div>
+                <div class="calc-arrow">→</div>
+                <div class="calc-item">
+                    <span class="calc-label" data-translate="calc_avoided">Vermiedene Fehler:</span>
+                    <span class="calc-value">1.000€+</span>
+                </div>
+                <div class="calc-arrow">→</div>
+                <div class="calc-item highlight">
+                    <span class="calc-label" data-translate="calc_roi">Möglicher ROI:</span>
+                    <span class="calc-value">∞</span>
+                </div>
+            </div>
+            <p class="hook-final" data-translate="hook_final">34€ für lebenslanges Wissen. Verstehen, umsetzen, profitieren. Ihre finanzielle Freiheit beginnt mit der richtigen Entscheidung. Heute.</p>
+        </div>
+    </section>
+    
+    <div class="container">
+        <section class="value-section">
+            <h2 data-translate="value_title">Ihr Weg zur finanziellen Expertise</h2>
+            <p data-translate="value_text">Spezialisierte PDF Guides für Aktien, Kryptowährungen und Finanzplanung, praxisnah, verständlich und sofort umsetzbar. Wählen Sie Ihren Bereich oder werden Sie Allround Experte.</p>
+        </section>
+        
+        <section id="produkte">
+            <div class="products-grid">
+                <div class="product-card" style="--card-index: 0;">
+                    <div class="promo-badge" data-translate="promo_badge">Einführungspreis</div>
+                    <div class="product-header">
+                        <span class="product-level">📈 Aktien</span>
+                        <h3 data-translate="product1_title">Aktien Masterclass</h3>
+                    </div>
+                    <div class="product-body">
+                        <p class="product-description" data-translate="product1_desc">Vom ersten Aktienkauf bis zur Dividendenstrategie. Lernen Sie, wie Sie erfolgreich am Aktienmarkt investieren und langfristig Vermögen aufbauen.</p>
+                        <ul class="product-features">
+                            <li data-translate="product1_f1">Fundamentalanalyse verstehen</li>
+                            <li data-translate="product1_f2">Die besten Aktienstrategien</li>
+                            <li data-translate="product1_f3">Dividenden Depot aufbauen</li>
+                            <li data-translate="product1_f4">Risikomanagement & Diversifikation</li>
+                            <li data-translate="product1_f5">45 Seiten Expertenwissen</li>
+                        </ul>
+                        
+                        <div class="product-preview">
+                            <div class="preview-header">
+                                <span>📖</span>
+                                <h4 data-translate="preview_look">Blick ins Buch</h4>
+                            </div>
+                            <div class="preview-example">
+                                <strong data-translate="preview1_title">⚠️ Häufiger Fehler: Emotionales Trading</strong>
+                                <div class="preview-mini-problem">
+                                    <span data-translate="preview_problem">Problem:</span> <span data-translate="preview1_problem_short">Kaufen bei Hype, verkaufen bei Panik = -30% statt +15%</span>
+                                </div>
+                                <div class="preview-mini-solution">
+                                    <span data-translate="preview_solution">Lösung:</span> <span data-translate="preview1_solution_short">72h-Regel & rationale Checklisten (Seite 34-42)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-container">
+                            <span class="old-price">44,90€</span>
+                            <div class="price">34,90€ <span data-translate="price_onetime">einmalig</span></div>
+                            <span class="savings"><span data-translate="savings">Sie sparen</span> 10€</span>
+                            <div class="guarantee-badge">
+                                <span class="guarantee-icon">🛡️</span>
+                                <span data-translate="guarantee_badge">30 Tage Geld-zurück-Garantie</span>
+                            </div>
+                        </div>
+                        <a href="https://financeguidesacademy.gumroad.com/l/aktien-masterclass" class="cta-button" data-translate="buy_now" target="_blank" rel="noopener">Jetzt kaufen</a>
+                    </div>
+                </div>
+                
+                <div class="product-card" style="--card-index: 1;">
+                    <div class="promo-badge" data-translate="promo_badge">Einführungspreis</div>
+                    <div class="product-header">
+                        <span class="product-level">₿ Kryptowährungen</span>
+                        <h3 data-translate="product2_title">Krypto Guide 2026</h3>
+                    </div>
+                    <div class="product-body">
+                        <p class="product-description" data-translate="product2_desc">Bitcoin, Ethereum & Co. richtig verstehen. Alles über Wallets, Exchanges, Sicherheit und Trading Strategien in der Kryptowelt.</p>
+                        <ul class="product-features">
+                            <li data-translate="product2_f1">Blockchain Technologie erklärt</li>
+                            <li data-translate="product2_f2">Sichere Aufbewahrung (Cold/Hot Wallets)</li>
+                            <li data-translate="product2_f3">Top Kryptowährungen im Vergleich</li>
+                            <li data-translate="product2_f4">Trading vs. HODL Strategie</li>
+                            <li data-translate="product2_f5">40 Seiten inkl. Sicherheitschecklisten</li>
+                        </ul>
+                        
+                        <div class="product-preview">
+                            <div class="preview-header">
+                                <span>📖</span>
+                                <h4 data-translate="preview_look">Blick ins Buch</h4>
+                            </div>
+                            <div class="preview-example">
+                                <strong data-translate="preview2_title">⚠️ Häufiger Fehler: Unsichere Wallets</strong>
+                                <div class="preview-mini-problem">
+                                    <span data-translate="preview_problem">Problem:</span> <span data-translate="preview2_problem_short">2 Mrd. € durch Hacks & verlorene Keys verloren (2024)</span>
+                                </div>
+                                <div class="preview-mini-solution">
+                                    <span data-translate="preview_solution">Lösung:</span> <span data-translate="preview2_solution_short">Cold Wallet Setup & 3-2-1 Backup-Regel (Seite 67-81)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-container">
+                            <span class="old-price">49,90€</span>
+                            <div class="price">39,90€ <span data-translate="price_onetime">einmalig</span></div>
+                            <span class="savings"><span data-translate="savings">Sie sparen</span> 10€</span>
+                            <div class="guarantee-badge">
+                                <span class="guarantee-icon">🛡️</span>
+                                <span data-translate="guarantee_badge">30 Tage Geld-zurück-Garantie</span>
+                            </div>
+                        </div>
+                        <a href="https://financeguidesacademy.gumroad.com/l/krypto-guide-2026" class="cta-button" data-translate="buy_now" target="_blank" rel="noopener">Jetzt kaufen</a>
+                    </div>
+                </div>
+                
+                <div class="product-card" style="--card-index: 2;">
+                    <div class="promo-badge" data-translate="promo_badge">Einführungspreis</div>
+                    <div class="product-header">
+                        <span class="product-level">💰 Finanzen</span>
+                        <h3 data-translate="product3_title">Finanzfundamentals</h3>
+                    </div>
+                    <div class="product-body">
+                        <p class="product-description" data-translate="product3_desc">Das solide Fundament für Ihre finanzielle Zukunft. Budgetplanung, Vermögensaufbau, Steuern sparen und Altersvorsorge strategisch planen.</p>
+                        <ul class="product-features">
+                            <li data-translate="product3_f1">Budgetplanung & Sparstrategien</li>
+                            <li data-translate="product3_f2">ETFs und passive Anlageformen</li>
+                            <li data-translate="product3_f3">Steueroptimierung für Anleger</li>
+                            <li data-translate="product3_f4">Altersvorsorge richtig aufbauen</li>
+                            <li data-translate="product3_f5">50 Seiten mit Rechner Tools</li>
+                        </ul>
+                        
+                        <div class="product-preview">
+                            <div class="preview-header">
+                                <span>📖</span>
+                                <h4 data-translate="preview_look">Blick ins Buch</h4>
+                            </div>
+                            <div class="preview-example">
+                                <strong data-translate="preview3_title">⚠️ Häufiger Fehler: Keine Steueroptimierung</strong>
+                                <div class="preview-mini-problem">
+                                    <span data-translate="preview_problem">Problem:</span> <span data-translate="preview3_problem_short">2.000-5.000€/Jahr verschenkt durch falsche Depot-Struktur</span>
+                                </div>
+                                <div class="preview-mini-solution">
+                                    <span data-translate="preview_solution">Lösung:</span> <span data-translate="preview3_solution_short">Freibeträge & Verlustverrechnung nutzen (Seite 89-104)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-container">
+                            <span class="old-price">44,90€</span>
+                            <div class="price">34,90€ <span data-translate="price_onetime">einmalig</span></div>
+                            <span class="savings"><span data-translate="savings">Sie sparen</span> 10€</span>
+                            <div class="guarantee-badge">
+                                <span class="guarantee-icon">🛡️</span>
+                                <span data-translate="guarantee_badge">30 Tage Geld-zurück-Garantie</span>
+                            </div>
+                        </div>
+                        <a href="https://financeguidesacademy.gumroad.com/l/finanzfundamentals" class="cta-button" data-translate="buy_now" target="_blank" rel="noopener">Jetzt kaufen</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="bundle-section">
+            <div class="bundle-card">
+                <div class="bundle-badge" data-translate="bundle_badge">🏆 BESTSELLER: MAXIMALE ERSPARNIS</div>
+                <h2 data-translate="bundle_title">🎯 Komplett Bundle: Alle 3 Guides</h2>
+                <p class="bundle-description" data-translate="bundle_desc">Erhalten Sie alle drei Premium Guides zum Sonderpreis und werden Sie zum Finanzexperten in allen Bereichen.</p>
+                <div class="bundle-includes">
+                    <div class="bundle-item" data-translate="bundle_item1">✓ Aktien Masterclass</div>
+                    <div class="bundle-item" data-translate="bundle_item2">✓ Krypto Guide 2026</div>
+                    <div class="bundle-item" data-translate="bundle_item3">✓ Finanzfundamentals</div>
+                    <div class="bundle-item" data-translate="bundle_item4">✓ Bonus: Finanzrechner Tools</div>
+                    <div class="bundle-item" data-translate="bundle_item5">✓ Bonus: Depot Checklisten</div>
+                </div>
+                <div class="bundle-pricing">
+                    <span class="bundle-old-price"><span data-translate="bundle_regular">Einzeln regulär:</span> 139,70€</span>
+                    <span class="bundle-discount-price"><span data-translate="bundle_discount">Mit Einführungsrabatten:</span> 109,70€</span>
+                    <div class="bundle-price">79,90€</div>
+                    <span class="bundle-savings" data-translate="bundle_savings">Sie sparen 59,80€ (43% Rabatt!)</span>
+                </div>
+                <a href="https://financeguidesacademy.gumroad.com/l/finance-bundle" class="cta-button bundle-button" data-translate="bundle_buy" target="_blank" rel="noopener">Komplett Bundle kaufen</a>
+                <p class="bundle-note" data-translate="bundle_note">⏰ Einführungspreis nur für kurze Zeit verfügbar</p>
+            </div>
+        </section>
+        
+        <section class="testimonials-section">
+            <div class="social-proof-header">
+                <div class="rating-summary">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <div class="rating-text">
+                        <span class="rating-number">4.8/5.0</span>
+                        <span class="rating-subtext" data-translate="rating_based">basierend auf 83 Bewertungen</span>
+                    </div>
+                </div>
+                <div class="customers-count">
+                    <span class="count-number">147+</span>
+                    <span data-translate="customers_text">zufriedene Kunden</span>
+                </div>
+            </div>
+            
+            <h2 data-translate="testimonials_title">Das sagen unsere Kunden</h2>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-translate="testimonial1_text">"Der Aktien Guide hat mir in 6 Monaten über 4.300€ an Verlusten erspart. Die 72-Stunden-Regel allein ist Gold wert!"</p>
+                    <div class="testimonial-author">
+                        <strong>Michael S.</strong>
+                        <span data-translate="testimonial1_age">34 Jahre, München</span>
+                    </div>
+                    <div class="testimonial-savings" data-translate="testimonial1_savings">Ersparnis: 4.300€</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-translate="testimonial2_text">"Endlich verstehe ich Krypto wirklich. Das Cold Wallet Setup hat meine 8.000€ in Bitcoin vor einem Hack bewahrt. Unbezahlbar!"</p>
+                    <div class="testimonial-author">
+                        <strong>Sarah K.</strong>
+                        <span data-translate="testimonial2_age">28 Jahre, Berlin</span>
+                    </div>
+                    <div class="testimonial-savings" data-translate="testimonial2_savings">Portfolio gesichert: 8.000€</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-translate="testimonial3_text">"Die Steuer-Tipps im Finanz-Guide haben mir letztes Jahr 3.200€ gespart. Das Beste: völlig legal und einfach umzusetzen."</p>
+                    <div class="testimonial-author">
+                        <strong>Thomas B.</strong>
+                        <span data-translate="testimonial3_age">41 Jahre, Hamburg</span>
+                    </div>
+                    <div class="testimonial-savings" data-translate="testimonial3_savings">Steuerersparnis: 3.200€</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-translate="testimonial4_text">"Komplett Bundle gekauft und keine Sekunde bereut. Verständlich geschrieben, ohne unnötigen Fachjargon. Top!"</p>
+                    <div class="testimonial-author">
+                        <strong>Lisa M.</strong>
+                        <span data-translate="testimonial4_age">32 Jahre, Frankfurt</span>
+                    </div>
+                    <div class="testimonial-verified" data-translate="testimonial4_verified">✓ Verifizierter Kauf</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-translate="testimonial5_text">"Als Anfänger war ich skeptisch, aber die Guides sind perfekt strukturiert. Jetzt manage ich mein eigenes Depot mit Gewinn!"</p>
+                    <div class="testimonial-author">
+                        <strong>Kevin D.</strong>
+                        <span data-translate="testimonial5_age">25 Jahre, Köln</span>
+                    </div>
+                    <div class="testimonial-verified" data-translate="testimonial5_verified">✓ Verifizierter Kauf</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-translate="testimonial6_text">"Für 34€ bekommt man hier Wissen, für das andere Seminare 500€+ verlangen. Absolute Empfehlung!"</p>
+                    <div class="testimonial-author">
+                        <strong>Anna W.</strong>
+                        <span data-translate="testimonial6_age">37 Jahre, Stuttgart</span>
+                    </div>
+                    <div class="testimonial-verified" data-translate="testimonial6_verified">✓ Verifizierter Kauf</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="guarantee-section">
+            <div class="guarantee-content">
+                <div class="guarantee-icon-large">🛡️</div>
+                <h2 data-translate="guarantee_title">100% Risikofreier Kauf</h2>
+                <p class="guarantee-text" data-translate="guarantee_text">Wir sind so überzeugt von der Qualität unserer Guides, dass wir Ihnen eine 30-Tage Geld-zurück-Garantie geben. Nicht zufrieden? Einfach E-Mail schreiben und Sie erhalten Ihr Geld zurück. Ohne Wenn und Aber.</p>
+                <div class="guarantee-features">
+                    <div class="guarantee-feature">
+                        <span class="feature-check">✓</span>
+                        <span data-translate="guarantee_f1">30 Tage Testzeit</span>
+                    </div>
+                    <div class="guarantee-feature">
+                        <span class="feature-check">✓</span>
+                        <span data-translate="guarantee_f2">Volle Rückerstattung</span>
+                    </div>
+                    <div class="guarantee-feature">
+                        <span class="feature-check">✓</span>
+                        <span data-translate="guarantee_f3">Keine Fragen gestellt</span>
+                    </div>
+                    <div class="guarantee-feature">
+                        <span class="feature-check">✓</span>
+                        <span data-translate="guarantee_f4">Einfacher Prozess per E-Mail</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="vorteile" class="features-section">
+            <h2 data-translate="features_title">Warum diese Finanzratgeber?</h2>
+            <div class="features-grid">
+                <div class="feature" style="--feature-index: 0;">
+                    <div class="feature-icon">🎯</div>
+                    <h3 data-translate="feature1_title">Spezialisiert</h3>
+                    <p data-translate="feature1_text">Jeder Guide fokussiert sich auf einen Bereich: So erhalten Sie tiefgehendes Wissen statt oberflächlicher Übersicht.</p>
+                </div>
+                <div class="feature" style="--feature-index: 1;">
+                    <div class="feature-icon">📊</div>
+                    <h3 data-translate="feature2_title">Praxisnah</h3>
+                    <p data-translate="feature2_text">Konkrete Strategien, echte Beispiele und sofort umsetzbare Tipps für Aktien, Krypto und Finanzen.</p>
+                </div>
+                <div class="feature" style="--feature-index: 2;">
+                    <div class="feature-icon">🔒</div>
+                    <h3 data-translate="feature3_title">Sicher & Seriös</h3>
+                    <p data-translate="feature3_text">Fundiertes Wissen ohne unseriöse "Schnell Reich Versprechen". Realistische Strategien für nachhaltigen Erfolg.</p>
+                </div>
+                <div class="feature" style="--feature-index: 3;">
+                    <div class="feature-icon">⚡</div>
+                    <h3 data-translate="feature4_title">Aktuell 2026</h3>
+                    <p data-translate="feature4_text">Alle Inhalte auf dem neuesten Stand mit aktuellen Marktentwicklungen und Regulierungen.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="cta-section">
+            <h2 data-translate="cta_title">Werden Sie zum Finanzexperten</h2>
+            <p data-translate="cta_text">Wählen Sie Ihren Spezialbereich oder sichern Sie sich alle drei Guides im Bundle mit 27% Rabatt.</p>
+            <a href="#produkte" class="cta-button" data-translate="cta_button">Zu den Produkten</a>
+        </section>
+    </div>
+    
+    <footer id="kontakt">
+        <p>&copy; 2026 Finanzwissen. <span data-translate="footer_rights">Alle Rechte vorbehalten.</span></p>
+        <p><a href="impressum.html" data-translate="footer_imprint">Impressum</a> | <a href="datenschutz.html" data-translate="footer_privacy">Datenschutz</a> | <a href="agb.html" data-translate="footer_terms">AGBs</a></p>
+        <p style="margin-top: 1rem;"><span data-translate="footer_contact">Kontakt:</span> <a href="mailto:kontakt@finance-guides.de">kontakt@finance-guides.de</a></p>
+    </footer>
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Intersection Observer für Scroll-Animationen
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.product-card, .feature').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Language Translation System
+        const translations = {
+            de: {
+                nav_products: "Produkte",
+                nav_benefits: "Vorteile",
+                nav_contact: "Kontakt",
+                header_title: "Finanzielle Freiheit durch Wissen",
+                header_subtitle: "Expertenwissen zu Aktien, Kryptowährungen und Finanzen, verständlich aufbereitet für Ihren Erfolg",
+                hook_title: "Was kostet Sie Ihr Unwissen?",
+                hook_text: "Ein falscher Investmentfehler kostet Sie tausende Euro. Ein verpasster Kryptotrend? Noch mehr. Keine Altersvorsorge? Unbezahlbar.",
+                hook_highlight: "Jeder erfolgreiche Investor hatte einen Mentor. Für den Preis von zwei Restaurantbesuchen erhalten Sie hier das Wissen, das andere 10.000€+ in Verlusten gekostet hat zu lernen.",
+                calc_investment: "Ihr Investment:",
+                calc_avoided: "Vermiedene Fehler:",
+                calc_roi: "Möglicher ROI:",
+                hook_final: "34€ für lebenslanges Wissen. Verstehen, umsetzen, profitieren. Ihre finanzielle Freiheit beginnt mit der richtigen Entscheidung. Heute.",
+                value_title: "Ihr Weg zur finanziellen Expertise",
+                value_text: "Spezialisierte PDF Guides für Aktien, Kryptowährungen und Finanzplanung, praxisnah, verständlich und sofort umsetzbar. Wählen Sie Ihren Bereich oder werden Sie Allround Experte.",
+                promo_badge: "Einführungspreis",
+                product1_title: "Aktien Masterclass",
+                product1_desc: "Vom ersten Aktienkauf bis zur Dividendenstrategie. Lernen Sie, wie Sie erfolgreich am Aktienmarkt investieren und langfristig Vermögen aufbauen.",
+                product1_f1: "Fundamentalanalyse verstehen",
+                product1_f2: "Die besten Aktienstrategien",
+                product1_f3: "Dividenden Depot aufbauen",
+                product1_f4: "Risikomanagement & Diversifikation",
+                product1_f5: "45 Seiten Expertenwissen",
+                product2_title: "Krypto Guide 2026",
+                product2_desc: "Bitcoin, Ethereum & Co. richtig verstehen. Alles über Wallets, Exchanges, Sicherheit und Trading Strategien in der Kryptowelt.",
+                product2_f1: "Blockchain Technologie erklärt",
+                product2_f2: "Sichere Aufbewahrung (Cold/Hot Wallets)",
+                product2_f3: "Top Kryptowährungen im Vergleich",
+                product2_f4: "Trading vs. HODL Strategie",
+                product2_f5: "40 Seiten inkl. Sicherheitschecklisten",
+                product3_title: "Finanzfundamentals",
+                product3_desc: "Das solide Fundament für Ihre finanzielle Zukunft. Budgetplanung, Vermögensaufbau, Steuern sparen und Altersvorsorge strategisch planen.",
+                product3_f1: "Budgetplanung & Sparstrategien",
+                product3_f2: "ETFs und passive Anlageformen",
+                product3_f3: "Steueroptimierung für Anleger",
+                product3_f4: "Altersvorsorge richtig aufbauen",
+                product3_f5: "50 Seiten mit Rechner Tools",
+                price_onetime: "einmalig",
+                savings: "Sie sparen",
+                buy_now: "Jetzt kaufen",
+                bundle_badge: "🏆 BESTSELLER: MAXIMALE ERSPARNIS",
+                bundle_title: "🎯 Komplett Bundle: Alle 3 Guides",
+                bundle_desc: "Erhalten Sie alle drei Premium Guides zum Sonderpreis und werden Sie zum Finanzexperten in allen Bereichen.",
+                bundle_item1: "✓ Aktien Masterclass",
+                bundle_item2: "✓ Krypto Guide 2026",
+                bundle_item3: "✓ Finanzfundamentals",
+                bundle_item4: "✓ Bonus: Finanzrechner Tools",
+                bundle_item5: "✓ Bonus: Depot Checklisten",
+                bundle_regular: "Einzeln regulär:",
+                bundle_discount: "Mit Einführungsrabatten:",
+                bundle_savings: "Sie sparen 59,80€ (43% Rabatt!)",
+                bundle_buy: "Komplett Bundle kaufen",
+                bundle_note: "⏰ Einführungspreis nur für kurze Zeit verfügbar",
+                features_title: "Warum diese Finanzratgeber?",
+                feature1_title: "Spezialisiert",
+                feature1_text: "Jeder Guide fokussiert sich auf einen Bereich: So erhalten Sie tiefgehendes Wissen statt oberflächlicher Übersicht.",
+                feature2_title: "Praxisnah",
+                feature2_text: "Konkrete Strategien, echte Beispiele und sofort umsetzbare Tipps für Aktien, Krypto und Finanzen.",
+                feature3_title: "Sicher & Seriös",
+                feature3_text: "Fundiertes Wissen ohne unseriöse \"Schnell Reich Versprechen\". Realistische Strategien für nachhaltigen Erfolg.",
+                feature4_title: "Aktuell 2026",
+                feature4_text: "Alle Inhalte auf dem neuesten Stand mit aktuellen Marktentwicklungen und Regulierungen.",
+                cta_title: "Werden Sie zum Finanzexperten",
+                cta_text: "Wählen Sie Ihren Spezialbereich oder sichern Sie sich alle drei Guides im Bundle mit 27% Rabatt.",
+                cta_button: "Zu den Produkten",
+                preview_look: "Blick ins Buch",
+                preview_problem: "Problem:",
+                preview_solution: "Lösung:",
+                preview1_title: "⚠️ Häufiger Fehler: Emotionales Trading",
+                preview1_problem_short: "Kaufen bei Hype, verkaufen bei Panik = -30% statt +15%",
+                preview1_solution_short: "72h-Regel & rationale Checklisten (Seite 34-42)",
+                preview2_title: "⚠️ Häufiger Fehler: Unsichere Wallets",
+                preview2_problem_short: "2 Mrd. € durch Hacks & verlorene Keys verloren (2024)",
+                preview2_solution_short: "Cold Wallet Setup & 3-2-1 Backup-Regel (Seite 67-81)",
+                preview3_title: "⚠️ Häufiger Fehler: Keine Steueroptimierung",
+                preview3_problem_short: "2.000-5.000€/Jahr verschenkt durch falsche Depot-Struktur",
+                preview3_solution_short: "Freibeträge & Verlustverrechnung nutzen (Seite 89-104)",
+                guarantee_badge: "30 Tage Geld-zurück-Garantie",
+                rating_based: "basierend auf 83 Bewertungen",
+                customers_text: "zufriedene Kunden",
+                testimonials_title: "Das sagen unsere Kunden",
+                testimonial1_text: "Der Aktien Guide hat mir in 6 Monaten über 4.300€ an Verlusten erspart. Die 72-Stunden-Regel allein ist Gold wert!",
+                testimonial1_age: "34 Jahre, München",
+                testimonial1_savings: "Ersparnis: 4.300€",
+                testimonial2_text: "Endlich verstehe ich Krypto wirklich. Das Cold Wallet Setup hat meine 8.000€ in Bitcoin vor einem Hack bewahrt. Unbezahlbar!",
+                testimonial2_age: "28 Jahre, Berlin",
+                testimonial2_savings: "Portfolio gesichert: 8.000€",
+                testimonial3_text: "Die Steuer-Tipps im Finanz-Guide haben mir letztes Jahr 3.200€ gespart. Das Beste: völlig legal und einfach umzusetzen.",
+                testimonial3_age: "41 Jahre, Hamburg",
+                testimonial3_savings: "Steuerersparnis: 3.200€",
+                testimonial4_text: "Komplett Bundle gekauft und keine Sekunde bereut. Verständlich geschrieben, ohne unnötigen Fachjargon. Top!",
+                testimonial4_age: "32 Jahre, Frankfurt",
+                testimonial4_verified: "✓ Verifizierter Kauf",
+                testimonial5_text: "Als Anfänger war ich skeptisch, aber die Guides sind perfekt strukturiert. Jetzt manage ich mein eigenes Depot mit Gewinn!",
+                testimonial5_age: "25 Jahre, Köln",
+                testimonial5_verified: "✓ Verifizierter Kauf",
+                testimonial6_text: "Für 34€ bekommt man hier Wissen, für das andere Seminare 500€+ verlangen. Absolute Empfehlung!",
+                testimonial6_age: "37 Jahre, Stuttgart",
+                testimonial6_verified: "✓ Verifizierter Kauf",
+                guarantee_title: "100% Risikofreier Kauf",
+                guarantee_text: "Wir sind so überzeugt von der Qualität unserer Guides, dass wir Ihnen eine 30-Tage Geld-zurück-Garantie geben. Nicht zufrieden? Einfach E-Mail schreiben und Sie erhalten Ihr Geld zurück. Ohne Wenn und Aber.",
+                guarantee_f1: "30 Tage Testzeit",
+                guarantee_f2: "Volle Rückerstattung",
+                guarantee_f3: "Keine Fragen gestellt",
+                guarantee_f4: "Einfacher Prozess per E-Mail",
+                footer_rights: "Alle Rechte vorbehalten.",
+                footer_imprint: "Impressum",
+                footer_privacy: "Datenschutz",
+                footer_terms: "AGBs",
+                footer_contact: "Kontakt:"
+            },
+            en: {
+                nav_products: "Products",
+                nav_benefits: "Benefits",
+                nav_contact: "Contact",
+                header_title: "Financial Freedom Through Knowledge",
+                header_subtitle: "Expert knowledge on stocks, cryptocurrencies and finance, clearly prepared for your success",
+                hook_title: "What Does Your Ignorance Cost You?",
+                hook_text: "One wrong investment mistake costs you thousands of euros. A missed crypto trend? Even more. No retirement plan? Priceless.",
+                hook_highlight: "Every successful investor had a mentor. For the price of two restaurant visits, you get the knowledge that cost others €10,000+ in losses to learn.",
+                calc_investment: "Your Investment:",
+                calc_avoided: "Avoided Mistakes:",
+                calc_roi: "Possible ROI:",
+                hook_final: "€34 for lifelong knowledge. Understand, implement, profit. Your financial freedom begins with the right decision. Today.",
+                value_title: "Your Path to Financial Expertise",
+                value_text: "Specialized PDF guides for stocks, cryptocurrencies and financial planning, practical, understandable and immediately applicable. Choose your area or become an allround expert.",
+                promo_badge: "Launch Price",
+                product1_title: "Stock Masterclass",
+                product1_desc: "From your first stock purchase to dividend strategy. Learn how to invest successfully in the stock market and build wealth long-term.",
+                product1_f1: "Understand fundamental analysis",
+                product1_f2: "The best stock strategies",
+                product1_f3: "Build dividend portfolio",
+                product1_f4: "Risk management & diversification",
+                product1_f5: "45 pages expert knowledge",
+                product2_title: "Crypto Guide 2026",
+                product2_desc: "Understand Bitcoin, Ethereum & Co. properly. Everything about wallets, exchanges, security and trading strategies in the crypto world.",
+                product2_f1: "Blockchain technology explained",
+                product2_f2: "Secure storage (Cold/Hot Wallets)",
+                product2_f3: "Top cryptocurrencies compared",
+                product2_f4: "Trading vs. HODL strategy",
+                product2_f5: "40 pages incl. security checklists",
+                product3_title: "Finance Fundamentals",
+                product3_desc: "The solid foundation for your financial future. Budget planning, wealth building, tax savings and strategic retirement planning.",
+                product3_f1: "Budget planning & savings strategies",
+                product3_f2: "ETFs and passive investment forms",
+                product3_f3: "Tax optimization for investors",
+                product3_f4: "Build retirement provision correctly",
+                product3_f5: "50 pages with calculator tools",
+                price_onetime: "one-time",
+                savings: "You save",
+                buy_now: "Buy Now",
+                bundle_badge: "🏆 BESTSELLER: MAXIMUM SAVINGS",
+                bundle_title: "🎯 Complete Bundle: All 3 Guides",
+                bundle_desc: "Get all three premium guides at a special price and become a financial expert in all areas.",
+                bundle_item1: "✓ Stock Masterclass",
+                bundle_item2: "✓ Crypto Guide 2026",
+                bundle_item3: "✓ Finance Fundamentals",
+                bundle_item4: "✓ Bonus: Financial Calculator Tools",
+                bundle_item5: "✓ Bonus: Portfolio Checklists",
+                bundle_regular: "Regular individually:",
+                bundle_discount: "With launch discounts:",
+                bundle_savings: "You save €59.80 (43% discount!)",
+                bundle_buy: "Buy Complete Bundle",
+                bundle_note: "⏰ Launch price available for limited time only",
+                features_title: "Why These Financial Guides?",
+                feature1_title: "Specialized",
+                feature1_text: "Each guide focuses on one area: This way you get in-depth knowledge instead of superficial overview.",
+                feature2_title: "Practical",
+                feature2_text: "Concrete strategies, real examples and immediately applicable tips for stocks, crypto and finance.",
+                feature3_title: "Safe & Serious",
+                feature3_text: "Well-founded knowledge without dubious \"get rich quick promises\". Realistic strategies for sustainable success.",
+                feature4_title: "Current 2026",
+                feature4_text: "All content up to date with current market developments and regulations.",
+                cta_title: "Become a Financial Expert",
+                cta_text: "Choose your specialty area or get all three guides in a bundle with 27% discount.",
+                cta_button: "To Products",
+                preview_look: "Inside Look",
+                preview_problem: "Problem:",
+                preview_solution: "Solution:",
+                preview1_title: "⚠️ Common Mistake: Emotional Trading",
+                preview1_problem_short: "Buy during hype, sell in panic = -30% instead of +15%",
+                preview1_solution_short: "72h-rule & rational checklists (Page 34-42)",
+                preview2_title: "⚠️ Common Mistake: Insecure Wallets",
+                preview2_problem_short: "€2B lost through hacks & lost keys (2024)",
+                preview2_solution_short: "Cold wallet setup & 3-2-1 backup rule (Page 67-81)",
+                preview3_title: "⚠️ Common Mistake: No Tax Optimization",
+                preview3_problem_short: "€2,000-5,000/year wasted through wrong portfolio structure",
+                preview3_solution_short: "Use allowances & loss offsetting (Page 89-104)",
+                guarantee_badge: "30-Day Money-Back Guarantee",
+                rating_based: "based on 83 reviews",
+                customers_text: "satisfied customers",
+                testimonials_title: "What Our Customers Say",
+                testimonial1_text: "The stock guide saved me over €4,300 in losses in 6 months. The 72-hour rule alone is worth gold!",
+                testimonial1_age: "34 years, Munich",
+                testimonial1_savings: "Savings: €4,300",
+                testimonial2_text: "Finally I really understand crypto. The cold wallet setup protected my €8,000 in Bitcoin from a hack. Priceless!",
+                testimonial2_age: "28 years, Berlin",
+                testimonial2_savings: "Portfolio secured: €8,000",
+                testimonial3_text: "The tax tips in the finance guide saved me €3,200 last year. The best part: completely legal and easy to implement.",
+                testimonial3_age: "41 years, Hamburg",
+                testimonial3_savings: "Tax savings: €3,200",
+                testimonial4_text: "Bought the complete bundle and haven't regretted it for a second. Clearly written, without unnecessary jargon. Top!",
+                testimonial4_age: "32 years, Frankfurt",
+                testimonial4_verified: "✓ Verified Purchase",
+                testimonial5_text: "As a beginner I was skeptical, but the guides are perfectly structured. Now I manage my own portfolio with profit!",
+                testimonial5_age: "25 years, Cologne",
+                testimonial5_verified: "✓ Verified Purchase",
+                testimonial6_text: "For €34 you get knowledge that other seminars charge €500+ for. Absolute recommendation!",
+                testimonial6_age: "37 years, Stuttgart",
+                testimonial6_verified: "✓ Verified Purchase",
+                guarantee_title: "100% Risk-Free Purchase",
+                guarantee_text: "We are so confident in the quality of our guides that we give you a 30-day money-back guarantee. Not satisfied? Simply send an email and you'll get your money back. No questions asked.",
+                guarantee_f1: "30-day trial period",
+                guarantee_f2: "Full refund",
+                guarantee_f3: "No questions asked",
+                guarantee_f4: "Simple process via email",
+                footer_rights: "All rights reserved.",
+                footer_imprint: "Imprint",
+                footer_privacy: "Privacy",
+                footer_terms: "Terms",
+                footer_contact: "Contact:"
+            }
+        };
+        
+        let currentLang = 'de';
+        
+        // Detect browser language on load
+        function detectLanguage() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang.startsWith('en')) {
+                currentLang = 'en';
+                setLanguage('en');
+            }
+        }
+        
+        // Set language
+        function setLanguage(lang) {
+            currentLang = lang;
+            
+            // Update all elements with data-translate attribute
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update language button
+            const langButton = document.getElementById('langSwitch');
+            if (lang === 'en') {
+                langButton.innerHTML = '<span class="flag">🇬🇧</span><span class="lang-text">EN</span>';
+            } else {
+                langButton.innerHTML = '<span class="flag">🇩🇪</span><span class="lang-text">DE</span>';
+            }
+            
+            // Save preference
+            localStorage.setItem('preferredLanguage', lang);
+        }
+        
+        // Toggle language
+        document.getElementById('langSwitch').addEventListener('click', () => {
+            const newLang = currentLang === 'de' ? 'en' : 'de';
+            setLanguage(newLang);
+        });
+        
+        // Check for saved l
